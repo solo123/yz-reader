@@ -3,10 +3,10 @@ package com.yazo.books;
 public class BookLibrary {
 	int list_size = 20;
 	
-	public String[] GetList(int list_type){
-		String[] result = new String[list_size];
+	public BookListItem[] GetList(String list_type){
+		BookListItem[] result = new BookListItem[list_size];
 		for (int i=0; i<list_size; i++){
-			result[i] = "List no:" + i;
+			result[i] = new BookListItem("List " + i, "value " + i);
 		}
 		return result;
 	}

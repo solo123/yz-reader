@@ -1,14 +1,15 @@
 package com.yazo.application;
 
-import com.yazo.canvas.*;
+import com.yazo.ui.Browser;
+
 import javax.microedition.lcdui.Display;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
 
 public class MainMIDlet extends MIDlet {
-	ListCanvas cv;
+	Browser browser;
 	public MainMIDlet(){
-		cv = new ListCanvas();
+		browser = new Browser();
 	}
 	protected void destroyApp(boolean arg0) throws MIDletStateChangeException {
 		// TODO Auto-generated method stub
@@ -22,7 +23,7 @@ public class MainMIDlet extends MIDlet {
 
 	protected void startApp() throws MIDletStateChangeException {
 		//MainUI mainui = new MainUI(Display.getDisplay(this));
-		Display.getDisplay(this).setCurrent(cv);
+		Display.getDisplay(this).setCurrent(browser);
 
 	}
 
