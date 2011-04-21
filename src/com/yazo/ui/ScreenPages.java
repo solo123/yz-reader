@@ -4,6 +4,7 @@ import javax.microedition.lcdui.Image;
 import com.yazo.books.*;
 
 public class ScreenPages {
+	int width, height;
 	BrowserContent[] contents;
 	Image[] screens;
 	
