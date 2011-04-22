@@ -1,7 +1,5 @@
 package com.yazo.ui;
 
-import java.util.Vector;
-
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
@@ -10,7 +8,10 @@ import com.yazo.util.Utils;
 
 public class ScreenPages {
 	int width, height;
-	BrowserContent[] contents;
+	LineContent content;
+	int[] pager_points;
+	public int current_page;
+
 	Image[] screens ;
 	 int lines = 1;
 	static int pages = 0;
@@ -22,80 +23,41 @@ public class ScreenPages {
 		this.width = width;
 		this.height = height;
 		screens = new Image[20];
-		
+		pager_points = new int[100];
+		current_page = 0;
 	}
-
-	public void drawContents(BrowserContent[] contents) {
-		this.contents = contents;
-//		screens[0]=Image.createImage(width, height);
-//		
-		// Image ime = Image.createImage(width,height);
-		// Graphics g = ime.getGraphics();
+	public void LoadContent(LineContent content){
+		this.content = content;
+	}
+	public Image getCurrentPage(){
+		return getPage(current_page);
+	}
+	public Image getPage(int page) {
+		Image img = Image.createImage(width, height);
+		Graphics g = img.getGraphics();
+		g.setColor(0x000000);
+		if (page<0 || page>content.page_count) return img;
 		
-			current=Image.createImage(width, height);
-			Graphics g = current.getGraphics();
-			g.setColor(0x00FF00);
-		for (int i = 0; i < contents.length; i++) {
-			
-			BrowserContent bc = contents[i];
+		int posy = 30;
+		int st = content.page_pos[page];
+		int ed = content.page_pos[page+1];
+		for(int i=st; i<ed; i++){
 			Font f = Utils.f;
-			if (bc.content_type == "text") {
-				int string_width = f.stringWidth(bc.content);// 一个content的长度
-				if (width >= string_width) {
-					
-					lines=lines+1;
-					g.drawString(bc.content, 10, posy, Graphics.BASELINE
-							| Graphics.LEFT);
-					if (lines == 17) {
-						current=this.setPage(g,current);
-						g=null;
-						g=current.getGraphics();
-						lines=0;
-					}
-				} else {
-					Vector v = new Vector();
-					v = Utils.splitStr(f, bc.content, width);
-					for (int j = 0; j < v.size(); j++) {
-						lines=lines+1;
-						g.drawString((String) v.elementAt(j), 10, posy,	Graphics.BASELINE | Graphics.LEFT);
-						if (lines == 17) {
-							current=this.setPage(g,current);
-							g=null;
-							g=current.getGraphics();
-							lines=0;
-						}
-						posy += 16;
-					}
-				}
-			} else if (bc.content_type == "link") {
-				lines=lines+1;
-				g.drawString(bc.content, 10, posy, Graphics.BASELINE
-						| Graphics.LEFT);
-				if (lines ==17) {
-					current=this.setPage(g,current);
-					g=null;
-					g=current.getGraphics();
-					lines=0;
-				}
-			} else if (bc.content_type == "line") {
-				lines=lines+1;
+			BrowserContent c = content.lines[i];
+			if (c.content_type == "text") {
+				g.drawString(c.content, 10, posy, Graphics.BASELINE|Graphics.LEFT);
+			} else if (c.content_type == "link") {
+				g.drawString(c.content, 10, posy, Graphics.BASELINE|Graphics.LEFT);
+			} else if (c.content_type == "line") {
 				g.drawLine(10, posy, width, posy);
-				if (lines == 17) {
-					current=this.setPage(g,current);
-					g=null;
-					g=current.getGraphics();
-					lines=0;
-				}
 			}
-			posy += 16;
-			
+			posy += 20;
 		}
 		g = null;
-		}
-
-	public Image getPage(int page) {
-		return screens[page];
+		return img;
 	}
+
+
 	public Image setPage(Graphics g,Image current) {
 //		screens[pages-1]=screens[current_image];
 //		screens[current_image]=null;

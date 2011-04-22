@@ -30,10 +30,9 @@ public class Browser extends Canvas implements CommandListener {
 		g.fillRect(0,0,width,height);
 		
 		drawHeader(g, book_manager.header);
-		Image img = pages.getPage(current_page);
+		Image img = pages.getCurrentPage();
 		if (img != null )
-			System.out.println("÷¥––¡À£ø");
-			g.drawImage(pages.getPage(current_page), 0, header_height, Graphics.TOP|Graphics.LEFT);
+			g.drawImage(img, 0, header_height, Graphics.TOP|Graphics.LEFT);
 		
 		for(int i=0; i<menus.image_count; i++){
 			g.drawImage(menus.images[i], 0 + menus.posx[i], height - 20 + menus.posy[i], Graphics.TOP|Graphics.LEFT);
@@ -44,12 +43,18 @@ public class Browser extends Canvas implements CommandListener {
 		int action = getGameAction(keyCode);
 		System.out.println(" action:" + action + ", keycode:" + keyCode);
 		menus.keyAction(keyCode);
+		if(keyCode==-2 || keyCode==-4){
+			pages.current_page++;
+		} else if (keyCode==-1 || keyCode==-3){
+			pages.current_page--;
+		}
 		repaint();
 	}
 	
 	private void getStartPageContent(){
 		book_manager.getPage("Home");
-		pages.drawContents(book_manager.contents);
+		book_manager.content.markPages(this.height-40); 
+		pages.LoadContent(book_manager.content);
 		header_text = book_manager.header;
 		current_page =0;
 	}

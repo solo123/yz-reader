@@ -21,4 +21,5 @@ public class BrowserContent {
 		this.content1 = content1;
 		this.content_value = val;
 	}
+	
 }
