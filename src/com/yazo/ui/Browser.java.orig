@@ -48,10 +48,16 @@ public class Browser extends Canvas implements CommandListener {
 	}
 	
 	private void getStartPageContent(){
+<<<<<<< HEAD
 		book_manager.getPage("Home");
 		pages.drawContents(book_manager.contents);
 		header_text = book_manager.header;
+		current_page = 0;
+=======
+		pages.drawContents(book_manager.getHomePage());
+		header_text = "ÄÚÈÝ Home";
 		current_page =0;
+>>>>>>> ss1
 	}
 	private void drawHeader(Graphics g, String header_text){
 		g.setColor(0x999999);
