@@ -1,5 +1,8 @@
 package com.yazo.ui;
 
+import java.util.Vector;
+
+import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import com.yazo.books.*;
@@ -26,8 +29,18 @@ public class ScreenPages {
 		for(int i=0; i<contents.length; i++){
 			posy += 16;
 			BrowserContent bc = contents[i];
+			Font f = Font.getFont(Font.FACE_MONOSPACE, Font.STYLE_PLAIN, Font.SIZE_MEDIUM);
+			int font_width1 = f.charWidth('哈');//一个汉字的长度
+			int font_width2 = f.charWidth('a');//一个因为字母的长度
+			
+			
 			if (bc.content_type == "text"){
-				g.drawString(bc.content, 10, posy, Graphics.BASELINE|Graphics.LEFT);
+				int string_width = f.stringWidth(bc.content);//一个content的长度
+				System.out.println("字体的宽度font_width="+font_width1+"\n因为字符的宽度="+font_width2+"\n字符串总长度" +
+						"="+string_width);
+				if(width<string_width){
+//					Vess
+					}
 			} else if (bc.content_type == "link"){
 				g.drawString(bc.content, 10, posy, Graphics.BASELINE|Graphics.LEFT);
 			} else if (bc.content_type == "line"){
