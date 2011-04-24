@@ -12,6 +12,6 @@ public class BrowserContent {
 	public BrowserContent(String type, String content, String val){
 		this.content_type = type;
 		this.content = content;
-		this.content_value = val;
+		this.content_value = val; 
 	}
 }
