@@ -6,6 +6,7 @@ import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import com.yazo.books.*;
+import com.yazo.util.Utils;
 
 public class ScreenPages {
 	int width, height;
@@ -39,8 +40,10 @@ public class ScreenPages {
 				System.out.println("字体的宽度font_width="+font_width1+"\n因为字符的宽度="+font_width2+"\n字符串总长度" +
 						"="+string_width);
 				if(width<string_width){
-//					Vess
+					Vector v = Utils.splitStr(f, bc.content, width);
+					for(int j=0;j<v.size();j++){
 					}
+				}
 			} else if (bc.content_type == "link"){
 				g.drawString(bc.content, 10, posy, Graphics.BASELINE|Graphics.LEFT);
 			} else if (bc.content_type == "line"){
