@@ -1,8 +1,6 @@
 package com.yazo.ui;
 
-import javax.microedition.lcdui.Canvas;
-import javax.microedition.lcdui.Graphics;
-import javax.microedition.lcdui.Image;
+import javax.microedition.lcdui.*;
 
 public class KeyMenus {
 	int image_count;
@@ -18,7 +16,7 @@ public class KeyMenus {
 		images = new Image[20];
 		posx = new int[20];
 		posy = new int[20];
-		state = 0;  // init state
+		state = 0;
 	}
 	
 	public void keyAction(int key_code){

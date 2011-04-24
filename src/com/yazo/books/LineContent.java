@@ -1,7 +1,7 @@
 package com.yazo.books;
 
 public class LineContent {
-	public int line_char_width;  //Ã¿ĞĞ×ÖÊı
+	public int line_char_width;  //æ¯è¡Œå­—æ•°
 	public BrowserContent[] lines;
 	public int[] page_pos;
 	public int page_count;
@@ -45,7 +45,7 @@ public class LineContent {
 		int h = 100000;
 		page_count = 0;
 		for(int i=0; i<line_count; i++){
-			if (h + 20 > page_height){
+			if (h + 20 > page_height-20){
 				page_pos[page_count++] = i;
 				h = 20;
 			} else

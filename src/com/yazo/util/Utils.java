@@ -7,12 +7,12 @@ import javax.microedition.lcdui.Font;
 public class Utils {
 	public static Font f = Font.getFont(Font.FACE_MONOSPACE, Font.STYLE_PLAIN, Font.SIZE_MEDIUM);
 	public static Vector splitStr(Font f,String str,int length){
-		System.out.println("调用换行");
+		System.out.println("璋冪敤鎹㈣");
 		if(str==null){
 			return null;
 		}
 		Vector result = new Vector();
-		System.out.println("传入的字符串为："+str);
+		System.out.println("浼犲叆鐨勫瓧绗︿覆涓猴細"+str);
 		char[] tempChars = str.toCharArray();
 		int lengthPX = 0;
 		StringBuffer b = new StringBuffer();
@@ -32,7 +32,7 @@ public class Utils {
 		if(lengthPX>0){
 			result.addElement(b.toString());
 		}
-		//打印出所有的字符
+		//鎵撳嵃鍑烘墍鏈夌殑瀛楃
 		for(int i = 0;i<result.size();i++){
 			System.out.println("result========"+(String)result.elementAt(i));
 		}

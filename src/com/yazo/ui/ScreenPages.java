@@ -1,10 +1,7 @@
 package com.yazo.ui;
 
-import javax.microedition.lcdui.Font;
-import javax.microedition.lcdui.Graphics;
-import javax.microedition.lcdui.Image;
+import javax.microedition.lcdui.*;
 import com.yazo.books.*;
-import com.yazo.util.Utils;
 
 public class ScreenPages {
 	int width, height;
@@ -42,7 +39,7 @@ public class ScreenPages {
 		int st = content.page_pos[page];
 		int ed = content.page_pos[page+1];
 		for(int i=st; i<ed; i++){
-			Font f = Utils.f;
+			// Font f = Utils.f;
 			BrowserContent c = content.lines[i];
 			if (c.content_type == "text") {
 				g.drawString(c.content, 10, posy, Graphics.BASELINE|Graphics.LEFT);
@@ -61,8 +58,8 @@ public class ScreenPages {
 	public Image setPage(Graphics g,Image current) {
 //		screens[pages-1]=screens[current_image];
 //		screens[current_image]=null;
-		g.drawString("��һҳ", 10, posy+=16, Graphics.BOTTOM|Graphics.LEFT);
-		g.drawString("��һҳ",10,posy+=16,Graphics.BOTTOM|Graphics.RIGHT);
+		g.drawString("��һҳ", 10, posy+=16, Graphics.BOTTOM|Graphics.LEFT);
+		g.drawString("��һҳ",10,posy+=16,Graphics.BOTTOM|Graphics.RIGHT);
 		pages+=1;
 		screens[pages-1]=current;
 		current1 = Image.createImage(width,height);
