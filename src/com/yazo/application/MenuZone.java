@@ -1,7 +1,7 @@
 package com.yazo.application;
 
 import javax.microedition.lcdui.*;
-
+import com.yazo.books.BookMenu;
 import com.yazo.ui.Zone;
 
 public class MenuZone extends Zone {
@@ -9,6 +9,7 @@ public class MenuZone extends Zone {
 	public Image menuImage, menuShadowImage;
 	private Graphics g1;
 	private int menu_width, menu_height, cursor, max_items;
+	private BookMenu book_menu;
 	
 	public MenuZone(int width, int height) {
 		super(width, height);
@@ -16,7 +17,7 @@ public class MenuZone extends Zone {
 		cursor = 0;
 		max_items = 5;
 		menu_width = 120;
-		menu_height = 120;
+		menu_height = 110;
 		menuImage = Image.createImage(menu_width, menu_height);
 		g1 = menuImage.getGraphics();
 		menuShadowImage = Image.createImage(menu_width, menu_height);
@@ -24,6 +25,7 @@ public class MenuZone extends Zone {
 		g0.setColor(0x666666);
 		g0.fillRect(0, 0, menu_width, menu_height);
 		g0 = null;
+		book_menu = new BookMenu();
 	}
 	
 	
@@ -62,13 +64,9 @@ public class MenuZone extends Zone {
 		g1.drawLine(leftGrid+1, 3, leftGrid+1, menu_height-3);
 		
 		g1.setColor(0);
-		g1.drawString("1. 菜单第一项", leftGrid+5, 5, Graphics.TOP|Graphics.LEFT);
-		g1.drawString("2. 菜单第一项", leftGrid+5, 5+20, Graphics.TOP|Graphics.LEFT);
-		g1.drawString("3. 菜单第一项", leftGrid+5, 5+40, Graphics.TOP|Graphics.LEFT);
-		g1.drawString("4. 菜单第一项", leftGrid+5, 5+60, Graphics.TOP|Graphics.LEFT);
-		g1.drawString("5. 菜单第一项", leftGrid+5, 5+80, Graphics.TOP|Graphics.LEFT);
-		
-		
+		for(int i=0; i<book_menu.items.length; i++){
+			g1.drawString(book_menu.items[i], leftGrid+5, 5+20*i, Graphics.TOP|Graphics.LEFT);	
+		}
 	}
 	public void activeMenu(){
 		if (state==0)
