@@ -9,13 +9,17 @@ import com.yazo.ui.Zone;
 public class MainZone extends Zone {
 	private LineContent content;
 	private int current_page, cursor, total_links;
-	public String current_cmd;
+	public String current_cmd,next_cmd;
+	public int catalog_bg, text_bg;
 	
 	public MainZone(int width, int height) {
 		super(width, height);
 		cursor = 0;
 		total_links = 0;
+		next_cmd = null;
 		current_cmd = null;
+		catalog_bg = 0xfdface;
+		text_bg = 0xaaaaaa;
 	}
 	public void setContent(LineContent content){
 		this.content = content;
@@ -34,12 +38,13 @@ public class MainZone extends Zone {
 		g.setColor(color);
 		int posy = 20;
 		int lnk_cnt = 0;
-		current_cmd = null;
+		next_cmd = null;
 		int st = content.page_pos[current_page];
 		int ed = content.page_pos[current_page+1];
 		for(int i=st; i<ed; i++){
 			BrowserContent c = content.lines[i];
 			if (c.content_type == "text") {
+				g.setColor(color);
 				g.drawString(c.content, 10, posy, Graphics.BASELINE|Graphics.LEFT);
 			} else if (c.content_type == "link") {
 				if (lnk_cnt == cursor){
@@ -47,7 +52,7 @@ public class MainZone extends Zone {
 					g.fillRect(10, posy-15, width-19, 19);
 					g.setColor(bgcolor);
 					g.drawString(c.content, 10, posy, Graphics.BASELINE|Graphics.LEFT);
-					current_cmd = c.content_value;
+					next_cmd = c.content_value;
 				} else {
 					g.setColor(color);
 					g.drawString(c.content, 10, posy, Graphics.BASELINE|Graphics.LEFT);
@@ -72,17 +77,20 @@ public class MainZone extends Zone {
 		if (cursor>0) {
 			cursor--;
 			repaint();
+		} else{
+			prevPage();
+			cursor=total_links-1;
+			repaint();
 		}
+		
 	}
 	public void cursorDown(){
 		if (cursor<total_links-1) {
 			cursor++;
 			repaint();
-		}
+		} else nextPage();
 	}
 	public void onClicked(){
-		System.out.println("Clicked:" + current_cmd);
-
 	}
 	
 }
