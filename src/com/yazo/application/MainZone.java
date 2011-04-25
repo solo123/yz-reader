@@ -8,9 +8,11 @@ import com.yazo.ui.Zone;
 
 public class MainZone extends Zone {
 	private LineContent content;
-	private int current_page, cursor, total_links;
+	public int current_page;
+	private int cursor, total_links;
 	public String current_cmd,next_cmd;
 	public int catalog_bg, text_bg;
+	public Browser browser;
 	
 	public MainZone(int width, int height) {
 		super(width, height);
@@ -20,6 +22,10 @@ public class MainZone extends Zone {
 		current_cmd = null;
 		catalog_bg = 0xfdface;
 		text_bg = 0xaaaaaa;
+		browser = null;
+	}
+	public void setBrowser(Browser browser){
+		this.browser = browser;
 	}
 	public void setContent(LineContent content){
 		this.content = content;
@@ -29,6 +35,7 @@ public class MainZone extends Zone {
 		if (page>=0 && page<content.page_count) {
 			cursor = 0;
 			current_page = page;
+			if (browser!=null) browser.setPageText("" + (current_page+1) + " / " + content.page_count);
 			repaint();
 		}
 	}

@@ -23,6 +23,7 @@ public class Browser extends Canvas{
 		header_zone = new HeaderZone(width, header_height);
 		main_zone = new MainZone(width, height - header_height - menu_height);
 		menu_zone = new MenuZone(width, menu_height);
+		main_zone.setBrowser(this);
 		header_zone.setColor(0x7c90b3, 0xFFFFFF);
 		main_zone.setColor(0xdde4ec, 0x363636);
 		menu_zone.setColor(0xc2c2c2, 0);
@@ -35,8 +36,11 @@ public class Browser extends Canvas{
 		
 		header_zone.setHeader(book_manager.header);
 		main_zone.setContent(book_manager.content);
-		menu_zone.setBrowseMenu();
+		menu_zone.repaint_bar();
 		repaint();
+	}
+	public void setPageText(String pageText){
+		menu_zone.setMiddleText(pageText);
 	}
 
 	protected void paint(Graphics g) {
@@ -87,17 +91,18 @@ public class Browser extends Canvas{
 			main_zone.nextPage();
 		} else if (keyCode == -5) {
 			if(main_zone.next_cmd!=null){
-				
 				history[history_count++]=main_zone.current_cmd;
+				menu_zone.setRightMenuText("返回");
 				gotoUrl(main_zone.next_cmd);
 			}
-			
 		} else if (keyCode == -6){
 			menu_zone.activeMenu();
 		} else if (keyCode == -7){
 			//TODO: back or quick
 			if(history_count>0){
 				gotoUrl(history[--history_count]);
+			} else {
+				menu_zone.setRightMenuText("退出");
 			}
 			
 		}
