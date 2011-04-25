@@ -13,7 +13,7 @@ public class Browser extends Canvas implements CommandListener {
 		width = getWidth();
 		height = getHeight();
 		header_height = 20;
-		current_page = 0;
+		current_page =0;
 		header_text = null;
 		book_manager = new BookManager();
 		pages = new ScreenPages(width, height-header_height);
@@ -30,6 +30,7 @@ public class Browser extends Canvas implements CommandListener {
 		drawHeader(g, book_manager.header);
 		Image img = pages.getPage(current_page);
 		if (img != null )
+			System.out.println("Ö´ÐÐÁË£¿");
 			g.drawImage(pages.getPage(current_page), 0, header_height, Graphics.TOP|Graphics.LEFT);
 	}
 	public void keyReleased(int keyCode) {
@@ -40,7 +41,7 @@ public class Browser extends Canvas implements CommandListener {
 	private void getStartPageContent(){
 		pages.drawContents(book_manager.getHomePage());
 		header_text = "ÄÚÈÝ Home";
-		current_page = 0;
+		current_page =0;
 	}
 	private void drawHeader(Graphics g, String header_text){
 		g.setColor(0x999999);
