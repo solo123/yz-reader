@@ -1,7 +1,6 @@
 package com.yazo.application;
 
 import com.yazo.books.*;
-import com.yazo.ui.*;
 import javax.microedition.lcdui.*;
 
 public class Browser extends Canvas{
@@ -41,13 +40,40 @@ public class Browser extends Canvas{
 		g.drawImage(header_zone.image, 0, 0, Graphics.TOP|Graphics.LEFT);
 		g.drawImage(main_zone.image, 0, header_height, Graphics.TOP|Graphics.LEFT);
 		g.drawImage(menu_zone.image, 0, height, Graphics.BOTTOM|Graphics.LEFT);
+		if(menu_zone.state>0){
+			g.drawImage(menu_zone.menuShadowImage, 7, height-21, Graphics.BOTTOM|Graphics.LEFT);
+			g.drawImage(menu_zone.menuImage, 4, height-21-3, Graphics.BOTTOM|Graphics.LEFT);
+		}
 	}
 	
 	public void keyReleased(int keyCode) {
 		int action = getGameAction(keyCode);
 		System.out.println(" action:" + action + ", keycode:" + keyCode);
-		//menus.keyAction(keyCode);
-		
+		if (menu_zone.state>0){
+			menuKeyAction(keyCode);
+		} else {
+			mainKeyAction(keyCode);
+		}
+		repaint();
+	}
+	private void menuKeyAction(int keyCode){
+		if (keyCode == -1){
+			menu_zone.cursorUp();
+		} else if (keyCode == -2) {
+			menu_zone.cursorDown();
+		} else if (keyCode == -3) {
+			menu_zone.cursorLeft();
+		} else if (keyCode == -4) {
+			menu_zone.cursorRight();
+		} else if (keyCode == -5) {
+			//TODO: menu action, gotoUrl(main_zone.current_cmd);
+		} else if (keyCode == -6){
+			menu_zone.activeMenu();
+		} else if (keyCode == -7){
+			menu_zone.activeMenu();
+		}
+	}
+	private void mainKeyAction(int keyCode){
 		if (keyCode == -1){
 			main_zone.cursorUp();
 		} else if (keyCode == -2) {
@@ -57,11 +83,11 @@ public class Browser extends Canvas{
 		} else if (keyCode == -4) {
 			main_zone.nextPage();
 		} else if (keyCode == -5) {
-			//main_zone.onClicked();
-			System.out.println("Clicked:" + main_zone.current_cmd);
 			gotoUrl(main_zone.current_cmd);
+		} else if (keyCode == -6){
+			menu_zone.activeMenu();
+		} else if (keyCode == -7){
+			//TODO: back or quick
 		}
-
-		repaint();
 	}
 }

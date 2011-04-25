@@ -10,12 +10,15 @@ public class MainZone extends Zone {
 	private LineContent content;
 	private int current_page, cursor, total_links;
 	public String current_cmd;
+	public int catalog_bg, text_bg;
 	
 	public MainZone(int width, int height) {
 		super(width, height);
 		cursor = 0;
 		total_links = 0;
 		current_cmd = null;
+		catalog_bg = 0xfdface;
+		text_bg = 0xaaaaaa;
 	}
 	public void setContent(LineContent content){
 		this.content = content;
