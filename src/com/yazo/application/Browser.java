@@ -25,13 +25,16 @@ public class Browser extends Canvas{
 		main_zone.setColor(0xdde4ec, 0x363636);
 		menu_zone.setColor(0xc2c2c2, 0);
 		
-		book_manager.getPage("Home");
+		gotoUrl("Home");
+	}
+	private void gotoUrl(String url){
+		book_manager.getPage(url);
 		book_manager.content.markPages(height-header_height-menu_height-20);
 		
 		header_zone.setHeader(book_manager.header);
 		main_zone.setContent(book_manager.content);
 		menu_zone.setBrowseMenu();
-
+		repaint();
 	}
 
 	protected void paint(Graphics g) {
@@ -54,7 +57,9 @@ public class Browser extends Canvas{
 		} else if (keyCode == -4) {
 			main_zone.nextPage();
 		} else if (keyCode == -5) {
-			main_zone.onClicked();
+			//main_zone.onClicked();
+			System.out.println("Clicked:" + main_zone.current_cmd);
+			gotoUrl(main_zone.current_cmd);
 		}
 
 		repaint();

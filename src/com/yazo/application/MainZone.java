@@ -40,6 +40,7 @@ public class MainZone extends Zone {
 		for(int i=st; i<ed; i++){
 			BrowserContent c = content.lines[i];
 			if (c.content_type == "text") {
+				g.setColor(color);
 				g.drawString(c.content, 10, posy, Graphics.BASELINE|Graphics.LEFT);
 			} else if (c.content_type == "link") {
 				if (lnk_cnt == cursor){
@@ -81,8 +82,6 @@ public class MainZone extends Zone {
 		}
 	}
 	public void onClicked(){
-		System.out.println("Clicked:" + current_cmd);
-
 	}
 	
 }
