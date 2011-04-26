@@ -41,10 +41,9 @@ public class MenuZone extends Zone {
 		g.drawString(right_menu_text, width-4, 2, Graphics.TOP|Graphics.RIGHT);
 		if (middle_text!=null)
 			g.drawString(middle_text, width/2, 2, Graphics.HCENTER|Graphics.TOP);
-		repaint();
 		state = 0;
 	}
-	public void repaint(){
+	public void repaint_menu(){
 		int leftGrid = 20;
 		g1.setColor(0x999999);
 		g1.drawRect(0, 0, menu_width-1, menu_height-1);
@@ -74,21 +73,24 @@ public class MenuZone extends Zone {
 		}
 	}
 	public void activeMenu(){
-		if (state==0)
+		if (state==0){
+			repaint_menu();
 			state = 1;
+		}
 		else
 			state = 0;
 	}
 	public void cursorUp(){
 		if (cursor>0){ 
 			cursor--;
-			repaint();
+			repaint_menu();
 		}
 	}
+
 	public void cursorDown(){
 		if (cursor<max_items-1){
 			cursor++;
-			repaint();
+			repaint_menu();
 		}
 	}
 	public void cursorLeft(){

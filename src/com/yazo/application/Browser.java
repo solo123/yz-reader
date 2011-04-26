@@ -12,6 +12,7 @@ public class Browser extends Canvas{
 	private String[] history;
 	private int history_count ;
 	public Browser(){
+		setFullScreenMode(true);
 		history = new String[10];
 		history_count = 0;
 		header_height = 20;
@@ -47,7 +48,7 @@ public class Browser extends Canvas{
 		g.drawImage(header_zone.image, 0, 0, Graphics.TOP|Graphics.LEFT);
 		g.drawImage(main_zone.image, 0, header_height, Graphics.TOP|Graphics.LEFT);
 		g.drawImage(menu_zone.image, 0, height, Graphics.BOTTOM|Graphics.LEFT);
-		if(menu_zone.state>0){
+		if(menu_zone.state>0){ //pop menu opened
 			g.drawImage(menu_zone.menuShadowImage, 7, height-21, Graphics.BOTTOM|Graphics.LEFT);
 			g.drawImage(menu_zone.menuImage, 4, height-21-3, Graphics.BOTTOM|Graphics.LEFT);
 		}
