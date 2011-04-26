@@ -11,15 +11,24 @@ public class Browser extends Canvas{
 	int width, height, header_height, menu_height;
 	private String[] history;
 	private int history_count ;
+	private Font font;
+	
 	public Browser(){
 		setFullScreenMode(true);
+		font = Font.getFont(Font.FACE_SYSTEM, Font.STYLE_PLAIN, Font.SIZE_MEDIUM);
+		int font_height = font.getHeight();
+		int font_width  = font.charWidth('国');
+		
 		history = new String[10];
 		history_count = 0;
-		header_height = 20;
-		menu_height = 20;
+		header_height = font_height + 6;
+		menu_height = header_height;
+		
 		width = getWidth();
 		height = getHeight();
 		book_manager = new BookManager();
+		book_manager.line_chars = (width - 20)/font_width;
+		System.out.println("line chars:" + book_manager.line_chars + ", font width:"+ font_width + ", font height:" + font_height);
 
 		header_zone = new HeaderZone(width, header_height);
 		main_zone = new MainZone(width, height - header_height - menu_height);
@@ -28,7 +37,7 @@ public class Browser extends Canvas{
 		header_zone.setColor(0x7c90b3, 0xFFFFFF);
 		main_zone.setColor(0xdde4ec, 0x363636);
 		menu_zone.setColor(0xc2c2c2, 0);
-		gotoUrl("Home");
+		gotoUrl(Configuration.content_home);
 	}
 	private void gotoUrl(String url){
 		main_zone.current_cmd=url;

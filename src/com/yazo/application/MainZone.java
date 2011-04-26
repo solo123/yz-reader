@@ -1,9 +1,13 @@
 package com.yazo.application;
 
+import java.io.IOException;
+
 import javax.microedition.lcdui.Graphics;
+import javax.microedition.lcdui.Image;
 
 import com.yazo.books.BrowserContent;
 import com.yazo.books.LineContent;
+import com.yazo.books.LinkContent;
 import com.yazo.ui.Zone;
 
 public class MainZone extends Zone {
@@ -13,6 +17,8 @@ public class MainZone extends Zone {
 	public String current_cmd,next_cmd;
 	public int catalog_bg, text_bg;
 	public Browser browser;
+	private Image arrow1;
+	public int line_height;
 	
 	public MainZone(int width, int height) {
 		super(width, height);
@@ -23,6 +29,13 @@ public class MainZone extends Zone {
 		catalog_bg = 0xfdface;
 		text_bg = 0xaaaaaa;
 		browser = null;
+		arrow1 = null;
+		line_height = 20;
+		try {
+			arrow1 = Image.createImage("/arrow-blue.png");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	public void setBrowser(Browser browser){
 		this.browser = browser;
@@ -43,7 +56,7 @@ public class MainZone extends Zone {
 		g.setColor(bgcolor);
 		g.fillRect(0, 0, width, height);
 		g.setColor(color);
-		int posy = 20;
+		int posy = 4;
 		int lnk_cnt = 0;
 		next_cmd = null;
 		int st = content.page_pos[current_page];
@@ -52,25 +65,28 @@ public class MainZone extends Zone {
 			BrowserContent c = content.lines[i];
 			if (c.content_type == "text") {
 				g.setColor(color);
-				g.drawString(c.content, 10, posy, Graphics.BASELINE|Graphics.LEFT);
+				g.drawString(c.content, 10, posy, Graphics.TOP|Graphics.LEFT);
 			} else if (c.content_type == "link") {
+				LinkContent lc = (LinkContent)c;
 				if (lnk_cnt == cursor){
 					g.setColor(color);
-					g.fillRect(10, posy-15, width-19, 19);
+					g.fillRect(10, posy-2, width-19, 19);
+					if(arrow1!=null) g.drawImage(arrow1, 12, posy+6, Graphics.TOP|Graphics.LEFT);
 					g.setColor(bgcolor);
-					g.drawString(c.content, 10, posy, Graphics.BASELINE|Graphics.LEFT);
-					next_cmd = c.content_value;
+					g.drawString(lc.content, 20, posy, Graphics.TOP|Graphics.LEFT);
+					next_cmd = lc.url;
 				} else {
 					g.setColor(color);
-					g.drawString(c.content, 10, posy, Graphics.BASELINE|Graphics.LEFT);
+					g.drawString(c.content, 20, posy, Graphics.TOP|Graphics.LEFT);
+					if(arrow1!=null) g.drawImage(arrow1, 12, posy+6, Graphics.TOP|Graphics.LEFT);
 				}
 				g.setColor(0x999999);
-				g.drawLine(10, posy+4, width-10, posy+4);
+				g.drawLine(10, posy+line_height-4, width-10, posy+line_height-4);
 				lnk_cnt++;
 			} else if (c.content_type == "line") {
 				g.drawLine(10, posy, width, posy);
 			}
-			posy += 20;
+			posy += line_height;
 		}
 		total_links = lnk_cnt;
 	}
