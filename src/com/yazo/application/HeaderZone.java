@@ -1,7 +1,6 @@
 package com.yazo.application;
 
 import javax.microedition.lcdui.*;
-
 import com.yazo.ui.*;
 
 public class HeaderZone extends Zone {
@@ -10,12 +9,22 @@ public class HeaderZone extends Zone {
 	}
 
 	public void setHeader(String header){
-		g.setColor(bgcolor);
-		g.fillRect(0, 0, width, height);
+		Font font;
+		font = Font.getFont(Font.FACE_SYSTEM, Font.STYLE_PLAIN, Font.SIZE_MEDIUM);
 		
-		g.setColor(0xa17431);
-		g.fillRect(10, 3, 10, 12);
+		g.setColor(bgcolor);
+		g.fillRect(0, 0, width, height-1);
+		
+		g.setColor(0xffff00);
+		g.fillRect(10, 5, 4, 10);
 		g.setColor(color);
-		g.drawString(header, 24, 2, Graphics.TOP|Graphics.LEFT);
+		if(header!=null){
+			g.setFont(font);
+			g.drawString(header, 24, 2, Graphics.TOP|Graphics.LEFT);
+		}
+		
+		//shadow line
+		g.setColor(0xeeeeee);
+		g.drawLine(0, height-1, width-1, height-1);
 	}
 }
