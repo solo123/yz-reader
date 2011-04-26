@@ -1,7 +1,7 @@
 package com.yazo.application;
 
 public class Configuration {
-	public static String content_server = "http://bk-b.info/reader/";  // 内容服务器
+	public static String content_server = "http://bk-b.info/reader/pages/";  // 内容服务器
 	public static String cmcc_server = "http://211.140.17.83/"; // 移动服务器（浙江）
 	public static String content_home = "home";
 	
