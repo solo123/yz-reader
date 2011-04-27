@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 
 import javax.microedition.io.Connector;
 import javax.microedition.io.HttpConnection;
@@ -15,6 +16,9 @@ import org.xmlpull.v1.XmlPullParserException;
 import com.yazo.protocol.RequestBookInfo;
 
 public class BookManager {
+
+	
+	
 	public String header;
 	public LineContent content;
 	public int line_chars;
@@ -199,5 +203,9 @@ public class BookManager {
 
 		return c;
 	}
+	
+	
+	
+	
 
 }
