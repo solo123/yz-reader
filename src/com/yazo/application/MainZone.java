@@ -19,6 +19,7 @@ public class MainZone extends Zone {
 	public Browser browser;
 	private Image arrow1;
 	public int line_height;
+	private int font_height, line_space, line_top_padding, line_bottom_padding;
 	
 	public MainZone(int width, int height) {
 		super(width, height);
@@ -30,12 +31,19 @@ public class MainZone extends Zone {
 		text_bg = 0xaaaaaa;
 		browser = null;
 		arrow1 = null;
-		line_height = 20;
+		setFontHeight(20);
 		try {
 			arrow1 = Image.createImage("/arrow-blue.png");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	public void setFontHeight(int fontHeight){
+		font_height = fontHeight;
+		line_space =  fontHeight/4;
+		line_height = font_height + line_space;
+		line_top_padding = line_space/2;
+		line_bottom_padding = line_space - line_top_padding;
 	}
 	public void setBrowser(Browser browser){
 		this.browser = browser;
@@ -56,7 +64,7 @@ public class MainZone extends Zone {
 		g.setColor(bgcolor);
 		g.fillRect(0, 0, width, height);
 		g.setColor(color);
-		int posy = 4;
+		int posy = line_top_padding;
 		int lnk_cnt = 0;
 		next_cmd = null;
 		int st = content.page_pos[current_page];
@@ -70,8 +78,8 @@ public class MainZone extends Zone {
 				LinkContent lc = (LinkContent)c;
 				if (lnk_cnt == cursor){
 					g.setColor(color);
-					g.fillRect(10, posy-2, width-19, 19);
-					if(arrow1!=null) g.drawImage(arrow1, 12, posy+6, Graphics.TOP|Graphics.LEFT);
+					g.fillRect(10, posy-line_top_padding, width-19, line_height-1);
+					if(arrow1!=null) g.drawImage(arrow1, 12, posy+font_height/2, Graphics.VCENTER|Graphics.LEFT);
 					g.setColor(bgcolor);
 					g.drawString(lc.content, 20, posy, Graphics.TOP|Graphics.LEFT);
 					next_cmd = lc.url;
@@ -81,7 +89,7 @@ public class MainZone extends Zone {
 					if(arrow1!=null) g.drawImage(arrow1, 12, posy+6, Graphics.TOP|Graphics.LEFT);
 				}
 				g.setColor(0x999999);
-				g.drawLine(10, posy+line_height-4, width-10, posy+line_height-4);
+				g.drawLine(10, posy+line_height-line_bottom_padding, width-10, posy+line_height-line_bottom_padding);
 				lnk_cnt++;
 			} else if (c.content_type == "line") {
 				g.drawLine(10, posy, width, posy);

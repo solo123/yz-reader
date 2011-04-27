@@ -7,6 +7,7 @@ public class LineContent {
 	public int page_count;
 	public int line_count;
 	public String header;
+	public int line_height;
 	
 	public LineContent(int width){
 		line_char_width = width;
@@ -15,6 +16,7 @@ public class LineContent {
 		page_pos = new int[100];
 		page_count = 0;
 		header = null;
+		line_height = 20;
 	}
 	
 	public void addLink(String arrow, String text, String desc, String url){
@@ -44,11 +46,11 @@ public class LineContent {
 		int h = 100000;
 		page_count = 0;
 		for(int i=0; i<line_count; i++){
-			if (h + 20 > page_height-20){
+			if (h > page_height){
 				page_pos[page_count++] = i;
-				h = 20;
+				h = line_height;
 			} else
-				h += 20;
+				h += line_height;
 		}
 		page_pos[page_count] = line_count;
 	}

@@ -32,6 +32,7 @@ public class Browser extends Canvas{
 
 		header_zone = new HeaderZone(width, header_height);
 		main_zone = new MainZone(width, height - header_height - menu_height);
+		main_zone.setFontHeight(font_height);
 		menu_zone = new MenuZone(width, menu_height);
 		main_zone.setBrowser(this);
 		header_zone.setColor(0x7c90b3, 0xFFFFFF);
@@ -42,6 +43,7 @@ public class Browser extends Canvas{
 	private void gotoUrl(String url){
 		main_zone.current_cmd=url;
 		book_manager.getPage(url);
+		book_manager.content.line_height = main_zone.line_height;
 		book_manager.content.markPages(height-header_height-menu_height-20);
 		
 		header_zone.setHeader(book_manager.header);
