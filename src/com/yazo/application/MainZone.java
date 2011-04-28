@@ -14,7 +14,7 @@ public class MainZone extends Zone {
 	private LineContent content;
 	public int current_page;
 	private int cursor, total_links;
-	public String current_cmd,next_cmd;
+	public String back_url,current_cmd,next_cmd;
 	public int catalog_bg, text_bg;
 	public Browser browser;
 	private Image arrow1;
@@ -50,6 +50,7 @@ public class MainZone extends Zone {
 	}
 	public void setContent(LineContent content){
 		this.content = content;
+		this.back_url = "home"; // from content.back_url; ??
 		setCurrentPage(0);
 	}
 	public void setCurrentPage(int page){
