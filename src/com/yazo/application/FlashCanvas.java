@@ -108,6 +108,7 @@ public class FlashCanvas extends Canvas{
 	boolean live=false;
 	private class SpinnerTask extends TimerTask {
 		public void run() {
+			System.out.println("Timmer paint.");
 			repaint();
 			/*timertask++;
 			if(timertask%20==0){

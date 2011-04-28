@@ -21,6 +21,5 @@ public class MainMIDlet extends MIDlet {
 
 	protected void startApp() throws MIDletStateChangeException {
 		//MainUI mainui = new MainUI(Display.getDisplay(this));
-		Display.getDisplay(this).setCurrent(browser);
 	}
 }

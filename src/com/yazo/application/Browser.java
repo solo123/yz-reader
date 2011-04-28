@@ -83,6 +83,7 @@ public class Browser extends Canvas implements ThreadCallback {
 		menu_zone.setMiddleText(pageText);
 	}
 	protected void paint(Graphics g) {
+		System.out.println("Browser paint.");
 		for(int i=0; i<zones.length; i++){
 			if (zones[i]!=null) zones[i].paint(g);
 		}
@@ -142,6 +143,11 @@ public class Browser extends Canvas implements ThreadCallback {
 	}
 	
 	private void after_content_loaded(LineContent lineContent){
+		if (flash!=null){
+			flash.stopTimer();
+			display.setCurrent(this);
+			flash = null;
+		}
 		book_manager.content = lineContent;
 		book_manager.content.line_height = main_zone.line_height;
 		book_manager.content.markPages(height-header_height-menu_height-20);
