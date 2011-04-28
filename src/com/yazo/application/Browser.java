@@ -4,25 +4,33 @@ import java.io.IOException;
 
 import com.yazo.books.*;
 import com.yazo.net.ContentServer;
+import com.yazo.tools.ImageZone;
 
 import javax.microedition.lcdui.*;
+import javax.microedition.midlet.MIDlet;
 
 public class Browser extends Canvas{
 	public BookManager book_manager;
+	private Display display;
+	private MIDlet midlet;
+	private FlashCanvas flash;
+	private ContentServer content_server;
+	private ImageZone[] zones;
 	private HeaderZone header_zone;
 	private MainZone main_zone;
 	private MenuZone menu_zone;
 	int width, height, header_height, menu_height;
 	private Font font;
-	private Boolean network_init, on_net_reading;
+	private Boolean on_net_reading;
 	
-	private ContentServer cs;
-	
-	public Browser(){
-		network_init = Boolean.FALSE;
+	public Browser(MIDlet midlet, Display display){
+		this.display = display;
+		this.midlet = midlet;
+		flash = new FlashCanvas(midlet);
+		display.setCurrent(flash);
 		on_net_reading = Boolean.TRUE;
-		cs = new ContentServer();
 		
+		content_server = new ContentServer();
 		setFullScreenMode(true);
 		font = Font.getFont(Font.FACE_SYSTEM, Font.STYLE_PLAIN, Font.SIZE_MEDIUM);
 		int font_height = font.getHeight();
@@ -54,13 +62,12 @@ public class Browser extends Canvas{
 		header_zone.setHeader(book_manager.content.header);
 		main_zone.setContent(book_manager.content);
 		menu_zone.repaint_bar();
-		this.network_init = Boolean.TRUE;
 		on_net_reading = Boolean.FALSE;
 		repaint();
 	}
 	private void gotoUrl(String url){
 		on_net_reading = Boolean.TRUE;
-		cs.getWebContent(url, this);
+		content_server.getWebContent(url, this);
 		menu_zone.setMiddleText("读取网络....");
 	}
 
@@ -69,22 +76,12 @@ public class Browser extends Canvas{
 	}
 
 	protected void paint(Graphics g) {
-		if (network_init == Boolean.FALSE){
-			Image splash;
-			try {
-				splash = Image.createImage("/ebook.jpg");
-				g.drawImage(splash, 0, 0, Graphics.TOP|Graphics.LEFT);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		} else {
-			g.drawImage(header_zone.image, 0, 0, Graphics.TOP|Graphics.LEFT);
-			g.drawImage(main_zone.image, 0, header_height, Graphics.TOP|Graphics.LEFT);
-			g.drawImage(menu_zone.image, 0, height, Graphics.BOTTOM|Graphics.LEFT);
-			if(menu_zone.state>0){ //pop menu opened
-				g.drawImage(menu_zone.menuShadowImage, 7, height-21, Graphics.BOTTOM|Graphics.LEFT);
-				g.drawImage(menu_zone.menuImage, 4, height-21-3, Graphics.BOTTOM|Graphics.LEFT);
-			}
+		g.drawImage(header_zone.image, 0, 0, Graphics.TOP|Graphics.LEFT);
+		g.drawImage(main_zone.image, 0, header_height, Graphics.TOP|Graphics.LEFT);
+		g.drawImage(menu_zone.image, 0, height, Graphics.BOTTOM|Graphics.LEFT);
+		if(menu_zone.state>0){ //pop menu opened
+			g.drawImage(menu_zone.menuShadowImage, 7, height-21, Graphics.BOTTOM|Graphics.LEFT);
+			g.drawImage(menu_zone.menuImage, 4, height-21-3, Graphics.BOTTOM|Graphics.LEFT);
 		}
 	}
 	
