@@ -66,7 +66,6 @@ public class Browser extends Canvas implements ThreadCallback {
 		main_zone.setFont(font);
 
 		menu_zone = new MenuZone();
-		
 		menu_zone.setFont(Font.getFont(Font.FACE_SYSTEM, Font.STYLE_PLAIN, Font.SIZE_MEDIUM));
 		menu_zone.setImageSize(width, menu_height);
 		menu_zone.setPos(0, height);
