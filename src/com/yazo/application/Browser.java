@@ -9,8 +9,11 @@ public class Browser extends Canvas{
 	private MainZone main_zone;
 	private MenuZone menu_zone;
 	int width, height, header_height, menu_height;
-	
+	private String[] history;
+	private int history_count ;
 	public Browser(){
+		history = new String[10];
+		history_count = 0;
 		header_height = 20;
 		menu_height = 20;
 		width = getWidth();
@@ -23,10 +26,10 @@ public class Browser extends Canvas{
 		header_zone.setColor(0x7c90b3, 0xFFFFFF);
 		main_zone.setColor(0xdde4ec, 0x363636);
 		menu_zone.setColor(0xc2c2c2, 0);
-		
 		gotoUrl("Home");
 	}
 	private void gotoUrl(String url){
+		main_zone.current_cmd=url;
 		book_manager.getPage(url);
 		book_manager.content.markPages(height-header_height-menu_height-20);
 		
@@ -83,11 +86,21 @@ public class Browser extends Canvas{
 		} else if (keyCode == -4) {
 			main_zone.nextPage();
 		} else if (keyCode == -5) {
-			gotoUrl(main_zone.current_cmd);
+			if(main_zone.next_cmd!=null){
+				
+				history[history_count++]=main_zone.current_cmd;
+				gotoUrl(main_zone.next_cmd);
+			}
+			
 		} else if (keyCode == -6){
 			menu_zone.activeMenu();
 		} else if (keyCode == -7){
 			//TODO: back or quick
+			if(history_count>0){
+				gotoUrl(history[--history_count]);
+			}
+			
 		}
 	}
+	
 }
