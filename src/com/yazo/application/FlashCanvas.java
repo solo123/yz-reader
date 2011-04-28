@@ -141,4 +141,8 @@ public class FlashCanvas extends Canvas {
 					Graphics.LEFT | Graphics.TOP);
 		}
 	}
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 8c5d2b6c0ebd88b8d93bf4c924fc4633115c93c1

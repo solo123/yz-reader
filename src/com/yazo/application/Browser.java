@@ -1,8 +1,8 @@
 package com.yazo.application;
 
-import java.io.IOException;
-
 import com.yazo.books.*;
+<<<<<<< HEAD
+=======
 import com.yazo.net.MultiThreadDataObject;
 import com.yazo.thread.ThreadPool;
 import com.yazo.thread.WaitCallback;
@@ -10,22 +10,31 @@ import com.yazo.tools.CallbackData;
 import com.yazo.tools.ImageZone;
 import com.yazo.tools.ThreadCallback;
 
+>>>>>>> bfb22b3d5d5a1fd789d6d4b750f09ff420cf45ba
 import javax.microedition.lcdui.*;
-import javax.microedition.midlet.MIDlet;
 
+<<<<<<< HEAD
+public class Browser extends Canvas{
+	private BookManager book_manager;
+=======
 public class Browser extends Canvas implements ThreadCallback {
 	public BookManager book_manager;
 	private Display display;
 	private MIDlet midlet;
 	private FlashCanvas flash;
 	private ImageZone[] zones;
+>>>>>>> bfb22b3d5d5a1fd789d6d4b750f09ff420cf45ba
 	private HeaderZone header_zone;
 	private MainZone main_zone;
 	private MenuZone menu_zone;
 	int width, height, header_height, menu_height;
+	private String[] history;
+	private int history_count ;
 	private Font font;
-	private Boolean on_net_reading;
 	
+<<<<<<< HEAD
+	public Browser(){
+=======
 	public Browser(MIDlet midlet, Display display){
 		this.display = display;
 		this.midlet = midlet;
@@ -40,10 +49,14 @@ public class Browser extends Canvas implements ThreadCallback {
 	}
 	private void init_browser(){
 		on_net_reading = Boolean.TRUE;
+>>>>>>> bfb22b3d5d5a1fd789d6d4b750f09ff420cf45ba
 		setFullScreenMode(true);
 		font = Font.getFont(Font.FACE_SYSTEM, Font.STYLE_PLAIN, Font.SIZE_MEDIUM);
 		int font_height = font.getHeight();
 		int font_width  = font.charWidth('国');
+		
+		history = new String[10];
+		history_count = 0;
 		header_height = font_height + 6;
 		menu_height = header_height;
 		
@@ -53,6 +66,11 @@ public class Browser extends Canvas implements ThreadCallback {
 		book_manager.line_chars = (width - 20)/font_width;
 		System.out.println("line chars:" + book_manager.line_chars + ", font width:"+ font_width + ", font height:" + font_height);
 
+<<<<<<< HEAD
+		header_zone = new HeaderZone(width, header_height);
+		main_zone = new MainZone(width, height - header_height - menu_height);
+		menu_zone = new MenuZone(width, menu_height);
+=======
 		zones = new ImageZone[3];
 		header_zone = new HeaderZone();
 		header_zone.setScreenSize(width, height);
@@ -69,15 +87,30 @@ public class Browser extends Canvas implements ThreadCallback {
 		menu_zone.setFont(Font.getFont(Font.FACE_SYSTEM, Font.STYLE_PLAIN, Font.SIZE_MEDIUM));
 		menu_zone.setImageSize(width, menu_height);
 		menu_zone.setPos(0, height);
+>>>>>>> bfb22b3d5d5a1fd789d6d4b750f09ff420cf45ba
 		main_zone.setBrowser(this);
 		header_zone.setColor(0x7c90b3, 0xFFFFFF);
 		main_zone.setColor(0xdde4ec, 0x363636);
 		menu_zone.setColor(0xc2c2c2, 0);
+<<<<<<< HEAD
+		gotoUrl(Configuration.content_home);
+	}
+	private void gotoUrl(String url){
+		main_zone.current_cmd=url;
+		book_manager.getPage(url);
+		book_manager.content.markPages(height-header_height-menu_height-20);
+		
+		header_zone.setHeader(book_manager.header);
+		main_zone.setContent(book_manager.content);
+		menu_zone.repaint_bar();
+		repaint();
+=======
 		zones[0] = header_zone;
 		zones[1] = main_zone;
 		zones[2] = menu_zone;
 		
 		gotoUrl(Configuration.content_home);
+>>>>>>> bfb22b3d5d5a1fd789d6d4b750f09ff420cf45ba
 	}
 	public void setPageText(String pageText){
 		menu_zone.setMiddleText(pageText);
@@ -88,10 +121,6 @@ public class Browser extends Canvas implements ThreadCallback {
 		}
 	}
 	public void keyReleased(int keyCode) {
-		if (on_net_reading == Boolean.TRUE){
-			System.out.println("Skip where reading on net...");
-			return;
-		}
 		int action = getGameAction(keyCode);
 		System.out.println(" action:" + action + ", keycode:" + keyCode);
 		if (menu_zone.state>0){
@@ -129,16 +158,21 @@ public class Browser extends Canvas implements ThreadCallback {
 			main_zone.nextPage();
 		} else if (keyCode == -5) {
 			if(main_zone.next_cmd!=null){
+				history[history_count++]=main_zone.current_cmd;
+				menu_zone.setRightMenuText("返回");
 				gotoUrl(main_zone.next_cmd);
 			}
 		} else if (keyCode == -6){
 			menu_zone.activeMenu();
 		} else if (keyCode == -7){
-			if (main_zone.back_url==null){
+			//TODO: back or quick
+			if(history_count>0){
+				gotoUrl(history[--history_count]);
+			} else {
 				menu_zone.setRightMenuText("退出");
-			} else gotoUrl(main_zone.back_url);
-		}
+			}
 			
+		}
 	}
 	
 	private void after_content_loaded(LineContent lineContent){

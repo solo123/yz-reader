@@ -1,7 +1,15 @@
+<<<<<<< HEAD
+MIDlet-1: NET,,com.yazo.application.MainMIDlet
+MIDlet-Jar-URL: Reader.jar
+MIDlet-Name: Reader Midlet Suite
+MIDlet-Vendor: Midlet Suite Vendor
+MIDlet-Version: 1.0.32
+=======
 MIDlet-Delete-Confirm: 确定要删除Reader书城吗？
 MIDlet-1: Reader,,com.yazo.application.MainMIDlet
 MIDlet-Jar-URL: Reader.jar
 MIDlet-Delete-Notify: Reader书城是快速的在线阅读软件。
+>>>>>>> cd5794ff338cb862e3267e9a397f21d86b4b5b1d
 MicroEdition-Configuration: CLDC-1.1
 MIDlet-Version: 1.0.0
 MIDlet-Install-Notify: 欢迎安装Reader书城！

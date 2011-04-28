@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <eclipsemeMetadata jad="Reader.jad" version="1.7.9">
+<<<<<<< HEAD
+   <device group="Sun Java(TM) Wireless Toolkit 2.5.2 for CLDC" name="DefaultGrayPhone"/>
+=======
    <device group="Sun Java(TM) Wireless Toolkit 2.5.2 for CLDC" name="DefaultColorPhone"/>
+>>>>>>> cd5794ff338cb862e3267e9a397f21d86b4b5b1d
    <signing signProject="false"/>
 </eclipsemeMetadata>
