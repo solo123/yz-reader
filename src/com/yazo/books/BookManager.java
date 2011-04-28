@@ -1,10 +1,7 @@
 package com.yazo.books;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
+import java.util.Hashtable;
 
 import javax.microedition.io.Connector;
 import javax.microedition.io.HttpConnection;
@@ -13,33 +10,60 @@ import org.kxml2.io.KXmlParser;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
+import com.yazo.net.ContentServerService;
+import com.yazo.thread.ThreadPool;
+import com.yazo.thread.WaitCallback;
+import com.yazo.tools.CallbackData;
+import com.yazo.tools.ThreadCallback;
+
 
 
 public class BookManager {
-
-	
-	
 	public String header;
 	public LineContent content;
 	public int line_chars;
+	private Hashtable content_buffer;
 	
 	public BookManager(){
 		header = null;
 		content = null;
 		line_chars = 0;
+		content_buffer = new Hashtable();
 	}
-	public int getPage(String page_name){
-		System.out.println("getPage:" + page_name);
-		try {
-			content = getWebPage(page_name);
-		} catch (Exception e) {
-			e.printStackTrace();
+	public LineContent threadGetPage(String service, String page_name, ThreadCallback callback_object){
+		Object buf = content_buffer.get(page_name);
+		if (buf!=null)
+			return (LineContent)buf;
+		else {
+			CallbackData data = new CallbackData();
+			data.callback_object = callback_object;
+			data.data1 = service;
+			data.data2 = page_name;
+			data.command = "LoadingFromInternet";
+			callback_object.thread_callback(data);
+			WaitCallback callback = new WaitCallback() {
+				public void execute(Object data) {
+					CallbackData cdata = (CallbackData)data;
+					LineContent lc = null;
+					lc = ContentServerService.getAndParseContent((String)cdata.data1 + (String)cdata.data2, line_chars);
+					if (lc!=null) {
+						content_buffer.put((String)cdata.data2, lc);
+						cdata.command = "LoadContent";
+						cdata.data1 = lc;
+						cdata.callback_object.thread_callback(cdata);
+					} else {
+						cdata.command = "LoadError";
+						cdata.callback_object.thread_callback(cdata);
+					}
+				}
+			};
+			try {
+				ThreadPool.queueWorkItem(callback, data);
+			} catch (Exception e) {
+				System.out.println("waitTimeOut error:" + e.getMessage());
+			}	
+			return null;
 		}
-		if (content!=null) {
-			header = content.header;
-			return 1;
-		}
-		return 0;
 	}
 	public LineContent getWebPage(String page_name) throws IOException, XmlPullParserException{
 		HttpConnection conn = (HttpConnection)Connector.open  ("http://bk-b.info/reader/pages/" + page_name, Connector.READ );
@@ -81,6 +105,7 @@ public class BookManager {
 			parser.require(XmlPullParser.END_TAG, null, name);
 		}
 		parser.require(XmlPullParser.END_TAG, null, "page");
+		content_buffer.put(page_name, c);
 		return c;
 	}
 	
