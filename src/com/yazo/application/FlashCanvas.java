@@ -1,4 +1,6 @@
 package com.yazo.application;
+
+
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
@@ -12,134 +14,97 @@ import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import javax.microedition.midlet.MIDlet;
 
-public class FlashCanvas extends Canvas {
+
+
+public class FlashCanvas extends Canvas{
 	private int width;
 	private int height;
-	private int h;
-	MIDlet midlet;
-	Image bar;
-	Image loading;
-	Image logo;
-	private String error = "请选择使用/CMWAP";
-
-	private int x;
-	private int barW;
-	private int barX = x;
-	private int w1;
-	private int barY = 0;
+	private String error="请选择移动梦网/CMWAP";
 	private Timer timer;
-	private int time = 1000 / 12;
-	private String midletname = "";
-
-	public FlashCanvas(MIDlet midlet) {
+	private int time=1000/12;
+	private MainMIDlet midlet;
+	private Image splash_image;
+	private int c1,c2,c3, cw;
+	
+	public FlashCanvas(MainMIDlet midlet){
 		this.setFullScreenMode(true);
+		width=this.getWidth();
+		height=this.getHeight();
 		this.midlet = midlet;
-		width = this.getWidth();
-		height = this.getHeight();
-
-		try {
-			midletname = midlet.getAppProperty("MIDlet-Name");
-			bar = Image.createImage("/bar.png");
-			loading = Image.createImage("/loading.png");
-			logo = Image.createImage("/book.png");
-			x = bar.getWidth();
-			barW = bar.getWidth();
-			barX = x;
-			w1 = this.getWidth() - (x << 1);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		c1 = 0xaaaaaa;
+		c2 = 0x333333;
+		c3 = cw = 0;
+		splash_image = null;
+		
+		try{
+			splash_image = Image.createImage("/book_icon.png");
+		}catch(Exception e){}
 		startTimer();
 	}
-
-	Font font = Font.getFont(Font.FACE_SYSTEM, Font.STYLE_PLAIN,
-			Font.SIZE_LARGE);
-	private boolean right = true;
-
+	
 	protected void paint(Graphics g) {
+		Font font=Font.getFont(Font.FACE_SYSTEM, Font.STYLE_PLAIN, Font.SIZE_MEDIUM);
 		int font_height = font.getHeight();
-		System.out.println("font_height:" + font_height);
-		g.setColor(255, 255, 255);
+		int posx = width/2;
+		int posy = height/3;
+		g.setColor(0xfff5c5);
 		g.fillRect(0, 0, width, height);
+		
+		if (splash_image!=null) 
+			g.drawImage(splash_image, posx, posy, Graphics.VCENTER|Graphics.HCENTER);
+		
+		posy += splash_image.getHeight()/2 + font_height;
 		g.setFont(font);
 		g.setColor(0);
-		g.drawImage(logo, this.getWidth() / 2, this.getHeight() / 5,
-				Graphics.TOP | Graphics.HCENTER);
-		g.drawString("欢迎使用" + "怡红书苑", width >> 1, height - font_height * 2
-				- height / 8, Graphics.TOP | Graphics.HCENTER);
-		g.drawString(error, width >> 1, height - font_height - height / 8,
-				Graphics.TOP | Graphics.HCENTER);
-		barY = height / 4 + h + 60;
-		this.drawFlash(g, bar, x, barY + this.getHeight() / 2, w1 + 20,
-				bar.getHeight());// ��������
-		this.drawFlash(g, loading, barX + 3, barY + this.getHeight() / 2,
-				barW << 1, loading.getHeight());// ��������
-		if (right) {
-			if (barX < w1 - barW * 2) {
-				barX += barW;
-			} else {
-				barX -= barW;
-				right = false;
-			}
-		} else {
-			if (barX > x) {
-				barX -= barW;
-			} else {
-				barX += barW;
-				right = true;
-			}
+		g.drawString("欢迎使用"+midlet.getAppProperty("MIDlet-Name"), posx, posy, Graphics.TOP|Graphics.HCENTER);
+		posy += font_height + font_height/4;
+		g.drawString(error, posx, posy, Graphics.TOP|Graphics.HCENTER);
+		int barw = font.stringWidth(error);
+		
+		posx = (width-barw)/2;
+		posy += font_height+font_height;
+		cw += 2;
+		if (cw>barw){
+			c3 = c1;
+			c1 = c2;
+			c2 = c3;
+			cw = 0;
 		}
+		g.setColor(c1);
+		g.fillRect(posx, posy, barw, font_height);
+		g.setColor(c2);
+		g.fillRect(posx, posy, cw, font_height);
+		
 	}
-
-	public void setError(String error) {
-		this.error = error;
+	public void setError(String error){
+		this.error=error;
 		repaint();
 	}
 
-	protected void keyPressed(int keyCode) {
-		super.keyPressed(keyCode);
-	}
-
 	protected void keyReleased(int keyCode) {
-		super.keyReleased(keyCode);
+		if (keyCode==-7) midlet.quit();
 	}
-
-	boolean live = false;
 
 	private class SpinnerTask extends TimerTask {
 		public void run() {
 			repaint();
 		}
 	}
-
 	public void startTimer() {
 		if (timer == null) {
 			timer = new Timer();
 			timer.schedule(new SpinnerTask(), 100, time);
 		}
 	}
-
-	public void stopTimer() {
-		if (timer != null) {
+	
+	public void stopTimer(){
+		if(timer!=null){
 			timer.cancel();
-			timer = null;
+			timer=null;
 		}
-		bar = null;
-		loading = null;
+		splash_image = null;
 	}
-
-	public void drawFlash(Graphics g, Image img, int x, int y, int width,
-			int height) {
-		int blockWidth = img.getWidth() / 2;
-		int blockHeight = img.getHeight() / 2;
-		g.setClip(x, y, blockWidth, blockHeight);
-		g.drawImage(img, x, y, Graphics.LEFT | Graphics.TOP);
-		int length = width / blockWidth - 2;
-		for (int i = 0; i < length; i++) {
-			g.setClip(x + blockWidth * (i + 1), y, blockWidth, blockHeight);
-			g.drawImage(img, -blockWidth + x + blockWidth * (i + 2), y,
-					Graphics.LEFT | Graphics.TOP);
-		}
-	}
+	
+	
 
 }

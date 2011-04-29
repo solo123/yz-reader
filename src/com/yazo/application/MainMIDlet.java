@@ -38,7 +38,9 @@ public class MainMIDlet extends MIDlet {
 	}
 	protected void startApp() throws MIDletStateChangeException {
 		//MainUI mainui = new MainUI(Display.getDisplay(this));
-		Display.getDisplay(this).setCurrent(browser);
+	}
+	public void quit(){
+		notifyDestroyed();
 	}
 	public static void postMsg(String msg) {
 		PostContent p = new PostContent();
