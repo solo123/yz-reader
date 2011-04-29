@@ -1,28 +1,39 @@
 package com.yazo.application;
 
-import java.io.IOException;
-
 import com.yazo.books.*;
-import com.yazo.net.ContentServer;
+import com.yazo.tools.CallbackData;
+import com.yazo.tools.ImageZone;
+import com.yazo.tools.ThreadCallback;
 
 import javax.microedition.lcdui.*;
 
-public class Browser extends Canvas{
+public class Browser extends Canvas implements ThreadCallback {
 	public BookManager book_manager;
+	private Display display;
+	private MainMIDlet midlet;
+	private FlashCanvas flash;
+	private ImageZone[] zones;
 	private HeaderZone header_zone;
 	private MainZone main_zone;
 	private MenuZone menu_zone;
 	int width, height, header_height, menu_height;
 	private Font font;
-	private Boolean network_init, on_net_reading;
+	private Boolean on_net_reading;
 	
-	private ContentServer cs;
-	
-	public Browser(){
-		network_init = Boolean.FALSE;
-		on_net_reading = Boolean.TRUE;
-		cs = new ContentServer();
+	public Browser(MainMIDlet midlet, Display display){
+		this.display = display;
+		this.midlet = midlet;
+		flash = new FlashCanvas(midlet);
+		display.setCurrent(flash);
 		
+		new Thread(){
+			public void run(){
+				init_browser();
+			}
+		}.start();
+	}
+	private void init_browser(){
+		on_net_reading = Boolean.TRUE;
 		setFullScreenMode(true);
 		font = Font.getFont(Font.FACE_SYSTEM, Font.STYLE_PLAIN, Font.SIZE_MEDIUM);
 		int font_height = font.getHeight();
@@ -36,58 +47,41 @@ public class Browser extends Canvas{
 		book_manager.line_chars = (width - 20)/font_width;
 		System.out.println("line chars:" + book_manager.line_chars + ", font width:"+ font_width + ", font height:" + font_height);
 
-		header_zone = new HeaderZone(width, header_height);
-		main_zone = new MainZone(width, height - header_height - menu_height);
-		main_zone.setFontHeight(font_height);
-		menu_zone = new MenuZone(width, menu_height);
+		zones = new ImageZone[3];
+		header_zone = new HeaderZone();
+		header_zone.setScreenSize(width, height);
+		header_zone.setImageSize(width, header_height);
+		header_zone.setFont(font);
+		
+		main_zone = new MainZone();
+		main_zone.setScreenSize(width, height);
+		main_zone.setImageSize(width, height - header_height - menu_height);
+		main_zone.setPos(0, header_height);
+		main_zone.setFont(font);
+
+		menu_zone = new MenuZone();  //
+		menu_zone.setFont(Font.getFont(Font.FACE_SYSTEM, Font.STYLE_PLAIN, Font.SIZE_MEDIUM));
+		menu_zone.setImageSize(width, menu_height);
+		menu_zone.setPos(0, height);
 		main_zone.setBrowser(this);
 		header_zone.setColor(0x7c90b3, 0xFFFFFF);
 		main_zone.setColor(0xdde4ec, 0x363636);
 		menu_zone.setColor(0xc2c2c2, 0);
+		zones[0] = header_zone;
+		zones[1] = main_zone;
+		zones[2] = menu_zone;
+		
 		gotoUrl(Configuration.content_home);
 	}
-	public void onLineContentUpdated(LineContent lineContent){
-		book_manager.content = lineContent;
-		book_manager.content.line_height = main_zone.line_height;
-		book_manager.content.markPages(height-header_height-menu_height-20);
-		
-		header_zone.setHeader(book_manager.content.header);
-		main_zone.setContent(book_manager.content);
-		menu_zone.repaint_bar();
-		this.network_init = Boolean.TRUE;
-		on_net_reading = Boolean.FALSE;
-		repaint();
-	}
-	private void gotoUrl(String url){
-		on_net_reading = Boolean.TRUE;
-		cs.getWebContent(url, this);
-		menu_zone.setMiddleText("读取网络....");
-	}
-
 	public void setPageText(String pageText){
 		menu_zone.setMiddleText(pageText);
 	}
-
 	protected void paint(Graphics g) {
-		if (network_init == Boolean.FALSE){
-			Image splash;
-			try {
-				splash = Image.createImage("/ebook.jpg");
-				g.drawImage(splash, 0, 0, Graphics.TOP|Graphics.LEFT);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		} else {
-			g.drawImage(header_zone.image, 0, 0, Graphics.TOP|Graphics.LEFT);
-			g.drawImage(main_zone.image, 0, header_height, Graphics.TOP|Graphics.LEFT);
-			g.drawImage(menu_zone.image, 0, height, Graphics.BOTTOM|Graphics.LEFT);
-			if(menu_zone.state>0){ //pop menu opened
-				g.drawImage(menu_zone.menuShadowImage, 7, height-21, Graphics.BOTTOM|Graphics.LEFT);
-				g.drawImage(menu_zone.menuImage, 4, height-21-3, Graphics.BOTTOM|Graphics.LEFT);
-			}
+		System.out.println("Browser paint.");
+		for(int i=0; i<zones.length; i++){
+			if (zones[i]!=null) zones[i].paint(g);
 		}
 	}
-	
 	public void keyReleased(int keyCode) {
 		if (on_net_reading == Boolean.TRUE){
 			System.out.println("Skip where reading on net...");
@@ -141,5 +135,41 @@ public class Browser extends Canvas{
 		}
 			
 	}
+	
+	private void after_content_loaded(LineContent lineContent){
+		if (flash!=null){
+			flash.stopTimer();
+			display.setCurrent(this);
+			flash = null;
+		}
+		book_manager.content = lineContent;
+		book_manager.content.line_height = main_zone.line_height;
+		book_manager.content.markPages(height-header_height-menu_height-20);
+		
+		header_zone.setHeader(book_manager.content.header);
+		main_zone.setContent(book_manager.content);
+		menu_zone.repaint_bar();
+		on_net_reading = Boolean.FALSE;
+		repaint();
+	}
+	private void gotoUrl(String url){
+		System.out.println("gotoURL:" + url);
+		LineContent c = book_manager.threadGetPage(Configuration.content_server, url, this);
+		if ( c!=null) after_content_loaded(c);
+	}
+	// Callback by other thread
+	public void thread_callback(Object data) {
+		CallbackData cdata = (CallbackData)data;
+		if (cdata.command==null) return;
+		else if (cdata.command.equals("LoadContent")) after_content_loaded((LineContent)cdata.data1);
+		else if (cdata.command.equals("LoadingFromInternet")){
+			on_net_reading = Boolean.TRUE;
+			menu_zone.setMiddleText("正在读取网络...");
+		} else if (cdata.command.equals("LoadError")){
+			on_net_reading = Boolean.FALSE;
+			menu_zone.setMiddleText("读取网络错误，请重试。");
+		}
+	}
+
 	
 }

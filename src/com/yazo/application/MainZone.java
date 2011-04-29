@@ -2,15 +2,17 @@ package com.yazo.application;
 
 import java.io.IOException;
 
+import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
 import com.yazo.books.BrowserContent;
 import com.yazo.books.LineContent;
 import com.yazo.books.LinkContent;
+import com.yazo.tools.ImageZone;
 import com.yazo.ui.Zone;
 
-public class MainZone extends Zone {
+public class MainZone extends ImageZone {
 	private LineContent content;
 	public int current_page;
 	private int cursor, total_links;
@@ -21,8 +23,8 @@ public class MainZone extends Zone {
 	public int line_height;
 	private int font_height, line_space, line_top_padding, line_bottom_padding;
 	
-	public MainZone(int width, int height) {
-		super(width, height);
+	public MainZone() {
+		super();
 		cursor = 0;
 		total_links = 0;
 		next_cmd = null;
@@ -31,14 +33,22 @@ public class MainZone extends Zone {
 		text_bg = 0xaaaaaa;
 		browser = null;
 		arrow1 = null;
-		setFontHeight(20);
 		try {
 			arrow1 = Image.createImage("/arrow-blue.png");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-	public void setFontHeight(int fontHeight){
+	public void setImageSize(int width, int height){
+		super.setImageSize(width, height);
+		images = new Image[1];
+		images[0] = Image.createImage(width, height);
+		graphics = new Graphics[1];
+		graphics[0] = images[0].getGraphics();
+	}
+	public void setFont(Font font){
+		super.setFont(font);
+		int fontHeight = font.getHeight();
 		font_height = fontHeight;
 		line_space =  fontHeight/4;
 		line_height = font_height + line_space;
@@ -58,12 +68,13 @@ public class MainZone extends Zone {
 			cursor = 0;
 			current_page = page;
 			if (browser!=null) browser.setPageText("" + (current_page+1) + " / " + content.page_count);
-			repaint();
+			paintImage();
 		}
 	}
-	public void repaint(){
+	public void paintImage(){
+		Graphics g = graphics[0];
 		g.setColor(bgcolor);
-		g.fillRect(0, 0, width, height);
+		g.fillRect(0, 0, image_width, image_height);
 		g.setColor(color);
 		int posy = line_top_padding;
 		int lnk_cnt = 0;
@@ -79,7 +90,7 @@ public class MainZone extends Zone {
 				LinkContent lc = (LinkContent)c;
 				if (lnk_cnt == cursor){
 					g.setColor(color);
-					g.fillRect(10, posy-line_top_padding, width-19, line_height-1);
+					g.fillRect(10, posy-line_top_padding, image_width-19, line_height-1);
 					if(arrow1!=null) g.drawImage(arrow1, 12, posy+font_height/2, Graphics.VCENTER|Graphics.LEFT);
 					g.setColor(bgcolor);
 					g.drawString(lc.content, 20, posy, Graphics.TOP|Graphics.LEFT);
@@ -90,10 +101,10 @@ public class MainZone extends Zone {
 					if(arrow1!=null) g.drawImage(arrow1, 12, posy+6, Graphics.TOP|Graphics.LEFT);
 				}
 				g.setColor(0x999999);
-				g.drawLine(10, posy+line_height-line_bottom_padding, width-10, posy+line_height-line_bottom_padding);
+				g.drawLine(10, posy+line_height-line_bottom_padding, image_width-10, posy+line_height-line_bottom_padding);
 				lnk_cnt++;
 			} else if (c.content_type == "line") {
-				g.drawLine(10, posy, width, posy);
+				g.drawLine(10, posy, image_width, posy);
 			}
 			posy += line_height;
 		}
@@ -108,21 +119,26 @@ public class MainZone extends Zone {
 	public void cursorUp(){
 		if (cursor>0) {
 			cursor--;
-			repaint();
+			paintImage();
 		} else{
 			prevPage();
 			cursor=total_links-1;
-			repaint();
+			paintImage();
 		}
 		
 	}
 	public void cursorDown(){
 		if (cursor<total_links-1) {
 			cursor++;
-			repaint();
+			paintImage();
 		} else nextPage();
 	}
 	public void onClicked(){
+	}
+	public void paint(Graphics g) {
+		if(images!=null && images.length>0 && images[0]!=null)
+			g.drawImage(images[0], posx, posy, Graphics.TOP|Graphics.LEFT);
+		
 	}
 	
 }

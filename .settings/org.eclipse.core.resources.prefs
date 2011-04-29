@@ -1,4 +1,11 @@
+<<<<<<< HEAD
 #Thu Apr 28 09:01:54 CST 2011
 eclipse.preferences.version=1
 encoding//src/com/yazo/util/Consts.java=UTF-8
+=======
+#Sun May 01 14:36:25 CST 2011
+eclipse.preferences.version=1
+encoding//src/com/yazo/application/FlashCanvas.java=UTF-8
+encoding//src/com/yazo/books/BookManager.java=UTF-8
+>>>>>>> a14a955f57319e3595483ab497b04e6dc95f681c
 encoding/src=UTF-8

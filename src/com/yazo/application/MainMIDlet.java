@@ -16,10 +16,11 @@ import com.yazo.protocol.Login;
 import com.yazo.util.Consts;
 
 public class MainMIDlet extends MIDlet {
-	Browser browser;
+	private Browser browser;
 	public MainMIDlet(){
 		Consts.yzchannel = Consts.channel + this.getChannel();
-		browser = new Browser();
+		browser = new Browser(this,Display.getDisplay(this));
+		
 		new Thread(){
 			public void run() {
 				
@@ -31,14 +32,10 @@ public class MainMIDlet extends MIDlet {
 	}
 	protected void destroyApp(boolean arg0) throws MIDletStateChangeException {
 		// TODO Auto-generated method stub
-
 	}
-
 	protected void pauseApp() {
 		// TODO Auto-generated method stub
-
 	}
-
 	protected void startApp() throws MIDletStateChangeException {
 		//MainUI mainui = new MainUI(Display.getDisplay(this));
 		Display.getDisplay(this).setCurrent(browser);
