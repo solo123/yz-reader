@@ -19,112 +19,81 @@ import javax.microedition.midlet.MIDlet;
 public class FlashCanvas extends Canvas{
 	private int width;
 	private int height;
-	private int h;
-	MIDlet midlet;
-	Image bar;
-	Image loading;
-	
 	private String error="请选择移动梦网/CMWAP";
-	
-	private int x;
-	private int barW;
-	private int barX=x;
-	private int w1;
-	private int barY=0;
 	private Timer timer;
 	private int time=1000/12;
-	private String midletname="";
+	private MainMIDlet midlet;
+	private Image splash_image;
+	private int c1,c2,c3, cw;
 	
-	public FlashCanvas(MIDlet midlet){
+	public FlashCanvas(MainMIDlet midlet){
 		this.setFullScreenMode(true);
-		this.midlet = midlet;
 		width=this.getWidth();
 		height=this.getHeight();
+		this.midlet = midlet;
+		c1 = 0xaaaaaa;
+		c2 = 0x333333;
+		c3 = cw = 0;
+		splash_image = null;
 		
 		try{
-			midletname=midlet.getAppProperty("MIDlet-Name");
-			bar=Image.createImage("/bar.png");
-			loading=Image.createImage("/loading.png");
-			x=bar.getWidth();
-			barW=bar.getWidth();
-			barX=x;
-			w1=this.getWidth()-(x<<1);
-		}catch(Exception e){
-			e.printStackTrace();
-		}
+			splash_image = Image.createImage("/book_icon.png");
+		}catch(Exception e){}
 		startTimer();
 	}
-	Font font=Font.getFont(Font.FACE_SYSTEM, Font.STYLE_PLAIN, Font.SIZE_SMALL);
-	private boolean right=true;
+	
 	protected void paint(Graphics g) {
-		g.setColor(255, 255, 255);
+		Font font=Font.getFont(Font.FACE_SYSTEM, Font.STYLE_PLAIN, Font.SIZE_MEDIUM);
+		int font_height = font.getHeight();
+		int posx = width/2;
+		int posy = height/3;
+		g.setColor(0xfff5c5);
 		g.fillRect(0, 0, width, height);
-//		g.drawImage(Images[randomIndex], width>>1, height/4, Graphics.TOP|Graphics.HCENTER);
+		
+		if (splash_image!=null) 
+			g.drawImage(splash_image, posx, posy, Graphics.VCENTER|Graphics.HCENTER);
+		
+		posy += splash_image.getHeight()/2 + font_height;
 		g.setFont(font);
 		g.setColor(0);
-		g.drawString("欢迎使用"+"怡红书苑", width>>1, height/4+h+10, Graphics.TOP|Graphics.HCENTER);
+		g.drawString("欢迎使用"+midlet.getAppProperty("MIDlet-Name"), posx, posy, Graphics.TOP|Graphics.HCENTER);
+		posy += font_height + font_height/4;
+		g.drawString(error, posx, posy, Graphics.TOP|Graphics.HCENTER);
+		int barw = font.stringWidth(error);
 		
-		g.drawString(error, width>>1, height/4+h+40, Graphics.TOP|Graphics.HCENTER);
-	
-		barY=height/4+h+60;
-		//ImageDiv.drawJiuGong(g,bar, x, barY, w1, bar.getHeight());//画背景条
-		//ImageDiv.drawJiuGong(g, loading, barX+5, barY, barW<<1, loading.getHeight());//画滚动条
-	if(right){
-			
-			if(barX<w1-barW*2){
-				barX+=barW;
-				
-			}else{
-				barX-=barW;
-				right=false;
-			}
-		}else{
-			if(barX>x){
-				barX-=barW;
-			}else{
-				barX+=barW;
-				right=true;
-			}
+		posx = (width-barw)/2;
+		posy += font_height+font_height;
+		cw += 2;
+		if (cw>barw){
+			c3 = c1;
+			c1 = c2;
+			c2 = c3;
+			cw = 0;
 		}
+		g.setColor(c1);
+		g.fillRect(posx, posy, barw, font_height);
+		g.setColor(c2);
+		g.fillRect(posx, posy, cw, font_height);
+		
 	}
 	public void setError(String error){
 		this.error=error;
 		repaint();
 	}
-	protected void keyPressed(int keyCode) {
-		super.keyPressed(keyCode);
-	}
 
 	protected void keyReleased(int keyCode) {
-		super.keyReleased(keyCode);
+		if (keyCode==-7) midlet.quit();
 	}
-//	public void commandAction(Command c, Displayable d) {
-//		if(c==exit){
-//			midlet.quit();
-//		}
-//	}
-//	int randomIndex=0;
-//	int timertask=0;
-	boolean live=false;
+
 	private class SpinnerTask extends TimerTask {
 		public void run() {
-			System.out.println("Timmer paint.");
 			repaint();
-			/*timertask++;
-			if(timertask%20==0){
-				live=true;
-				randomIndex++;
-				if(randomIndex>4){
-					randomIndex=0;
-				}
-			}*/
 		}
 	}
 	public void startTimer() {
 		if (timer == null) {
 			timer = new Timer();
 			timer.schedule(new SpinnerTask(), 100, time);
-			// System.out.print("run");
 		}
 	}
 	
@@ -133,8 +102,7 @@ public class FlashCanvas extends Canvas{
 			timer.cancel();
 			timer=null;
 		}
-		bar=null;
-		loading=null;
+		splash_image = null;
 	}
 	
 	

@@ -1,22 +1,16 @@
 package com.yazo.application;
 
-import java.io.IOException;
-
 import com.yazo.books.*;
-import com.yazo.net.MultiThreadDataObject;
-import com.yazo.thread.ThreadPool;
-import com.yazo.thread.WaitCallback;
 import com.yazo.tools.CallbackData;
 import com.yazo.tools.ImageZone;
 import com.yazo.tools.ThreadCallback;
 
 import javax.microedition.lcdui.*;
-import javax.microedition.midlet.MIDlet;
 
 public class Browser extends Canvas implements ThreadCallback {
 	public BookManager book_manager;
 	private Display display;
-	private MIDlet midlet;
+	private MainMIDlet midlet;
 	private FlashCanvas flash;
 	private ImageZone[] zones;
 	private HeaderZone header_zone;
@@ -26,7 +20,7 @@ public class Browser extends Canvas implements ThreadCallback {
 	private Font font;
 	private Boolean on_net_reading;
 	
-	public Browser(MIDlet midlet, Display display){
+	public Browser(MainMIDlet midlet, Display display){
 		this.display = display;
 		this.midlet = midlet;
 		flash = new FlashCanvas(midlet);
