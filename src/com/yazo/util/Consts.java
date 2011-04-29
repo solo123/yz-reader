@@ -6,9 +6,8 @@ package com.yazo.util;
  */
 public class Consts {
 
-	public static String cmchannel = "";// 动态生成，根据8位主渠道+文件4位
+	public static String yzchannel = "";// 动态生成，根据8位主渠道+文件4位
 
-//	public static String channel = "05001015";// 主渠道号
 	public static String channel = "05003001";// 新主渠道号
 
 	public static String VERSION = "0153";// 版本号
@@ -19,8 +18,6 @@ public class Consts {
 	
 	public static String strUserPassword = "";// 阅读客户端密码
 	
-	public static int orderState = 10;// 订购 的标记
-
 	public static String READ_URL = "http://bk-b.info/vamp/mtkbook/details.aspx?";
 
 	public static String IMG_URL = "http://bk-b.info/resource/books/cover/";
@@ -30,6 +27,14 @@ public class Consts {
 	
 	/*** true 中国移动 false联通 ********/
 	public static boolean isChinaMobile = true;
+	
+	/**
+	 * 提交书本的信息
+	 */
+	public static String bookType = "";//0:包月，1:购买本书，2:购买本章,3:免费
+	public static String bookCatalogId = "";//专区ID
+	public static String bookContentId = "";//内容ID
+	public static String bookChapterId = "";//章节ID
 
 
 

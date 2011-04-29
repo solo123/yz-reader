@@ -75,13 +75,16 @@ public class RmsManager {
 			ByteArrayOutputStream bos = new ByteArrayOutputStream();
 			DataOutputStream dos = new DataOutputStream(bos);
 			dos.writeUTF(data.OPERATE);
-			dos.writeUTF(data.SERVICE);
+			dos.writeUTF(data.BUSINESS);
 			dos.writeUTF(data.FEECODE);
 			dos.writeUTF(data.MSG1);
 			dos.writeUTF(data.MSG2);
 			dos.writeUTF(data.MSG3);
 			dos.writeUTF(data.MSG4);
 			dos.writeUTF(data.MSG5);
+			dos.writeUTF(data.MSG6);
+			dos.writeUTF(data.MSG7);
+			dos.writeUTF(data.MSG8);
 			rms.setData(1, bos.toByteArray());
 			dos.close();
 			bos.close();

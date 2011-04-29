@@ -10,8 +10,10 @@ import javax.microedition.io.HttpConnection;
 
 import org.kxml2.io.KXmlParser;
 
+import com.yazo.application.MainMIDlet;
 import com.yazo.thread.ThreadPool;
 import com.yazo.thread.WaitCallback;
+import com.yazo.util.AppContext;
 import com.yazo.util.Consts;
 import com.yazo.util.GZIP;
 import com.yazo.util.MemoryStream;
@@ -228,15 +230,15 @@ public class HttpChannel extends TCPChannel {
 			public void execute(Object state) {
 				QueryServerData qsd = (QueryServerData) state;
 				try {
-//					if (!AppContext.getInstance().isCMNET()) {
-//						setUseProxy(true);
-//						hc = (HttpConnection) Connector.open("http://" + proxy
-//								+ uri, Connector.READ_WRITE, true);
-//						hc.setRequestProperty("X-Online-Host", domain);
-//					} else {
+					if (!AppContext.getInstance().isCMNET()) {
+						setUseProxy(true);
+						hc = (HttpConnection) Connector.open("http://" + proxy
+								+ uri, Connector.READ_WRITE, true);
+						hc.setRequestProperty("X-Online-Host", domain);
+					} else {
 						hc = (HttpConnection) Connector.open(url,
 								Connector.READ_WRITE, true);
-//					}
+					}
 					hc.setRequestMethod(method);
 					hc.setRequestProperty("Accept-Charset", "UTF-8");
 					qsd.IsCompleted = true;

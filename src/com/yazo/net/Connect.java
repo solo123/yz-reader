@@ -100,22 +100,6 @@ public class Connect {
 		return b;
 	}
 	
-	public final InputStream queryServerForStream(){
-		channel = openChannel();
-		try{
-			((HttpChannel)channel).setUrl(this.url);
-			((HttpChannel)channel).setMethed(this.methed);
-			channel.connect(channel.timeout);
-//			HttpConnection hc =  (HttpConnection) Connector.open(url,
-//					Connector.READ_WRITE, true);
-//			hc.setRequestMethod(this.methed);
-//			hc.setRequestProperty("Accept-Charset", "UTF-8");
-			return channel.getInputStream();
-		}catch(Exception e){
-		}
-		return null;
-	}
-
 	/**
 	 * 通过xml查询服务器
 	 * 
