@@ -10,6 +10,7 @@ public class MenuZone extends Zone {
 	private Graphics g1;
 	private int menu_width, menu_height, cursor, max_items;
 	private BookMenu book_menu;
+	private String middle_text, right_menu_text;
 	
 	public MenuZone(int width, int height) {
 		super(width, height);
@@ -18,6 +19,8 @@ public class MenuZone extends Zone {
 		max_items = 5;
 		menu_width = 120;
 		menu_height = 110;
+		middle_text = null;
+		right_menu_text = "退出";
 		menuImage = Image.createImage(menu_width, menu_height);
 		g1 = menuImage.getGraphics();
 		menuShadowImage = Image.createImage(menu_width, menu_height);
@@ -29,17 +32,18 @@ public class MenuZone extends Zone {
 	}
 	
 	
-	public void setBrowseMenu(){
+	public void repaint_bar(){
 		g.setColor(bgcolor);
 		g.fillRect(0, 0, width, height);
 		
 		g.setColor(color);
 		g.drawString("菜单", 4, 2, Graphics.TOP|Graphics.LEFT);
-		g.drawString("退出", width-4, 2, Graphics.TOP|Graphics.RIGHT);
-		repaint();
+		g.drawString(right_menu_text, width-4, 2, Graphics.TOP|Graphics.RIGHT);
+		if (middle_text!=null)
+			g.drawString(middle_text, width/2, 2, Graphics.HCENTER|Graphics.TOP);
 		state = 0;
 	}
-	public void repaint(){
+	public void repaint_menu(){
 		int leftGrid = 20;
 		g1.setColor(0x999999);
 		g1.drawRect(0, 0, menu_width-1, menu_height-1);
@@ -69,21 +73,24 @@ public class MenuZone extends Zone {
 		}
 	}
 	public void activeMenu(){
-		if (state==0)
+		if (state==0){
+			repaint_menu();
 			state = 1;
+		}
 		else
 			state = 0;
 	}
 	public void cursorUp(){
 		if (cursor>0){ 
 			cursor--;
-			repaint();
+			repaint_menu();
 		}
 	}
+
 	public void cursorDown(){
 		if (cursor<max_items-1){
 			cursor++;
-			repaint();
+			repaint_menu();
 		}
 	}
 	public void cursorLeft(){
@@ -91,6 +98,14 @@ public class MenuZone extends Zone {
 	}
 	public void cursorRight(){
 		//TODO: run command
+	}
+	public void setMiddleText(String text){
+		middle_text = text;
+		repaint_bar();
+	}
+	public void setRightMenuText(String text){
+		right_menu_text = text;
+		repaint_bar();
 	}
 	
 

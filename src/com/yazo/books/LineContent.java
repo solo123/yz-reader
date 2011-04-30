@@ -6,6 +6,8 @@ public class LineContent {
 	public int[] page_pos;
 	public int page_count;
 	public int line_count;
+	public String header;
+	public int line_height;
 	
 	public LineContent(int width){
 		line_char_width = width;
@@ -13,13 +15,12 @@ public class LineContent {
 		line_count = 0;
 		page_pos = new int[100];
 		page_count = 0;
+		header = null;
+		line_height = 20;
 	}
 	
-	public void addLink(String text, String uri){
-		lines[line_count++] = new BrowserContent("link", text, uri);
-	}
-	public void addLink(String text, String desc, String uri){
-		lines[line_count++] = new BrowserContent("link", text + "|" + desc, uri);
+	public void addLink(String arrow, String text, String desc, String url){
+		lines[line_count++] = new LinkContent(arrow, text, desc, url);
 	}
 	public void addText(String text){
 		if (text == null ) return;
@@ -31,7 +32,7 @@ public class LineContent {
 				end_idx = pos + line_char_width;
 			else
 				end_idx = len;  
-			lines[line_count++] = new BrowserContent("text", text.substring(pos, end_idx));
+			lines[line_count++] = new TextContent(text.substring(pos, end_idx));
 			pos = end_idx;
 		}
 	}
@@ -45,11 +46,11 @@ public class LineContent {
 		int h = 100000;
 		page_count = 0;
 		for(int i=0; i<line_count; i++){
-			if (h + 20 > page_height-20){
+			if (h > page_height){
 				page_pos[page_count++] = i;
-				h = 20;
+				h = line_height;
 			} else
-				h += 20;
+				h += line_height;
 		}
 		page_pos[page_count] = line_count;
 	}

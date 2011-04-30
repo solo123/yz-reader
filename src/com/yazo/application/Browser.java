@@ -3,77 +3,78 @@ package com.yazo.application;
 import com.yazo.books.*;
 import javax.microedition.lcdui.*;
 
-public class Browser extends Canvas {
-	public BookManager book_manager;
-	public HeaderZone header_zone;
-	public MainZone main_zone;
-	public MenuZone menu_zone;
+public class Browser extends Canvas{
+	private BookManager book_manager;
+	private HeaderZone header_zone;
+	private MainZone main_zone;
+	private MenuZone menu_zone;
 	int width, height, header_height, menu_height;
-	public String[] history;
-	public int history_count;
-	int up, down, fire, right, left, key_ok, key_lefttab, key_righttab;
-
-	public Browser() {
-		init();
+	private String[] history;
+	private int history_count ;
+	private Font font;
+	
+	public Browser(){
+		setFullScreenMode(true);
+		font = Font.getFont(Font.FACE_SYSTEM, Font.STYLE_PLAIN, Font.SIZE_MEDIUM);
+		int font_height = font.getHeight();
+		int font_width  = font.charWidth('国');
+		
 		history = new String[10];
 		history_count = 0;
-		header_height = 20;
-		menu_height = 20;
+		header_height = font_height + 6;
+		menu_height = header_height;
+		
 		width = getWidth();
 		height = getHeight();
 		book_manager = new BookManager();
+		book_manager.line_chars = (width - 20)/font_width;
+		System.out.println("line chars:" + book_manager.line_chars + ", font width:"+ font_width + ", font height:" + font_height);
 
 		header_zone = new HeaderZone(width, header_height);
 		main_zone = new MainZone(width, height - header_height - menu_height);
 		menu_zone = new MenuZone(width, menu_height);
+		main_zone.setBrowser(this);
 		header_zone.setColor(0x7c90b3, 0xFFFFFF);
 		main_zone.setColor(0xdde4ec, 0x363636);
 		menu_zone.setColor(0xc2c2c2, 0);
-		gotoUrl("Home");
+		gotoUrl(Configuration.content_home);
 	}
-
-	public void gotoUrl(String url) {
-		main_zone.current_cmd = url;
+	private void gotoUrl(String url){
+		main_zone.current_cmd=url;
 		book_manager.getPage(url);
-		book_manager.content.markPages(height - header_height - menu_height
-				- 20);
-
+		book_manager.content.markPages(height-header_height-menu_height-20);
+		
 		header_zone.setHeader(book_manager.header);
 		main_zone.setContent(book_manager.content);
-		menu_zone.setBrowseMenu();
+		menu_zone.repaint_bar();
 		repaint();
+	}
+	public void setPageText(String pageText){
+		menu_zone.setMiddleText(pageText);
 	}
 
 	protected void paint(Graphics g) {
-		g.drawImage(header_zone.image, 0, 0, Graphics.TOP | Graphics.LEFT);
-		g.drawImage(main_zone.image, 0, header_height, Graphics.TOP
-				| Graphics.LEFT);
-		g.drawImage(menu_zone.image, 0, height, Graphics.BOTTOM | Graphics.LEFT);
-		if (menu_zone.state > 0) {
-			g.drawImage(menu_zone.menuShadowImage, 7, height - 21,
-					Graphics.BOTTOM | Graphics.LEFT);
-			g.drawImage(menu_zone.menuImage, 4, height - 21 - 3,
-					Graphics.BOTTOM | Graphics.LEFT);
+		g.drawImage(header_zone.image, 0, 0, Graphics.TOP|Graphics.LEFT);
+		g.drawImage(main_zone.image, 0, header_height, Graphics.TOP|Graphics.LEFT);
+		g.drawImage(menu_zone.image, 0, height, Graphics.BOTTOM|Graphics.LEFT);
+		if(menu_zone.state>0){ //pop menu opened
+			g.drawImage(menu_zone.menuShadowImage, 7, height-21, Graphics.BOTTOM|Graphics.LEFT);
+			g.drawImage(menu_zone.menuImage, 4, height-21-3, Graphics.BOTTOM|Graphics.LEFT);
 		}
 	}
-
+	
 	public void keyReleased(int keyCode) {
 		int action = getGameAction(keyCode);
-		if (keyCode == 57) {
-			new fullSrceen(main_zone.current_cmd);
-		}
 		System.out.println(" action:" + action + ", keycode:" + keyCode);
-		if (menu_zone.state > 0) {
+		if (menu_zone.state>0){
 			menuKeyAction(keyCode);
 		} else {
 			mainKeyAction(keyCode);
 		}
 		repaint();
 	}
-
-	private void menuKeyAction(int keyCode) {
-		int action = getGameAction(keyCode);
-		if (keyCode == -1) {
+	private void menuKeyAction(int keyCode){
+		if (keyCode == -1){
 			menu_zone.cursorUp();
 		} else if (keyCode == -2) {
 			menu_zone.cursorDown();
@@ -82,95 +83,39 @@ public class Browser extends Canvas {
 		} else if (keyCode == -4) {
 			menu_zone.cursorRight();
 		} else if (keyCode == -5) {
-			// TODO: menu action, gotoUrl(main_zone.current_cmd);
-		} else if (keyCode == -6) {
+			//TODO: menu action, gotoUrl(main_zone.current_cmd);
+		} else if (keyCode == -6){
 			menu_zone.activeMenu();
-		} else if (keyCode == -7) {
+		} else if (keyCode == -7){
 			menu_zone.activeMenu();
-		} else if (action == 0 && keyCode == 49) {
-			menu_zone.activeMenu();
-		} else if (action == 0 && keyCode == 51) {
-			menu_zone.activeMenu();
-		} else if (keyCode == 53 || action == 8) {
 		}
 	}
-
-	private void mainKeyAction(int keyCode) {
-		int action = getGameAction(keyCode);
-		// if (keyCode == -1) {
-		// main_zone.cursorUp();
-		// } else if (keyCode == -2) {
-		// main_zone.cursorDown();
-		// } else if (keyCode == -3) {
-		// main_zone.prevPage();
-		// } else if (keyCode == -4) {
-		// main_zone.nextPage();
-		// } else if (keyCode == -5) {
-		// if (main_zone.next_cmd != null) {
-		// history[history_count++] = main_zone.current_cmd;
-		// gotoUrl(main_zone.next_cmd);
-		// }
-		//
-		// } else if (keyCode == -6) {
-		// menu_zone.activeMenu();
-		// } else if (keyCode == -7) {
-		// // TODO: back or quick
-		// if (history_count > 0) {
-		// gotoUrl(history[--history_count]);
-		// }
-		//
-		// } else if (action == 0 && keyCode == 49) {
-		// menu_zone.activeMenu();
-		// } else if (action == 0 && keyCode == 51) {
-		// if (history_count > 0) {
-		// gotoUrl(history[--history_count]);
-		// }
-		// } else if (keyCode == 53 || action == 8) {
-		// if (main_zone.next_cmd != null) {
-		// history[history_count++] = main_zone.current_cmd;
-		// gotoUrl(main_zone.next_cmd);
-		// }
-		// } else if (keyCode == 42) {
-		// new fullSrceen(main_zone.current_cmd);
-		// }
-		switch (action) {
-		case 1:
+	private void mainKeyAction(int keyCode){
+		if (keyCode == -1){
 			main_zone.cursorUp();
-			break;
-		case 6:
+		} else if (keyCode == -2) {
 			main_zone.cursorDown();
-			break;
-		case 2:
+		} else if (keyCode == -3) {
 			main_zone.prevPage();
-			break;
-		case 5:
+		} else if (keyCode == -4) {
 			main_zone.nextPage();
-			break;
-		case 8:
-			if (main_zone.next_cmd != null) {
-				history[history_count++] = main_zone.current_cmd;
+		} else if (keyCode == -5) {
+			if(main_zone.next_cmd!=null){
+				history[history_count++]=main_zone.current_cmd;
+				menu_zone.setRightMenuText("返回");
 				gotoUrl(main_zone.next_cmd);
 			}
-			break;
-		case 0:
-			if (keyCode == 51 || keyCode == -7) {
-				if (history_count > 0) {
-					gotoUrl(history[--history_count]);
-				}
+		} else if (keyCode == -6){
+			menu_zone.activeMenu();
+		} else if (keyCode == -7){
+			//TODO: back or quick
+			if(history_count>0){
+				gotoUrl(history[--history_count]);
 			} else {
-				menu_zone.activeMenu();
+				menu_zone.setRightMenuText("退出");
 			}
-			break;
+			
 		}
-
 	}
-
-	public void init() {
-		right = getKeyCode(RIGHT);
-		left = getKeyCode(LEFT);
-		up = getKeyCode(UP);
-		down = getKeyCode(DOWN);
-		fire = getKeyCode(FIRE);
-		// key_ok=getKeyCode(KEY_OK);
-	}
+	
 }
