@@ -14,7 +14,7 @@ public abstract class Zone {
 		this.color = 0;
 		this.image = Image.createImage(width, height);
 		g = image.getGraphics();
-		font = Font.getFont(Font.FACE_PROPORTIONAL, Font.STYLE_BOLD, Font.SIZE_MEDIUM);
+		font = Font.getFont(Font.FACE_PROPORTIONAL, Font.STYLE_BOLD, Font.SIZE_LARGE|Font.SIZE_MEDIUM);
 	}
 	public void setColor(int bgcolor, int color){
 		this.bgcolor = bgcolor;

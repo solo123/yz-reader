@@ -11,14 +11,10 @@ public class MainMIDlet extends MIDlet {
 	}
 	protected void destroyApp(boolean arg0) throws MIDletStateChangeException {
 		// TODO Auto-generated method stub
-
 	}
-
 	protected void pauseApp() {
 		// TODO Auto-generated method stub
-
 	}
-
 	protected void startApp() throws MIDletStateChangeException {
 		//MainUI mainui = new MainUI(Display.getDisplay(this));
 		Display.getDisplay(this).setCurrent(browser);
