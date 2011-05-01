@@ -6,7 +6,7 @@ public class LineContent {
 	public int[] page_pos;
 	public int page_count;
 	public int line_count;
-	public String header;
+	public String header, back_url;
 	public int line_height;
 	
 	public LineContent(int width){

@@ -5,9 +5,9 @@ import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
 
 public class MainMIDlet extends MIDlet {
-	Browser browser;
+	private Browser browser;
 	public MainMIDlet(){
-		browser = new Browser();
+		browser = new Browser(this, Display.getDisplay(this));
 	}
 	protected void destroyApp(boolean arg0) throws MIDletStateChangeException {
 		// TODO Auto-generated method stub
