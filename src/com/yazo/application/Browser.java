@@ -1,40 +1,26 @@
 package com.yazo.application;
 
-import java.io.IOException;
-
 import com.yazo.books.*;
-import com.yazo.net.ContentServer;
-import com.yazo.tools.ImageZone;
-
 import javax.microedition.lcdui.*;
-import javax.microedition.midlet.MIDlet;
 
 public class Browser extends Canvas{
-	public BookManager book_manager;
-	private Display display;
-	private MIDlet midlet;
-	private FlashCanvas flash;
-	private ContentServer content_server;
-	private ImageZone[] zones;
+	private BookManager book_manager;
 	private HeaderZone header_zone;
 	private MainZone main_zone;
 	private MenuZone menu_zone;
 	int width, height, header_height, menu_height;
+	private String[] history;
+	private int history_count ;
 	private Font font;
-	private Boolean on_net_reading;
 	
-	public Browser(MIDlet midlet, Display display){
-		this.display = display;
-		this.midlet = midlet;
-		flash = new FlashCanvas(midlet);
-		display.setCurrent(flash);
-		on_net_reading = Boolean.TRUE;
-		
-		content_server = new ContentServer();
+	public Browser(){
 		setFullScreenMode(true);
 		font = Font.getFont(Font.FACE_SYSTEM, Font.STYLE_PLAIN, Font.SIZE_MEDIUM);
 		int font_height = font.getHeight();
 		int font_width  = font.charWidth('国');
+		
+		history = new String[10];
+		history_count = 0;
 		header_height = font_height + 6;
 		menu_height = header_height;
 		
@@ -53,29 +39,16 @@ public class Browser extends Canvas{
 		menu_zone.setColor(0xc2c2c2, 0);
 		gotoUrl(Configuration.content_home);
 	}
-<<<<<<< HEAD
 	private void gotoUrl(String url){
 		main_zone.current_cmd=url;
 		book_manager.getPage(url);
-=======
-	public void onLineContentUpdated(LineContent lineContent){
-		book_manager.content = lineContent;
-		book_manager.content.line_height = main_zone.line_height;
->>>>>>> b6f80a38cd27f204510b822f1dbecd62796e565e
 		book_manager.content.markPages(height-header_height-menu_height-20);
 		
-		header_zone.setHeader(book_manager.content.header);
+		header_zone.setHeader(book_manager.header);
 		main_zone.setContent(book_manager.content);
 		menu_zone.repaint_bar();
-		on_net_reading = Boolean.FALSE;
 		repaint();
 	}
-	private void gotoUrl(String url){
-		on_net_reading = Boolean.TRUE;
-		content_server.getWebContent(url, this);
-		menu_zone.setMiddleText("读取网络....");
-	}
-
 	public void setPageText(String pageText){
 		menu_zone.setMiddleText(pageText);
 	}
@@ -91,10 +64,6 @@ public class Browser extends Canvas{
 	}
 	
 	public void keyReleased(int keyCode) {
-		if (on_net_reading == Boolean.TRUE){
-			System.out.println("Skip where reading on net...");
-			return;
-		}
 		int action = getGameAction(keyCode);
 		System.out.println(" action:" + action + ", keycode:" + keyCode);
 		if (menu_zone.state>0){
@@ -132,16 +101,21 @@ public class Browser extends Canvas{
 			main_zone.nextPage();
 		} else if (keyCode == -5) {
 			if(main_zone.next_cmd!=null){
+				history[history_count++]=main_zone.current_cmd;
+				menu_zone.setRightMenuText("返回");
 				gotoUrl(main_zone.next_cmd);
 			}
 		} else if (keyCode == -6){
 			menu_zone.activeMenu();
 		} else if (keyCode == -7){
-			if (main_zone.back_url==null){
+			//TODO: back or quick
+			if(history_count>0){
+				gotoUrl(history[--history_count]);
+			} else {
 				menu_zone.setRightMenuText("退出");
-			} else gotoUrl(main_zone.back_url);
-		}
+			}
 			
+		}
 	}
 	
 }
