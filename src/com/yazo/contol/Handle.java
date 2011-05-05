@@ -1,4 +1,4 @@
-package com.yazo.contol;
+﻿package com.yazo.contol;
 
 import java.util.Random;
 import java.util.Vector;

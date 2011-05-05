@@ -1,4 +1,4 @@
-package com.yazo.rms;
+﻿package com.yazo.rms;
 
 import javax.microedition.rms.RecordStore;
 

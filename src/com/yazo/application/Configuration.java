@@ -1,4 +1,4 @@
-package com.yazo.application;
+﻿package com.yazo.application;
 
 public class Configuration {
 	public static String content_server = "http://bk-b.info/reader/pages/";  // 内容服务器
