@@ -16,13 +16,19 @@ public class Configuration {
 	public static int FONT_HEIGHT = 20;
 	public static int HEADER_HEIGHT = 20;
 	public static int MENU_HEIGHT = 20;
+	public static int BROWSER_HEIGHT = 100;
 	
+	public static void SetScreenSize(int width, int height){
+		SCREEN_WIDTH = width;
+		SCREEN_HEIGHT = height;
+	}
 	public static void SetFontSize(int font_size){
 		FONT_SIZE = font_size;
 		Font font = Font.getFont(Font.FACE_SYSTEM, Font.STYLE_PLAIN, font_size);
 		FONT_HEIGHT = font.getHeight();
 		FONT_WIDTH  = font.charWidth('国');
 		HEADER_HEIGHT = MENU_HEIGHT = FONT_HEIGHT + 6;
+		BROWSER_HEIGHT = SCREEN_HEIGHT - HEADER_HEIGHT - MENU_HEIGHT;
 	}
 	
 }

@@ -67,7 +67,7 @@ public class PopupZone extends ImageZone {
 	}
 	public void keyReleased(int keyCode) {
 		if (keyCode == -6){
-			if (command_manager!=null) command_manager.command_callback(BrowserCommand.CONFIRM, null);
+			if (command_manager!=null) command_manager.command_callback(BrowserCommand.QUIT_APPLICATION, null);
 		} else if (keyCode == -7){
 			state = 0;
 		}

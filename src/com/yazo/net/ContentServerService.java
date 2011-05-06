@@ -7,14 +7,14 @@ import org.xmlpull.v1.XmlPullParser;
 import com.yazo.books.LineContent;
 
 public class ContentServerService {
-	public static LineContent getAndParseContent(String page_url, int line_chars) {
+	public static LineContent getAndParseContent(String url) {
 		HttpConnection conn;
 		LineContent c = null;
 		try {
-			conn = (HttpConnection)Connector.open(page_url, Connector.READ );
+			conn = (HttpConnection)Connector.open(url, Connector.READ );
 			conn.setRequestProperty("Accept-Charset", "UTF-8");
 			KXmlParser parser = new KXmlParser();
-			c = new LineContent(line_chars);
+			c = new LineContent();
 			parser.setInput(conn.openInputStream(), "utf-8");
 			parser.nextTag();
 			parser.require(XmlPullParser.START_TAG, null, "page");
@@ -28,8 +28,8 @@ public class ContentServerService {
 						parser.require(XmlPullParser.START_TAG, null, null);
 						String nn = parser.getName();
 						if (nn.equals("link")){
-							String arrow, text, desc, url;
-							arrow = text = desc = url = null;
+							String arrow, text, desc, aurl;
+							arrow = text = desc = aurl = null;
 							while(parser.nextTag()!=XmlPullParser.END_TAG){
 								parser.require(XmlPullParser.START_TAG, null, null);
 								String n = parser.getName();
@@ -37,10 +37,10 @@ public class ContentServerService {
 								if (n.equals("arrow"))	arrow = t;
 								else if (n.equals("text")) text = t;
 								else if (n.equals("desc")) desc = t;
-								else if (n.equals("url")) url = t;
+								else if (n.equals("url")) aurl = t;
 								parser.require(XmlPullParser.END_TAG, null, n);
 							}
-							c.addLink(arrow, text, desc, url);
+							c.addLink(arrow, text, desc, aurl);
 						}else if(nn.equals("text")){
 							c.addText(parser.nextText());
 						}

@@ -9,7 +9,7 @@ import com.yazo.tools.ThreadCallback;
 
 import javax.microedition.lcdui.*;
 
-public class Browser extends Canvas implements ThreadCallback, ICommandManager {
+public class Browser extends Canvas implements ICommandManager {
 	public BookManager book_manager;
 	private MainMIDlet midlet;
 	private Display display;
@@ -25,6 +25,10 @@ public class Browser extends Canvas implements ThreadCallback, ICommandManager {
 	public Browser(MainMIDlet midlet, Display display){
 		this.display = display;
 		this.midlet = midlet;
+		
+		flash = null;
+		init_browser();
+		/*
 		flash = new FlashCanvas(midlet);
 		display.setCurrent(flash);
 		
@@ -33,6 +37,7 @@ public class Browser extends Canvas implements ThreadCallback, ICommandManager {
 				init_browser();
 			}
 		}.start();
+		*/
 	}
 	private void init_browser(){
 		setFullScreenMode(true);
@@ -41,7 +46,7 @@ public class Browser extends Canvas implements ThreadCallback, ICommandManager {
 		Configuration.SCREEN_WIDTH = getWidth();
 		Configuration.SCREEN_HEIGHT = getHeight();
 		
-		book_manager = new BookManager();
+		book_manager = new BookManager(this);
 		zones = new ImageZone[4];
 		zones[0] = header_zone = new HeaderZone();
 		zones[1] = main_zone = new MainZone(this);
@@ -50,6 +55,7 @@ public class Browser extends Canvas implements ThreadCallback, ICommandManager {
 		
 		gotoUrl(Configuration.CONTENT_HOME);
 	}
+	
 	protected void paint(Graphics g) {
 // #ifdef DBG		
 		System.out.println("Browser repainted.");
@@ -58,6 +64,7 @@ public class Browser extends Canvas implements ThreadCallback, ICommandManager {
 			if (zones[i]!=null) zones[i].paint(g);
 		}
 	}
+	
 	public void keyReleased(int keyCode) {
 		if (on_net_reading == Boolean.TRUE){
 // #ifdef DBG_NET
@@ -87,9 +94,6 @@ public class Browser extends Canvas implements ThreadCallback, ICommandManager {
 		}
 		if (lineContent!=null) {
 			book_manager.content = lineContent;
-			book_manager.content.line_height = main_zone.line_height;
-			book_manager.content.markPages(Configuration.SCREEN_HEIGHT - Configuration.HEADER_HEIGHT - Configuration.MENU_HEIGHT - 20);
-			
 			header_zone.setHeader(book_manager.content.header);
 			main_zone.setContent(book_manager.content);
 		} else {
@@ -99,6 +103,7 @@ public class Browser extends Canvas implements ThreadCallback, ICommandManager {
 		menu_zone.repaint_bar();
 		repaint();
 	}
+	
 	private void gotoUrl(String url){
 // #ifdef DBG
 		if (url==null)
@@ -109,31 +114,29 @@ public class Browser extends Canvas implements ThreadCallback, ICommandManager {
 		if (url==null) {
 			popup_zone.Alert("确认退出"+Configuration.APP_NAME);
 		} else {
-			LineContent c = book_manager.threadGetPage(Configuration.CONTENT_PATH, url, this);
-			if ( c!=null) after_content_loaded(c);
-			history_manager.addHistory(url);
+			book_manager.loadLineContentFromUrl(Configuration.CONTENT_PATH, url);
+			// will callback command_callback
 		}
 	}
-	// Callback by other thread
-	public void thread_callback(Object data) {
-		CallbackData cdata = (CallbackData)data;
-		if (cdata.command==null) return;
+	
+	public void command_callback(int command, Object data) {
 // #ifdef DBG
-		System.out.println("thread_callback:" + cdata.command);
-// #endif		
-		if (cdata.command.equals("LoadContent")) after_content_loaded((LineContent)cdata.data1);
-		else if (cdata.command.equals("LoadingFromInternet")){
+		System.out.println("command_callback:" + command);
+// #endif
+		switch(command){
+		case BrowserCommand.LOADING_FROM_INTERNET:
 			on_net_reading = Boolean.TRUE;
 			menu_zone.setMiddleText("正在读取网络...");
 			repaint();
-		} else if (cdata.command.equals("LoadError")){
+			break;
+		case BrowserCommand.AFTER_LINECONTENT_LOADED:
+			after_content_loaded((LineContent)data);
+			break;
+		case BrowserCommand.LOAD_ERROR:
 			on_net_reading = Boolean.FALSE;
 			menu_zone.setMiddleText("读取网络错误，请重试。");
 			repaint();
-		}
-	}
-	public void command_callback(int command, Object data) {
-		switch(command){
+			break;
 		case BrowserCommand.ACTIVE_MENU:
 			menu_zone.activeMenu();
 			break;
@@ -147,12 +150,9 @@ public class Browser extends Canvas implements ThreadCallback, ICommandManager {
 			menu_zone.setMiddleText((String)data);
 			repaint();
 			break;
-		case BrowserCommand.CONFIRM:
+		case BrowserCommand.QUIT_APPLICATION:
 			midlet.quit();
 			break;
 		}
-		
 	}
-
-	
 }
