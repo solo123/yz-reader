@@ -7,6 +7,8 @@ public class Configuration {
 	public static String CONTENT_PATH = "http://bk-b.info/reader/pages/"; //内容服务器
 	public static String CONTENT_HOME = "home";
 	
+	public static String APP_NAME = "手机阅读";
+	
 	public static int SCREEN_HEIGHT = 100;
 	public static int SCREEN_WIDTH = 100;
 	public static int FONT_SIZE = 0; //默认中等大小字号

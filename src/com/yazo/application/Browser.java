@@ -11,17 +11,20 @@ import javax.microedition.lcdui.*;
 
 public class Browser extends Canvas implements ThreadCallback, ICommandManager {
 	public BookManager book_manager;
+	private MainMIDlet midlet;
 	private Display display;
 	private FlashCanvas flash;
 	private ImageZone[] zones;
 	private HeaderZone header_zone;
 	private MainZone main_zone;
 	private MenuZone menu_zone;
+	private PopupZone popup_zone;
 	private Boolean on_net_reading;
 	private HistoryManager history_manager = new HistoryManager();
 	
 	public Browser(MainMIDlet midlet, Display display){
 		this.display = display;
+		this.midlet = midlet;
 		flash = new FlashCanvas(midlet);
 		display.setCurrent(flash);
 		
@@ -39,10 +42,11 @@ public class Browser extends Canvas implements ThreadCallback, ICommandManager {
 		Configuration.SCREEN_HEIGHT = getHeight();
 		
 		book_manager = new BookManager();
-		zones = new ImageZone[3];
+		zones = new ImageZone[4];
 		zones[0] = header_zone = new HeaderZone();
 		zones[1] = main_zone = new MainZone(this);
 		zones[2] = menu_zone = new MenuZone(this);
+		zones[3] = popup_zone = new PopupZone(this);
 		
 		gotoUrl(Configuration.CONTENT_HOME);
 	}
@@ -65,7 +69,9 @@ public class Browser extends Canvas implements ThreadCallback, ICommandManager {
 		int action = getGameAction(keyCode);
 		System.out.println(" action:" + action + ", keycode:" + keyCode);
 // #endif
-		if (menu_zone.state>0){
+		if (popup_zone.state>0){
+			popup_zone.keyReleased(keyCode);
+		} else if (menu_zone.state>0){
 			menu_zone.keyReleased(keyCode);
 		} else {
 			main_zone.keyReleased(keyCode);
@@ -94,14 +100,19 @@ public class Browser extends Canvas implements ThreadCallback, ICommandManager {
 		repaint();
 	}
 	private void gotoUrl(String url){
-// #ifdef DBG		
-		System.out.println("gotoURL:" + url);
+// #ifdef DBG
+		if (url==null)
+			System.out.println("Quiting");
+		else
+			System.out.println("gotoURL:" + url);
 // #endif
-		if (url==null) return;
-		
-		LineContent c = book_manager.threadGetPage(Configuration.CONTENT_PATH, url, this);
-		if ( c!=null) after_content_loaded(c);
-		history_manager.addHistory(url);
+		if (url==null) {
+			popup_zone.Alert("确认退出"+Configuration.APP_NAME);
+		} else {
+			LineContent c = book_manager.threadGetPage(Configuration.CONTENT_PATH, url, this);
+			if ( c!=null) after_content_loaded(c);
+			history_manager.addHistory(url);
+		}
 	}
 	// Callback by other thread
 	public void thread_callback(Object data) {
@@ -135,6 +146,9 @@ public class Browser extends Canvas implements ThreadCallback, ICommandManager {
 		case BrowserCommand.SET_MENU_TITLE:
 			menu_zone.setMiddleText((String)data);
 			repaint();
+			break;
+		case BrowserCommand.CONFIRM:
+			midlet.quit();
 			break;
 		}
 		

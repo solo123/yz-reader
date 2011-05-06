@@ -68,6 +68,10 @@ public class MenuZone extends ImageZone {
 		Graphics g = graphics[0];
 		g.setColor(bgcolor);
 		g.fillRect(0, 0, image_width, image_height);
+		g.setColor(0x999999);
+		g.drawLine(0, 0, image_width, 0);
+		g.setColor(0xffffff);
+		g.drawLine(0, 1, image_width, 1);
 		
 		g.setColor(color);
 		g.drawString("菜单", 4, 2, Graphics.TOP|Graphics.LEFT);
