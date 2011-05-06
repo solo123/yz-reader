@@ -10,6 +10,7 @@ import org.kxml2.io.KXmlParser;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
+import com.yazo.application.Configuration;
 import com.yazo.net.ContentServerService;
 import com.yazo.thread.ThreadPool;
 import com.yazo.thread.WaitCallback;
@@ -29,6 +30,10 @@ public class BookManager {
 		content = null;
 		line_chars = 0;
 		content_buffer = new Hashtable();
+		Resize();
+	}
+	public void Resize(){
+		line_chars = (Configuration.SCREEN_WIDTH - 20)/Configuration.FONT_WIDTH;
 	}
 	public LineContent threadGetPage(String service, String page_name, ThreadCallback callback_object){
 		Object buf = content_buffer.get(page_name);

@@ -1,20 +1,21 @@
 package com.yazo.application;
 
-import javax.microedition.lcdui.*;
+import javax.microedition.lcdui.Graphics;
+import javax.microedition.lcdui.Image;
 
 import com.yazo.books.BookMenu;
+import com.yazo.model.ICommandManager;
 import com.yazo.tools.ImageZone;
-import com.yazo.ui.Zone;
 
 public class MenuZone extends ImageZone {
 	public int state;
 	public Image menuImage, menuShadowImage;
-	private Graphics g1;
 	private int menu_width, menu_height, cursor, max_items, line_height;
 	private BookMenu book_menu;
 	private String middle_text, right_menu_text;
+	private ICommandManager command_manager;
 	
-	public MenuZone() {
+	public MenuZone(ICommandManager manager) {
 		super();
 		state = 0;
 		cursor = 0;
@@ -24,14 +25,26 @@ public class MenuZone extends ImageZone {
 		menu_height = 130;
 		middle_text = null;
 		right_menu_text = "退出";
+		command_manager = manager;
 		menuImage = Image.createImage(menu_width, menu_height);
-		g1 = menuImage.getGraphics();
+		menuImage.getGraphics();
 		menuShadowImage = Image.createImage(menu_width, menu_height);
 		Graphics g0 = menuShadowImage.getGraphics();
 		g0.setColor(0x666666);
 		g0.fillRect(0, 0, menu_width, menu_height);
 		g0 = null;
 		book_menu = new BookMenu();
+		
+		setScreenSize(Configuration.SCREEN_WIDTH, Configuration.SCREEN_HEIGHT);
+		setImageSize(Configuration.SCREEN_WIDTH, Configuration.MENU_HEIGHT);
+		setPos(0, Configuration.SCREEN_HEIGHT);
+		setFontSize(Configuration.FONT_SIZE);
+		setColor(0xc2c2c2, 0);
+
+		line_height = Configuration.FONT_HEIGHT;
+		line_height = line_height + line_height/4;
+		menu_width = default_font.stringWidth("系统配置") + 50;
+		menu_height = line_height * max_items + 4;
 	}
 	public void setImageSize(int width, int height){
 		super.setImageSize(width, height);
@@ -48,13 +61,7 @@ public class MenuZone extends ImageZone {
 		g.fillRect(0, 0, menu_width, menu_height);
 		g = null;
 	}
-	public void setFont(Font font){
-		super.setFont(font);
-		line_height = font.getHeight();
-		line_height = line_height + line_height/4;
-		menu_width = font.stringWidth("系统配置") + 50;
-		menu_height = line_height * max_items + 4;
-	}
+
 	
 	
 	public void repaint_bar(){
@@ -143,6 +150,23 @@ public class MenuZone extends ImageZone {
 			g.drawImage(images[1], posx+4, posy-image_height-4, Graphics.BOTTOM|Graphics.LEFT);
 		}
 		
+	}
+	public void keyReleased(int keyCode) {
+		if (keyCode == -1){
+			cursorUp();
+		} else if (keyCode == -2) {
+			cursorDown();
+		} else if (keyCode == -3) {
+			cursorLeft();
+		} else if (keyCode == -4) {
+			cursorRight();
+		} else if (keyCode == -5) {
+			//TODO: menu action, gotoUrl(main_zone.current_cmd);
+		} else if (keyCode == -6){
+			activeMenu();
+		} else if (keyCode == -7){
+			activeMenu();
+		}
 	}
 	
 

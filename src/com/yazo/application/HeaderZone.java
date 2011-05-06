@@ -8,6 +8,10 @@ import com.yazo.ui.*;
 public class HeaderZone extends ImageZone {
 	public HeaderZone() {
 		super();
+		setScreenSize(Configuration.SCREEN_WIDTH, Configuration.SCREEN_HEIGHT);
+		setImageSize(Configuration.SCREEN_WIDTH, Configuration.HEADER_HEIGHT);
+		setFontSize(Configuration.FONT_SIZE);
+		setColor(0x7c90b3, 0xFFFFFF);
 	}
 	public void setImageSize(int width, int height){
 		super.setImageSize(width, height);
@@ -17,9 +21,6 @@ public class HeaderZone extends ImageZone {
 		graphics[0] = images[0].getGraphics();
 	}
 	public void setHeader(String header){
-		Font font;
-		font = Font.getFont(Font.FACE_SYSTEM, Font.STYLE_PLAIN, Font.SIZE_MEDIUM);
-		
 		Graphics g = graphics[0];
 		g.setColor(bgcolor);
 		g.fillRect(0, 0, image_width, image_height-1);
@@ -28,7 +29,7 @@ public class HeaderZone extends ImageZone {
 		g.fillRect(10, 5, 4, 10);
 		g.setColor(color);
 		if(header!=null){
-			g.setFont(font);
+			g.setFont(default_font);
 			g.drawString(header, 24, 2, Graphics.TOP|Graphics.LEFT);
 		}
 		

@@ -9,8 +9,9 @@ import javax.microedition.lcdui.Image;
 import com.yazo.books.BrowserContent;
 import com.yazo.books.LineContent;
 import com.yazo.books.LinkContent;
+import com.yazo.model.BrowserCommand;
+import com.yazo.model.ICommandManager;
 import com.yazo.tools.ImageZone;
-import com.yazo.ui.Zone;
 
 public class MainZone extends ImageZone {
 	private LineContent content;
@@ -18,12 +19,12 @@ public class MainZone extends ImageZone {
 	private int cursor, total_links;
 	public String back_url,current_cmd,next_cmd;
 	public int catalog_bg, text_bg;
-	public Browser browser;
 	private Image arrow1;
 	public int line_height;
 	private int font_height, line_space, line_top_padding, line_bottom_padding;
+	private ICommandManager command_manager;
 	
-	public MainZone() {
+	public MainZone(ICommandManager manager) {
 		super();
 		cursor = 0;
 		total_links = 0;
@@ -31,13 +32,24 @@ public class MainZone extends ImageZone {
 		current_cmd = null;
 		catalog_bg = 0xfdface;
 		text_bg = 0xaaaaaa;
-		browser = null;
 		arrow1 = null;
+		command_manager = manager;
 		try {
 			arrow1 = Image.createImage("/arrow-blue.png");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+
+		setScreenSize(Configuration.SCREEN_WIDTH, Configuration.SCREEN_HEIGHT);
+		setImageSize(Configuration.SCREEN_WIDTH, Configuration.SCREEN_HEIGHT - Configuration.HEADER_HEIGHT - Configuration.MENU_HEIGHT);
+		setPos(0, Configuration.HEADER_HEIGHT);
+		setFontSize(Configuration.FONT_SIZE);
+		setColor(0xdde4ec, 0x363636);
+		font_height = Configuration.FONT_HEIGHT;
+		line_space =  font_height/4;
+		line_height = font_height + line_space;
+		line_top_padding = line_space/2;
+		line_bottom_padding = line_space - line_top_padding;
 	}
 	public void setImageSize(int width, int height){
 		super.setImageSize(width, height);
@@ -46,18 +58,7 @@ public class MainZone extends ImageZone {
 		graphics = new Graphics[1];
 		graphics[0] = images[0].getGraphics();
 	}
-	public void setFont(Font font){
-		super.setFont(font);
-		int fontHeight = font.getHeight();
-		font_height = fontHeight;
-		line_space =  fontHeight/4;
-		line_height = font_height + line_space;
-		line_top_padding = line_space/2;
-		line_bottom_padding = line_space - line_top_padding;
-	}
-	public void setBrowser(Browser browser){
-		this.browser = browser;
-	}
+
 	public void setContent(LineContent content){
 		this.content = content;
 		this.back_url = "home"; // from content.back_url; ??
@@ -67,7 +68,8 @@ public class MainZone extends ImageZone {
 		if (page>=0 && page<content.page_count) {
 			cursor = 0;
 			current_page = page;
-			if (browser!=null) browser.setPageText("" + (current_page+1) + " / " + content.page_count);
+			String title = "" + (current_page+1) + " / " + content.page_count;
+			if (command_manager!=null) command_manager.command_callback(BrowserCommand.SET_MENU_TITLE, title);
 			paintImage();
 		}
 	}
@@ -140,5 +142,31 @@ public class MainZone extends ImageZone {
 			g.drawImage(images[0], posx, posy, Graphics.TOP|Graphics.LEFT);
 		
 	}
+	
+	public void keyReleased(int keyCode) {
+// #ifdef DBG_KEYS
+		System.out.println("main_zone key:" + keyCode);
+// #endif		
+		if (keyCode == -1){
+			cursorUp();
+		} else if (keyCode == -2) {
+			cursorDown();
+		} else if (keyCode == -3) {
+			prevPage();
+		} else if (keyCode == -4) {
+			nextPage();
+		} else if (keyCode == -5) {
+// #ifdef DBG_KEYS
+			System.out.println("run command:" + next_cmd);
+// #endif			
+			if(next_cmd!=null && command_manager!=null)
+				command_manager.command_callback(BrowserCommand.GOTO_URL, next_cmd);
+		} else if (keyCode == -6){
+			if (command_manager!=null) command_manager.command_callback(BrowserCommand.ACTIVE_MENU, null);
+		} else if (keyCode == -7){
+			if (command_manager!=null) command_manager.command_callback(BrowserCommand.GO_BACK, null);
+		}
+	}
+	
 	
 }

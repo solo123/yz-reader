@@ -52,6 +52,7 @@ public class ContentServerService {
 			parser.require(XmlPullParser.END_TAG, null, "page");
 		} catch (Exception e) {
 			e.printStackTrace();
+			c = null;
 		}
 		return c;
 	}
