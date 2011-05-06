@@ -4,22 +4,17 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-
 import javax.microedition.lcdui.Display;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
-
 import org.xmlpost.PostContent;
-
-import com.yazo.contol.Handle;
 import com.yazo.protocol.Login;
 import com.yazo.util.Consts;
 
 public class MainMIDlet extends MIDlet {
-	private Browser browser;
 	public MainMIDlet(){
 		Consts.yzchannel = Consts.channel + this.getChannel();
-		browser = new Browser(this,Display.getDisplay(this));
+		new Browser(this,Display.getDisplay(this));
 		
 //		new Thread(){
 //			public void run() {

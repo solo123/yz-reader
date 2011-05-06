@@ -1,9 +1,7 @@
 package com.yazo.application;
 
 import javax.microedition.lcdui.*;
-
 import com.yazo.tools.ImageZone;
-import com.yazo.ui.*;
 
 public class HeaderZone extends ImageZone {
 	public HeaderZone() {

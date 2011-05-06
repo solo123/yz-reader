@@ -1,11 +1,8 @@
 package com.yazo.application;
 
 import java.io.IOException;
-
-import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
-
 import com.yazo.books.BrowserContent;
 import com.yazo.books.LineContent;
 import com.yazo.books.LinkContent;

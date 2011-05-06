@@ -12,7 +12,6 @@ import javax.microedition.lcdui.*;
 public class Browser extends Canvas implements ThreadCallback, ICommandManager {
 	public BookManager book_manager;
 	private Display display;
-	private MainMIDlet midlet;
 	private FlashCanvas flash;
 	private ImageZone[] zones;
 	private HeaderZone header_zone;
@@ -23,7 +22,6 @@ public class Browser extends Canvas implements ThreadCallback, ICommandManager {
 	
 	public Browser(MainMIDlet midlet, Display display){
 		this.display = display;
-		this.midlet = midlet;
 		flash = new FlashCanvas(midlet);
 		display.setCurrent(flash);
 		
@@ -49,7 +47,9 @@ public class Browser extends Canvas implements ThreadCallback, ICommandManager {
 		gotoUrl(Configuration.CONTENT_HOME);
 	}
 	protected void paint(Graphics g) {
+// #ifdef DBG		
 		System.out.println("Browser repainted.");
+// #endif
 		for(int i=0; i<zones.length; i++){
 			if (zones[i]!=null) zones[i].paint(g);
 		}

@@ -1,20 +1,11 @@
 ﻿package com.yazo.application;
 
-
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.Vector;
-
 import javax.microedition.lcdui.Canvas;
-import javax.microedition.lcdui.Command;
-import javax.microedition.lcdui.CommandListener;
-import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
-import javax.microedition.midlet.MIDlet;
-
-
 
 public class FlashCanvas extends Canvas{
 	private int width;
