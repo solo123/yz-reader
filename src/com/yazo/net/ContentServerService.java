@@ -4,7 +4,8 @@ import javax.microedition.io.Connector;
 import javax.microedition.io.HttpConnection;
 import org.kxml2.io.KXmlParser;
 import org.xmlpull.v1.XmlPullParser;
-import com.yazo.books.LineContent;
+
+import com.yazo.contents.LineContent;
 
 public class ContentServerService {
 	public static LineContent getAndParseContent(String url) {
@@ -54,6 +55,7 @@ public class ContentServerService {
 			e.printStackTrace();
 			c = null;
 		}
+		if (c!=null) c.markPages();
 		return c;
 	}
 }

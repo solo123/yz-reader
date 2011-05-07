@@ -1,4 +1,4 @@
-#Fri May 06 15:45:37 CST 2011
+#Sat May 07 23:23:07 CST 2011
 eclipse.preferences.version=1
 encoding//.processed/src/com/yazo/application/Browser.java=UTF-8
 encoding//.processed/src/com/yazo/application/Configuration.java=UTF-8
@@ -16,6 +16,13 @@ encoding//.processed/src/com/yazo/books/LineContent.java=UTF-8
 encoding//.processed/src/com/yazo/books/LinkContent.java=UTF-8
 encoding//.processed/src/com/yazo/books/PageCache.java=UTF-8
 encoding//.processed/src/com/yazo/books/TextContent.java=UTF-8
+encoding//.processed/src/com/yazo/contents/BookMenu.java=UTF-8
+encoding//.processed/src/com/yazo/contents/BrowserContent.java=UTF-8
+encoding//.processed/src/com/yazo/contents/ContentManager.java=UTF-8
+encoding//.processed/src/com/yazo/contents/LineContent.java=UTF-8
+encoding//.processed/src/com/yazo/contents/LinkContent.java=UTF-8
+encoding//.processed/src/com/yazo/contents/PageCache.java=UTF-8
+encoding//.processed/src/com/yazo/contents/TextContent.java=UTF-8
 encoding//.processed/src/com/yazo/contol/Handle.java=UTF-8
 encoding//.processed/src/com/yazo/model/BrowserCommand.java=UTF-8
 encoding//.processed/src/com/yazo/model/CommandManagerObject.java=UTF-8

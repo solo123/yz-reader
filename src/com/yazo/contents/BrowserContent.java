@@ -1,4 +1,4 @@
-package com.yazo.books;
+package com.yazo.contents;
 
 public class BrowserContent {
 	public String content_type;

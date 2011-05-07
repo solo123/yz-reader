@@ -1,4 +1,4 @@
-﻿package com.yazo.books;
+﻿package com.yazo.contents;
 
 public class BookMenu {
 	public String[] items, cmds;

@@ -1,4 +1,4 @@
-package com.yazo.books;
+package com.yazo.contents;
 
 import com.yazo.application.Configuration;
 
@@ -43,7 +43,7 @@ public class LineContent {
 	public void addImage(String image_path, String padding){
 	}
 	
-	public void markPages(){
+	public void markPages(){		
 		int h = 100000;
 		page_count = 0;
 		for(int i=0; i<line_count; i++){

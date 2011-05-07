@@ -1,4 +1,4 @@
-package com.yazo.books;
+package com.yazo.contents;
 
 import java.util.Hashtable;
 

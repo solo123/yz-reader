@@ -3,9 +3,10 @@ package com.yazo.application;
 import java.io.IOException;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
-import com.yazo.books.BrowserContent;
-import com.yazo.books.LineContent;
-import com.yazo.books.LinkContent;
+
+import com.yazo.contents.BrowserContent;
+import com.yazo.contents.LineContent;
+import com.yazo.contents.LinkContent;
 import com.yazo.model.BrowserCommand;
 import com.yazo.model.ICommandManager;
 import com.yazo.tools.ImageZone;

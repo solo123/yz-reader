@@ -1,4 +1,4 @@
-package com.yazo.books;
+package com.yazo.contents;
 
 import com.yazo.model.BrowserCommand;
 import com.yazo.model.CommandManagerObject;
@@ -7,13 +7,13 @@ import com.yazo.net.ContentServerService;
 import com.yazo.thread.ThreadPool;
 import com.yazo.thread.WaitCallback;
 
-public class BookManager{
+public class ContentManager{
 	public String header;
 	public LineContent content;
 	public PageCache content_buffer;
 	private ICommandManager command_manager;
 	
-	public BookManager(ICommandManager manager){
+	public ContentManager(ICommandManager manager){
 		header = null;
 		content = null;
 		content_buffer = new PageCache();
@@ -48,6 +48,7 @@ public class BookManager{
 		data.manager = command_manager;
 		data.data1 = service;
 		data.data2 = url;
+		command_manager.command_callback(BrowserCommand.LOADING_FROM_INTERNET, null);
 		try {
 			ThreadPool.queueWorkItem(callback, data);
 		} catch (Exception e) {

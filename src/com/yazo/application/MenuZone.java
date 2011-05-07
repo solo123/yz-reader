@@ -3,48 +3,39 @@ package com.yazo.application;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
-import com.yazo.books.BookMenu;
+import com.yazo.contents.BookMenu;
 import com.yazo.model.ICommandManager;
 import com.yazo.tools.ImageZone;
 
 public class MenuZone extends ImageZone {
 	public int state;
-	public Image menuImage, menuShadowImage;
-	private int menu_width, menu_height, cursor, max_items, line_height;
+	private int  cursor, max_items, line_height;
 	private BookMenu book_menu;
 	private String middle_text, right_menu_text;
 	private ICommandManager command_manager;
+	
+	private int bar_width, bar_height, menu_width, menu_height;
 	
 	public MenuZone(ICommandManager manager) {
 		super();
 		state = 0;
 		cursor = 0;
-		line_height = 20;
-		max_items = 5;
-		menu_width = 150;
-		menu_height = 130;
-		middle_text = null;
-		right_menu_text = "退出";
-		command_manager = manager;
-		menuImage = Image.createImage(menu_width, menu_height);
-		menuImage.getGraphics();
-		menuShadowImage = Image.createImage(menu_width, menu_height);
-		Graphics g0 = menuShadowImage.getGraphics();
-		g0.setColor(0x666666);
-		g0.fillRect(0, 0, menu_width, menu_height);
-		g0 = null;
 		book_menu = new BookMenu();
+		line_height = Configuration.FONT_HEIGHT + Configuration.FONT_HEIGHT / 4;
+		max_items = 5;
+		bar_width = Configuration.SCREEN_WIDTH;
+		bar_height = Configuration.MENU_HEIGHT;
+		menu_width = Configuration.FONT_WIDTH * 5 + 50;
+		menu_height = line_height * book_menu.items.length + 20;
+		middle_text = null;
+		right_menu_text = "返回";
+		command_manager = manager;
 		
 		setScreenSize(Configuration.SCREEN_WIDTH, Configuration.SCREEN_HEIGHT);
 		setImageSize(Configuration.SCREEN_WIDTH, Configuration.MENU_HEIGHT);
 		setPos(0, Configuration.SCREEN_HEIGHT);
 		setFontSize(Configuration.FONT_SIZE);
 		setColor(0xc2c2c2, 0);
-
-		line_height = Configuration.FONT_HEIGHT;
-		line_height = line_height + line_height/4;
-		menu_width = default_font.stringWidth("系统配置") + 50;
-		menu_height = line_height * max_items + 4;
 	}
 	public void setImageSize(int width, int height){
 		super.setImageSize(width, height);
@@ -62,8 +53,6 @@ public class MenuZone extends ImageZone {
 		g = null;
 	}
 
-	
-	
 	public void repaint_bar(){
 		Graphics g = graphics[0];
 		g.setColor(bgcolor);
@@ -119,20 +108,14 @@ public class MenuZone extends ImageZone {
 			state = 0;
 	}
 	public void cursorUp(){
-		if (cursor>0){ 
-			cursor--;
-			repaint_menu();
-		}
+
 	}
 
 	public void cursorDown(){
-		if (cursor<max_items-1){
-			cursor++;
-			repaint_menu();
-		}
+		
 	}
 	public void cursorLeft(){
-		activeMenu();
+		
 	}
 	public void cursorRight(){
 		//TODO: run command
@@ -156,22 +139,26 @@ public class MenuZone extends ImageZone {
 		
 	}
 	public void keyReleased(int keyCode) {
-		if (keyCode == -1){
-			cursorUp();
-		} else if (keyCode == -2) {
-			cursorDown();
-		} else if (keyCode == -3) {
-			cursorLeft();
-		} else if (keyCode == -4) {
-			cursorRight();
-		} else if (keyCode == -5) {
-			//TODO: menu action, gotoUrl(main_zone.current_cmd);
-		} else if (keyCode == -6){
+		switch(keyCode){
+		case -1:  // cursor up
+			if (cursor>0){ 
+				cursor--;
+				repaint_menu();
+			}
+			break;
+		case -2:  // cursor down
+			if (cursor<max_items-1){
+				cursor++;
+				repaint_menu();
+			}
+			break;
+		case -4: // cursor right
+			break;
+		case -3: // cursor left = active(deactive) menu
+		case -6:
+		case -7:
 			activeMenu();
-		} else if (keyCode == -7){
-			activeMenu();
+			break;
 		}
 	}
-	
-
 }

@@ -1,16 +1,13 @@
 ﻿package com.yazo.application;
 
-import com.yazo.books.*;
+import com.yazo.contents.*;
 import com.yazo.model.BrowserCommand;
 import com.yazo.model.ICommandManager;
-import com.yazo.tools.CallbackData;
 import com.yazo.tools.ImageZone;
-import com.yazo.tools.ThreadCallback;
-
 import javax.microedition.lcdui.*;
 
 public class Browser extends Canvas implements ICommandManager {
-	public BookManager book_manager;
+	public ContentManager book_manager;
 	private MainMIDlet midlet;
 	private Display display;
 	private FlashCanvas flash;
@@ -26,9 +23,6 @@ public class Browser extends Canvas implements ICommandManager {
 		this.display = display;
 		this.midlet = midlet;
 		
-		flash = null;
-		init_browser();
-		/*
 		flash = new FlashCanvas(midlet);
 		display.setCurrent(flash);
 		
@@ -37,16 +31,14 @@ public class Browser extends Canvas implements ICommandManager {
 				init_browser();
 			}
 		}.start();
-		*/
 	}
 	private void init_browser(){
 		setFullScreenMode(true);
 		on_net_reading = Boolean.TRUE;
+		Configuration.SetScreenSize(getWidth(), getHeight());
 		Configuration.SetFontSize(Font.SIZE_MEDIUM);
-		Configuration.SCREEN_WIDTH = getWidth();
-		Configuration.SCREEN_HEIGHT = getHeight();
 		
-		book_manager = new BookManager(this);
+		book_manager = new ContentManager(this);
 		zones = new ImageZone[4];
 		zones[0] = header_zone = new HeaderZone();
 		zones[1] = main_zone = new MainZone(this);
@@ -115,6 +107,7 @@ public class Browser extends Canvas implements ICommandManager {
 			popup_zone.Alert("确认退出"+Configuration.APP_NAME);
 		} else {
 			book_manager.loadLineContentFromUrl(Configuration.CONTENT_PATH, url);
+			history_manager.addHistory(url);
 			// will callback command_callback
 		}
 	}

@@ -2,8 +2,6 @@ package com.yazo.tools;
 
 import javax.microedition.lcdui.*;
 
-import com.yazo.application.Configuration;
-
 public abstract class ImageZone {
 	protected int screen_width, screen_height, image_width, image_height, bgcolor, color, posx,posy;
 	protected Image[] images;
