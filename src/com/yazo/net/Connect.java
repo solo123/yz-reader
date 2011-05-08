@@ -108,7 +108,8 @@ public class Connect {
 	 * @throws Exception
 	 */
 	public final Object queryServerForXML(String xml) throws Exception {
-		System.out.println("xml-rul:" + url);
+		System.out.println("xml-rul:" + url + ", methed:"+ this.methed + ", headAction:" + this.headAction);
+		System.out.println("xml:" + xml);
 		Object obj = null;
 		channel = openChannel();
 		try {

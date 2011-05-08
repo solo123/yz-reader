@@ -223,6 +223,7 @@ public class Handle {
 		p.addLabel("Request", "RegisterReq");
 		p.addLabel("RegisterReq", "clientHash");
 		p.addContent("clientHash", pp);
+		System.out.println("register:" + p.getXml());
 		strM = null;
 		pp = null;
 		Register reg = new Register(Consts.HOSTURL, "register");

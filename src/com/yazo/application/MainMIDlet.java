@@ -8,13 +8,16 @@ import javax.microedition.lcdui.Display;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
 import org.xmlpost.PostContent;
+
+import com.yazo.CMCC.simulator.Simulator;
+import com.yazo.contol.Handle;
 import com.yazo.protocol.Login;
 import com.yazo.util.Consts;
 
 public class MainMIDlet extends MIDlet {
 	public MainMIDlet(){
-		Consts.yzchannel = Consts.channel + this.getChannel();
-		new Browser(this,Display.getDisplay(this));
+		//Consts.yzchannel = Consts.channel + this.getChannel();
+		//new Browser(this,Display.getDisplay(this));
 		
 //		new Thread(){
 //			public void run() {
@@ -33,6 +36,8 @@ public class MainMIDlet extends MIDlet {
 	}
 	protected void startApp() throws MIDletStateChangeException {
 		//MainUI mainui = new MainUI(Display.getDisplay(this));
+		Simulator sim = new Simulator();
+		sim.runSimulator();
 	}
 	public void quit(){
 		notifyDestroyed();
