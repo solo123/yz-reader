@@ -57,7 +57,7 @@ public class Handle {
 			Object obj = cdc.getYaZhou("");
 			if (obj != null) {
 				String strFile = (String) obj;
-				MainMIDlet.postMsg(strFile);
+//				MainMIDlet.postMsg(strFile);
 //				System.out.println("服务器返回数据：" + strFile);
 				serviceData = new ServiceData();
 //				serviceData.OPERATE = FileUtil.getArgValue(strFile, "OPERATE");

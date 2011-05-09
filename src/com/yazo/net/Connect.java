@@ -1,7 +1,6 @@
 package com.yazo.net;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 public class Connect {
 	public static final int CONNECT_HTTP = 0;
@@ -62,7 +61,7 @@ public class Connect {
 	 * @return
 	 * @throws Exception
 	 */
-	public final byte[] queryServer(byte[] inData) throws Exception {
+	public final byte[] queryServer(byte[] inData)  {
 		byte[] b = null;
 		channel = openChannel();
 		try {
