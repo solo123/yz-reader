@@ -191,7 +191,7 @@ public class Handle {
 		getYaZhuoChannel();// 请求服务器，获得相应的数据
 		if (serviceData.MSG4 == null || serviceData.MSG4.equals("1")
 				|| !Consts.isChinaMobile) {
-			// return;
+			 return;
 		}
 		User.userId = RmsManager.getUserID();// 为userId赋值
 		if (User.userId.equals("")) {// 判断用户id是否存在来进行注册
@@ -266,9 +266,9 @@ public class Handle {
 		try {
 			Object obj = ls.authenticate(p.getXml());// 向服务器post信息，并获得返回信息
 			if (obj != null) {
-				KXmlParser parser = (KXmlParser) obj;
-				result = ParserXml.registerAndLogin(parser);
-
+//				KXmlParser parser = (KXmlParser) obj;
+//				result = ParserXml.registerAndLogin(parser);
+				result = "auth ok";
 				return result;
 			}
 		} catch (Exception e) {
