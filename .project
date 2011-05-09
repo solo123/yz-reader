@@ -11,7 +11,17 @@
 			</arguments>
 		</buildCommand>
 		<buildCommand>
+			<name>eclipseme.core.preprocessor</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+		<buildCommand>
 			<name>org.eclipse.jdt.core.javabuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+		<buildCommand>
+			<name>eclipseme.core.preverifier</name>
 			<arguments>
 			</arguments>
 		</buildCommand>
@@ -31,5 +41,7 @@
 		<nature>org.eclipse.mtj.core.nature</nature>
 		<nature>org.eclipse.mtj.core.preprocessingNature</nature>
 		<nature>org.eclipse.mtj.jmunit.jmunitNature</nature>
+		<nature>eclipseme.core.nature</nature>
+		<nature>eclipseme.core.preprocessingNature</nature>
 	</natures>
 </projectDescription>

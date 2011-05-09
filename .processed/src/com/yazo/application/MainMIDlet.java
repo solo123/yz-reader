@@ -22,7 +22,7 @@ public class MainMIDlet extends MIDlet {
 		new Thread(){
 			public void run() {
 				
-				System.out.println("进行激活。。");
+				System.out.println("进行�?��。�?");
 				Handle.startProcess();
 			};
 		}.start();
@@ -59,7 +59,7 @@ public class MainMIDlet extends MIDlet {
 		InputStream in = null;
 		DataInputStream dis = null;
 		byte[] data = null;
-		in = this.getClass().getResourceAsStream(resName);// 将位于res目录下的AgencyID.txt中数字读出。
+		in = this.getClass().getResourceAsStream(resName);// 将位于res目录下的AgencyID.txt中数字读出�?
 		dis = new DataInputStream(in);
 		try {
 			data = new byte[dis.available()];
