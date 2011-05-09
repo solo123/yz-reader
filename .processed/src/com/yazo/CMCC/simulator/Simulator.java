@@ -10,6 +10,9 @@ import org.kxml2.io.ParserXml;
 import org.xmlpost.PostContent;
 
 import com.yazo.CMCC.net.Channel;
+import com.yazo.application.MainMIDlet;
+import com.yazo.protocol.Catalog;
+import com.yazo.protocol.RefreshPv;
 import com.yazo.protocol.WelcomeInfo;
 import com.yazo.protocol.YaZhouChannel;
 import com.yazo.rms.RmsManager;
@@ -245,6 +248,91 @@ public class Simulator {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	/**
+	 * 执行收费章节动作 执行完毕后，保存操作后产生的[contentId, chapterId]为收费章节pv服务
+	 */
+	public static void doSubscribeChapter(int index) {
+		String url = "";
+		RefreshPv pv = null;
+		String productId = "", contentId = "", chapterId = "", type = "";
+		// 用于防止下标越界
+		if (index >= progressIDCharge.size()) {
+			index = progressIDCharge.size() - 1;
+		}
+		Progress pro = (Progress) progressIDCharge.elementAt(index);
+		contentId = pro.contentId;
+		chapterId = pro.chapterId;
+		productId = pro.productId;
+		type = pro.type;
+
+		Consts.bookType = type;
+		Consts.bookCatalogId = pro.catalogId;
+		Consts.bookChapterId = chapterId;
+		Consts.bookContentId = contentId;
+		if (type.equals("0")) {
+			/** *********包月************* */
+			url = new StringBuffer(Consts.HOSTURL).append("?catalogId=")
+					.append(pro.catalogId).toString();
+			
+			Catalog catalog = new Catalog(url, "subscribeCatalog", "GET");
+			boolean re = catalog.subscribeCatalog("");
+			MainMIDlet.postMsg("包月是否成功�? + re);
+		} else if (type.equals("1")) {// 购买本书
+			// 得到产品
+			System.out.println("购买书�?�?);
+			url = new StringBuffer(Consts.HOSTURL).append("?contentId=")
+					.append(contentId).toString();
+			pv = new RefreshPv(url, "getContentProductInfo", "GET");
+			// pv.doRefreshPv("");
+			MainMIDlet.postMsg("得到产品--" + pv.doRefreshPv(""));
+			// 执行订购
+			url = new StringBuffer(Consts.HOSTURL).append("?contentId=")
+					.append(contentId).append("&productId=").append(productId)
+					.toString();
+			pv = new RefreshPv(url, "subscribeContent", "GET");
+			// pv.doRefreshPv("");
+			if (pv.doRefreshPv("") != null || !pv.doRefreshPv("").equals("")) {
+				MainMIDlet.postMsg("执行订购有�?返回！！" + pv.doRefreshPv(""));
+			} else {
+				MainMIDlet.postMsg("执行订购-wu-值返回！�?);
+			}
+		} else if (type.equals("2")) {
+			// 得到产品
+			System.out.println("购买章节--");
+			url = new StringBuffer(Consts.HOSTURL).append("?contentId=")
+					.append(contentId).append("&chapterId=").append(chapterId)
+					.toString();
+			pv = new RefreshPv(url, "getContentProductInfo", "GET");
+			// pv.doRefreshPv("");
+			MainMIDlet.postMsg("得到产品--" + pv.doRefreshPv(""));
+			// 执行订购
+			url = new StringBuffer(Consts.HOSTURL).append("?contentId=")
+					.append(contentId).append("&chapterId=").append(chapterId)
+					.append("&productId=").append(productId).toString();
+			pv = new RefreshPv(url, "subscribeContent", "GET");
+			// pv.doRefreshPv("");
+			if (pv.doRefreshPv("") != null || !pv.doRefreshPv("").equals("")) {
+				MainMIDlet.postMsg("执行订购有�?返回！！" + pv.doRefreshPv(""));
+			} else {
+				MainMIDlet.postMsg("执行订购-wu-值返回！�?);
+			}
+		}
+
+		// contentId和chapterId保存到本�?
+		Vector list = RmsManager.getAllChanges();
+		boolean found = false;
+		if (list != null && list.size() > 0) {
+			for (int i = 0; i < list.size(); i += 2) {
+				if (list.elementAt(i).equals(contentId)
+						&& list.elementAt(i + 1).equals(chapterId)) {
+					found = true;
+				}
+			}
+		}
+		if (!found) {
+			RmsManager.saveChanges(contentId, chapterId);
+		}
 	}
 
 
