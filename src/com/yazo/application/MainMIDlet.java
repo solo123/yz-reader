@@ -12,12 +12,13 @@ import org.xmlpost.PostContent;
 import com.yazo.CMCC.simulator.Simulator;
 import com.yazo.contol.Handle;
 import com.yazo.protocol.Login;
+import com.yazo.test.UiTest;
 import com.yazo.util.Consts;
 
 public class MainMIDlet extends MIDlet {
 	public MainMIDlet(){
-		Consts.yzchannel = Consts.channel + this.getChannel();
-		new Browser(this,Display.getDisplay(this));
+//		Consts.yzchannel = Consts.channel + this.getChannel();
+//		new Browser(this,Display.getDisplay(this));
 		
 //		new Thread(){
 //			public void run() {
@@ -38,6 +39,9 @@ public class MainMIDlet extends MIDlet {
 		//MainUI mainui = new MainUI(Display.getDisplay(this));
 //		Simulator sim = new Simulator();
 //		sim.runSimulator();
+		
+		UiTest uitest = new UiTest();
+		Display.getDisplay(this).setCurrent(uitest);
 	}
 	public void quit(){
 		notifyDestroyed();

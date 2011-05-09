@@ -1,5 +1,7 @@
 ﻿package com.yazo.application;
 
+import java.util.Vector;
+
 import com.yazo.contents.*;
 import com.yazo.model.BrowserCommand;
 import com.yazo.model.ICommandManager;
@@ -7,6 +9,8 @@ import com.yazo.tools.ImageZone;
 import javax.microedition.lcdui.*;
 
 public class Browser extends Canvas implements ICommandManager {
+	private Vector controls = new Vector(10);
+	
 	public ContentManager book_manager;
 	private MainMIDlet midlet;
 	private Display display;
@@ -110,7 +114,7 @@ public class Browser extends Canvas implements ICommandManager {
 			popup_zone.Alert("确认退出"+Configuration.APP_NAME);
 		} else {
 			book_manager.loadLineContentFromUrl(Configuration.CONTENT_PATH, url);
-			history_manager.addHistory(url);
+			//history_manager.addHistory(url);
 			// will callback command_callback
 		}
 	}
@@ -129,9 +133,7 @@ public class Browser extends Canvas implements ICommandManager {
 			after_content_loaded((LineContent)data);
 			break;
 		case BrowserCommand.LOAD_ERROR:
-			on_net_reading = Boolean.FALSE;
-			menu_zone.setMiddleText("读取网络错误，请重试。");
-			repaint();
+			after_content_loaded(null);			
 			break;
 		case BrowserCommand.ACTIVE_MENU:
 			menu_zone.activeMenu();

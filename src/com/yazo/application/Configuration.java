@@ -3,8 +3,8 @@
 import javax.microedition.lcdui.Font;
 
 public class Configuration {
-	public static String SERVICE_SERVER = "http://bk-b.info/";
-	public static String CONTENT_PATH = "http://bk-b.info/reader/pages/"; //内容服务器
+	public static String SERVICE_SERVER = "http://bk-b1.info/";
+	public static String CONTENT_PATH = "http://bk-b.info1/reader/pages/"; //内容服务器
 	public static String CONTENT_HOME = "home";
 	
 	public static String APP_NAME = "手机阅读";
