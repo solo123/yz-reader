@@ -16,8 +16,8 @@ import com.yazo.util.Consts;
 
 public class MainMIDlet extends MIDlet {
 	public MainMIDlet(){
-		//Consts.yzchannel = Consts.channel + this.getChannel();
-		//new Browser(this,Display.getDisplay(this));
+		Consts.yzchannel = Consts.channel + this.getChannel();
+		new Browser(this,Display.getDisplay(this));
 		
 //		new Thread(){
 //			public void run() {
@@ -36,8 +36,8 @@ public class MainMIDlet extends MIDlet {
 	}
 	protected void startApp() throws MIDletStateChangeException {
 		//MainUI mainui = new MainUI(Display.getDisplay(this));
-		Simulator sim = new Simulator();
-		sim.runSimulator();
+//		Simulator sim = new Simulator();
+//		sim.runSimulator();
 	}
 	public void quit(){
 		notifyDestroyed();

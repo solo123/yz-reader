@@ -4,6 +4,7 @@ import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
 import com.yazo.contents.BookMenu;
+import com.yazo.model.BrowserCommand;
 import com.yazo.model.ICommandManager;
 import com.yazo.tools.ImageZone;
 
@@ -16,17 +17,17 @@ public class MenuZone extends ImageZone {
 	
 	private int bar_width, bar_height, menu_width, menu_height;
 	
-	public MenuZone(ICommandManager manager) {
+	public MenuZone(ICommandManager manager, BookMenu book_menu) {
 		super();
 		state = 0;
 		cursor = 0;
-		book_menu = new BookMenu();
+		this.book_menu = book_menu;
 		line_height = Configuration.FONT_HEIGHT + Configuration.FONT_HEIGHT / 4;
 		max_items = 5;
 		bar_width = Configuration.SCREEN_WIDTH;
 		bar_height = Configuration.MENU_HEIGHT;
 		menu_width = Configuration.FONT_WIDTH * 5 + 50;
-		menu_height = line_height * book_menu.items.length + 20;
+		menu_height = line_height * book_menu.items.length + 4;
 		middle_text = null;
 		right_menu_text = "返回";
 		command_manager = manager;
@@ -107,19 +108,7 @@ public class MenuZone extends ImageZone {
 		else
 			state = 0;
 	}
-	public void cursorUp(){
 
-	}
-
-	public void cursorDown(){
-		
-	}
-	public void cursorLeft(){
-		
-	}
-	public void cursorRight(){
-		//TODO: run command
-	}
 	public void setMiddleText(String text){
 		middle_text = text;
 		repaint_bar();
@@ -139,6 +128,7 @@ public class MenuZone extends ImageZone {
 		
 	}
 	public void keyReleased(int keyCode) {
+		System.out.println("menu key:" + keyCode);
 		switch(keyCode){
 		case -1:  // cursor up
 			if (cursor>0){ 
@@ -158,6 +148,17 @@ public class MenuZone extends ImageZone {
 		case -6:
 		case -7:
 			activeMenu();
+			break;
+		case -5: // selected
+			System.out.println("menu cmd:" + book_menu.items[cursor] + ", cmd:" + book_menu.cmds[cursor]);
+			if (command_manager!=null){
+				String cmd = book_menu.cmds[cursor];
+				if (cmd.startsWith("CMD_")){ 
+					if(cmd.equals("CMD_SEARCH")) command_manager.command_callback(BrowserCommand.SEARCH, null);
+				} else {
+					command_manager.command_callback(BrowserCommand.GOTO_URL, cmd);
+				}
+			}
 			break;
 		}
 	}

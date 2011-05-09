@@ -1,4 +1,4 @@
-#Sun May 08 21:09:34 CST 2011
+#Mon May 09 10:24:08 CST 2011
 eclipse.preferences.version=1
 encoding//.processed/src/com/yazo/CMCC/simulator/Simulator.java=UTF-8
 encoding//.processed/src/com/yazo/application/Browser.java=UTF-8
@@ -10,6 +10,7 @@ encoding//.processed/src/com/yazo/application/MainMIDlet.java=UTF-8
 encoding//.processed/src/com/yazo/application/MainZone.java=UTF-8
 encoding//.processed/src/com/yazo/application/MenuZone.java=UTF-8
 encoding//.processed/src/com/yazo/application/PopupZone.java=UTF-8
+encoding//.processed/src/com/yazo/application/SearchUi.java=UTF-8
 encoding//.processed/src/com/yazo/contents/BookMenu.java=UTF-8
 encoding//.processed/src/com/yazo/contents/BrowserContent.java=UTF-8
 encoding//.processed/src/com/yazo/contents/ContentManager.java=UTF-8

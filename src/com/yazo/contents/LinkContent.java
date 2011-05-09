@@ -8,7 +8,7 @@ public class LinkContent extends BrowserContent {
 		this.content = content;
 		this.desc = desc;
 		this.url = url;
-		arrow_style = null;
+		this.arrow_style = null;
 	}
 	public LinkContent(String arrow_style, String content, String desc, String url){
 		this.arrow_style = arrow_style;

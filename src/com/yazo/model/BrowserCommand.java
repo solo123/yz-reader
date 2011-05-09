@@ -10,6 +10,10 @@ public class BrowserCommand {
 	public static final int LOAD_ERROR = 7;
 	public static final int QUIT_APPLICATION = 9;
 
-	public static final int PARSE_XML = 11;
+	public static final int SEARCH = 10;
+	public static final int SEARCH_TEXT = 11;
+	
+	public static final int PARSE_XML = 20;
+	
 		
 }

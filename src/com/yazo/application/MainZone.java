@@ -91,14 +91,14 @@ public class MainZone extends ImageZone {
 				if (lnk_cnt == cursor){
 					g.setColor(color);
 					g.fillRect(10, posy-line_top_padding, image_width-19, line_height-1);
-					if(arrow1!=null) g.drawImage(arrow1, 12, posy+font_height/2, Graphics.VCENTER|Graphics.LEFT);
+					if(arrow1!=null && lc.arrow_style!=null && lc.arrow_style.equals("1")) g.drawImage(arrow1, 12, posy+font_height/2, Graphics.VCENTER|Graphics.LEFT);
 					g.setColor(bgcolor);
 					g.drawString(lc.content, 20, posy, Graphics.TOP|Graphics.LEFT);
 					next_cmd = lc.url;
 				} else {
 					g.setColor(color);
 					g.drawString(c.content, 20, posy, Graphics.TOP|Graphics.LEFT);
-					if(arrow1!=null) g.drawImage(arrow1, 12, posy+6, Graphics.TOP|Graphics.LEFT);
+					if(arrow1!=null && lc.arrow_style!=null && lc.arrow_style.equals("1")) g.drawImage(arrow1, 12, posy+6, Graphics.TOP|Graphics.LEFT);
 				}
 				g.setColor(0x999999);
 				g.drawLine(10, posy+line_height-line_bottom_padding, image_width-10, posy+line_height-line_bottom_padding);

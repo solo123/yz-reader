@@ -17,7 +17,8 @@ public class Browser extends Canvas implements ICommandManager {
 	private MenuZone menu_zone;
 	private PopupZone popup_zone;
 	private Boolean on_net_reading;
-	private HistoryManager history_manager = new HistoryManager();
+	private BookMenu book_menu;
+	private HistoryManager history_manager;
 	
 	public Browser(MainMIDlet midlet, Display display){
 		this.display = display;
@@ -38,11 +39,13 @@ public class Browser extends Canvas implements ICommandManager {
 		Configuration.SetScreenSize(getWidth(), getHeight());
 		Configuration.SetFontSize(Font.SIZE_MEDIUM);
 		
+		book_menu = new BookMenu();
+		history_manager = new HistoryManager(book_menu);
 		book_manager = new ContentManager(this);
 		zones = new ImageZone[4];
 		zones[0] = header_zone = new HeaderZone();
 		zones[1] = main_zone = new MainZone(this);
-		zones[2] = menu_zone = new MenuZone(this);
+		zones[2] = menu_zone = new MenuZone(this, book_menu);
 		zones[3] = popup_zone = new PopupZone(this);
 		
 		gotoUrl(Configuration.CONTENT_HOME);
@@ -146,6 +149,15 @@ public class Browser extends Canvas implements ICommandManager {
 		case BrowserCommand.QUIT_APPLICATION:
 			midlet.quit();
 			break;
+		case BrowserCommand.SEARCH:
+			SearchUi searchui = new SearchUi();
+			searchui.inputSearchText(this, display);
+			break;
+		case BrowserCommand.SEARCH_TEXT:
+			System.out.println("Search text:" + data);
+			gotoUrl("search?s=" + data);
+			break;
+
 		}
 	}
 }
