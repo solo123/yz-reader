@@ -6,8 +6,9 @@ import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
+import javax.microedition.m3g.Loader;
 
-public class FlashCanvas extends Canvas{
+public class SplashCanvas extends Canvas{
 	private int width;
 	private int height;
 	private String error="请选择移动梦网/CMWAP";
@@ -16,8 +17,9 @@ public class FlashCanvas extends Canvas{
 	private MainMIDlet midlet;
 	private Image splash_image;
 	private int c1,c2,c3, cw;
+	private int retry_times = 0;
 	
-	public FlashCanvas(MainMIDlet midlet){
+	public SplashCanvas(MainMIDlet midlet){
 		this.setFullScreenMode(true);
 		width=this.getWidth();
 		height=this.getHeight();
@@ -32,7 +34,9 @@ public class FlashCanvas extends Canvas{
 		}catch(Exception e){}
 		startTimer();
 	}
-	
+	public void retryNetwork(){
+		retry_times++;
+	}
 	protected void paint(Graphics g) {
 		Font font=Font.getFont(Font.FACE_SYSTEM, Font.STYLE_PLAIN, Font.SIZE_MEDIUM);
 		int font_height = font.getHeight();
@@ -47,7 +51,7 @@ public class FlashCanvas extends Canvas{
 		posy += splash_image.getHeight()/2 + font_height;
 		g.setFont(font);
 		g.setColor(0);
-		g.drawString("欢迎使用"+midlet.getAppProperty("MIDlet-Name"), posx, posy, Graphics.TOP|Graphics.HCENTER);
+		g.drawString("欢迎使用"+Configuration.APP_NAME, posx, posy, Graphics.TOP|Graphics.HCENTER);
 		posy += font_height + font_height/4;
 		g.drawString(error, posx, posy, Graphics.TOP|Graphics.HCENTER);
 		int barw = font.stringWidth(error);
@@ -66,6 +70,12 @@ public class FlashCanvas extends Canvas{
 		g.setColor(c2);
 		g.fillRect(posx, posy, cw, font_height);
 		
+		if (retry_times > 0 ){
+			posy += font_height +font_height;
+			g.drawString("连接网络错误，重试第"+retry_times+"次", width/2, posy, Graphics.TOP|Graphics.HCENTER);
+		}
+		g.drawString("退出程序", width-4, height, Graphics.BOTTOM|Graphics.RIGHT);
+		
 	}
 	public void setError(String error){
 		this.error=error;
@@ -73,7 +83,9 @@ public class FlashCanvas extends Canvas{
 	}
 
 	protected void keyReleased(int keyCode) {
-		if (keyCode==-7) midlet.quit();
+		if (keyCode==-7){
+			midlet.quit();
+		}
 	}
 
 	private class SpinnerTask extends TimerTask {

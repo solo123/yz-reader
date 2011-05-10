@@ -11,9 +11,11 @@ public class UiContainer {
 		controls.addElement(control);
 	}
 	public void paint(Graphics g){
+// #ifdef DBG		
+		System.out.println("container paint.");
+// #endif
 		Enumeration cs = controls.elements();
 	    while(cs.hasMoreElements()){
-	    	System.out.println("paint control.");
 	    	((UiControl)cs.nextElement()).paint(g);
 	    }
 	}

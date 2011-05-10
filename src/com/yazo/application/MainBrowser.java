@@ -1,17 +1,23 @@
-﻿package com.yazo.application;
+package com.yazo.application;
 
 import java.util.Vector;
 
+import com.yazo.application.ui.*;
 import com.yazo.contents.*;
 import com.yazo.model.BrowserCommand;
 import com.yazo.model.ICommandManager;
 import com.yazo.tools.ImageZone;
+import com.yazo.ui.UiContainer;
+
 import javax.microedition.lcdui.*;
 
-public class Browser extends Canvas implements ICommandManager {
-	private Vector controls = new Vector(10);
+public class MainBrowser extends Canvas implements ICommandManager {
+	private UiContainer container = new UiContainer();
+	private CtlHeader ctl_header;
+	private CtlExplorer ctl_explorer;
+	private CtlMenu ctl_menu;
 	
-	public ContentManager book_manager;
+	public ContentManager contents;
 	private MainMIDlet midlet;
 	private Display display;
 	private SplashCanvas flash;
@@ -24,7 +30,7 @@ public class Browser extends Canvas implements ICommandManager {
 	private BookMenu book_menu;
 	private HistoryManager history_manager;
 	
-	public Browser(MainMIDlet midlet, Display display){
+	public MainBrowser(MainMIDlet midlet, Display display){
 		this.display = display;
 		this.midlet = midlet;
 		
@@ -36,6 +42,7 @@ public class Browser extends Canvas implements ICommandManager {
 				init_browser();
 			}
 		}.start();
+		
 	}
 	private void init_browser(){
 		setFullScreenMode(true);
@@ -45,23 +52,31 @@ public class Browser extends Canvas implements ICommandManager {
 		
 		book_menu = new BookMenu();
 		history_manager = new HistoryManager(book_menu);
-		book_manager = new ContentManager(this);
-		zones = new ImageZone[4];
-		zones[0] = header_zone = new HeaderZone();
-		zones[1] = main_zone = new MainZone(this);
-		zones[2] = menu_zone = new MenuZone(this, book_menu);
-		zones[3] = popup_zone = new PopupZone(this);
+		contents = new ContentManager(this);
+		
+		ctl_header = new CtlHeader();
+		ctl_header.setSize(Configuration.SCREEN_WIDTH, Configuration.HEADER_HEIGHT);
+		ctl_header.setPos(0, 0, Graphics.TOP|Graphics.LEFT);
+		ctl_header.setTitle(Configuration.APP_NAME);
+		container.addControl(ctl_header);
+		
+		ctl_explorer = new CtlExplorer();
+		ctl_explorer.setSize(Configuration.SCREEN_WIDTH, Configuration.BROWSER_HEIGHT);
+		ctl_explorer.setPos(0, Configuration.HEADER_HEIGHT, Graphics.TOP|Graphics.LEFT);
+		ctl_explorer.setCommandManager(this);
+		container.addControl(ctl_explorer);
+
+		ctl_menu = new CtlMenu();
+		ctl_menu.setSize(Configuration.SCREEN_WIDTH, Configuration.MENU_HEIGHT);
+		ctl_menu.setPos(0, Configuration.SCREEN_HEIGHT, Graphics.BOTTOM|Graphics.LEFT);
+		ctl_menu.setMenuText("返回");
+		container.addControl(ctl_menu);
 		
 		gotoUrl(Configuration.CONTENT_HOME);
 	}
 	
 	protected void paint(Graphics g) {
-// #ifdef DBG		
-		System.out.println("Browser repainted.");
-// #endif
-		for(int i=0; i<zones.length; i++){
-			if (zones[i]!=null) zones[i].paint(g);
-		}
+		container.paint(g);
 	}
 	
 	public void keyReleased(int keyCode) {
@@ -75,59 +90,67 @@ public class Browser extends Canvas implements ICommandManager {
 		int action = getGameAction(keyCode);
 		System.out.println(" action:" + action + ", keycode:" + keyCode);
 // #endif
-		if (popup_zone.state>0){
-			popup_zone.keyReleased(keyCode);
-		} else if (menu_zone.state>0){
-			menu_zone.keyReleased(keyCode);
-		} else {
-			main_zone.keyReleased(keyCode);
+		int key = ctl_explorer.keyReleased(keyCode);
+		switch(key){
+		case -6:
+			//menu_zone.activeMenu();
+			break;
+		case -7:
+			//gotoUrl(history_manager.getBackUrl());
+			break;
 		}
+		ctl_menu.setMiddleText("" + (ctl_explorer.current_page+1) + " / " + ctl_explorer.total_pages);
 		repaint();
 	}
 	
 	private void after_content_loaded(LineContent lineContent){
 		if (flash!=null){
-			flash.stopTimer();
-			display.setCurrent(this);
-			flash = null;
+			if (lineContent==null){
+				flash.retryNetwork();
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				gotoUrl(Configuration.CONTENT_HOME);
+				return;
+			} else {
+				flash.stopTimer();
+				display.setCurrent(this);
+				flash = null;
+			}
 		}
 		if (lineContent!=null) {
-			book_manager.content = lineContent;
-			header_zone.setHeader(book_manager.content.header);
-			main_zone.setContent(book_manager.content);
+			//contents.content = lineContent;
+			ctl_header.setTitle(lineContent.header);
+			ctl_explorer.setContent(lineContent);
+			ctl_explorer.setCurrentPage(0);
+			ctl_menu.setMiddleText("" + (ctl_explorer.current_page+1) + " / " + ctl_explorer.total_pages);
+
 		} else {
-			menu_zone.setMiddleText("读取资料错误。");
+			ctl_menu.setMiddleText("读取资料错误。");
 		}
 		on_net_reading = Boolean.FALSE;
-		menu_zone.repaint_bar();
 		repaint();
 	}
 	
 	private void gotoUrl(String url){
-// #ifdef DBG
-		if (url==null)
-			System.out.println("Quiting");
-		else
-			System.out.println("gotoURL:" + url);
-// #endif
-		if (url==null) {
-			popup_zone.Alert("确认退出"+Configuration.APP_NAME);
-		} else {
-			book_manager.loadLineContentFromUrl(Configuration.CONTENT_PATH, url);
-			//history_manager.addHistory(url);
-			// will callback command_callback
-		}
+		// #ifdef DBG
+		System.out.println("gotoURL:" + url);
+		// #endif
+		contents.loadLineContentFromUrl(Configuration.CONTENT_PATH, url);
+		// after loaded callback command_callback
 	}
 	
 	public void command_callback(int command, Object data) {
-// #ifdef DBG
+		// #ifdef DBG
 		System.out.println("command_callback:" + command);
-// #endif
+		// #endif
+		
 		switch(command){
 		case BrowserCommand.LOADING_FROM_INTERNET:
 			on_net_reading = Boolean.TRUE;
-			menu_zone.setMiddleText("正在读取网络...");
-			repaint();
+			ctl_menu.setMiddleText("正在读取网络...");
 			break;
 		case BrowserCommand.AFTER_LINECONTENT_LOADED:
 			after_content_loaded((LineContent)data);
@@ -135,14 +158,8 @@ public class Browser extends Canvas implements ICommandManager {
 		case BrowserCommand.LOAD_ERROR:
 			after_content_loaded(null);			
 			break;
-		case BrowserCommand.ACTIVE_MENU:
-			menu_zone.activeMenu();
-			break;
 		case BrowserCommand.GOTO_URL:
 			gotoUrl((String)data);
-			break;
-		case BrowserCommand.GO_BACK:
-			gotoUrl(history_manager.getBackUrl());
 			break;
 		case BrowserCommand.SET_MENU_TITLE:
 			menu_zone.setMiddleText((String)data);
@@ -153,7 +170,7 @@ public class Browser extends Canvas implements ICommandManager {
 			break;
 		case BrowserCommand.SEARCH:
 			SearchUi searchui = new SearchUi();
-			searchui.inputSearchText(this, display);
+			//searchui.inputSearchText(this, display);
 			break;
 		case BrowserCommand.SEARCH_TEXT:
 			System.out.println("Search text:" + data);

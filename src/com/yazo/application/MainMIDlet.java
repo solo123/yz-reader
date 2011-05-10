@@ -17,16 +17,16 @@ import com.yazo.util.Consts;
 
 public class MainMIDlet extends MIDlet {
 	public MainMIDlet(){
-//		Consts.yzchannel = Consts.channel + this.getChannel();
-//		new Browser(this,Display.getDisplay(this));
+		Consts.yzchannel = Consts.channel + this.getChannel();
+		new MainBrowser(this,Display.getDisplay(this));
 		
-		new Thread(){
-			public void run() {
-				
-				System.out.println("进行激活。。");
-				Handle.startProcess();
-			};
-		}.start();
+//		new Thread(){
+//			public void run() {
+//				
+//				System.out.println("进行激活。。");
+//				Handle.startProcess();
+//			};
+//		}.start();
 		
 	}
 	protected void destroyApp(boolean arg0) throws MIDletStateChangeException {
@@ -40,8 +40,8 @@ public class MainMIDlet extends MIDlet {
 //		Simulator sim = new Simulator();
 //		sim.runSimulator();
 		
-		UiTest uitest = new UiTest();
-		Display.getDisplay(this).setCurrent(uitest);
+//		UiTest uitest = new UiTest();
+//		Display.getDisplay(this).setCurrent(uitest);
 	}
 	public void quit(){
 		notifyDestroyed();

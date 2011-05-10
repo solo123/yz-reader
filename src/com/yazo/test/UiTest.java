@@ -6,6 +6,7 @@ import javax.microedition.lcdui.Graphics;
 
 import com.yazo.application.ui.CtlExplorer;
 import com.yazo.application.ui.CtlHeader;
+import com.yazo.application.ui.CtlMenu;
 import com.yazo.ui.UiContainer;
 
 public class UiTest extends Canvas {
@@ -26,6 +27,12 @@ public class UiTest extends Canvas {
 		header.setPos(0, 0, Graphics.TOP|Graphics.LEFT);
 		header.setTitle("Hello,你好！");
 		container.addControl(header);
+		
+		CtlMenu menu = new CtlMenu();
+		menu.setSize(width, 30);
+		menu.setPos(0,height, Graphics.BOTTOM|Graphics.LEFT);
+		menu.setMenuText("返回");
+		container.addControl(menu);
 	}
 	protected void paint(Graphics g) {
 		System.out.println("UiTest paint.");

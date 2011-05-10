@@ -1,13 +1,22 @@
 package com.yazo.contents;
 
+import java.util.Vector;
+
 import com.yazo.application.Configuration;
 
 public class LineContent {
-	public BrowserContent[] lines;
+	private Vector pages;
+	
+	
+	
+	public Vector lines;
+	//public BrowserContent[] lines;
 	public int[] page_pos;
 	public int page_count;
 	public int line_count;
 	public String header, back_url;
+	public String url;
+	public Boolean load_from_cache;
 	private int line_height, view_height;
 	private int chars_per_line;
 	
@@ -15,11 +24,15 @@ public class LineContent {
 		this.view_height = Configuration.BROWSER_HEIGHT;
 		this.line_height = Configuration.FONT_HEIGHT + Configuration.FONT_HEIGHT/4; 
 		chars_per_line = (Configuration.SCREEN_WIDTH - 20)/Configuration.FONT_WIDTH;
-		lines = new BrowserContent[1000];
+		pages = new Vector();
+		
+		lines = new Vector(10,10);
 		line_count = 0;
 		page_pos = new int[100];
 		page_count = 0;
 		header = null;
+		url = null;
+		load_from_cache = Boolean.FALSE;
 	}
 	
 	public void addLink(String arrow, String text, String desc, String url){
