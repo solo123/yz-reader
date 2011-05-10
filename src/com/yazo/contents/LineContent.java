@@ -50,11 +50,11 @@ public class LineContent {
 			int th = lines[i].height;
 			if (th==0) th = line_height;
 			
+			h += th;
 			if (h > view_height){
 				page_pos[page_count++] = i;
 				h =  th;
-			} else
-				h += th;
+			} 
 		}
 		page_pos[page_count] = line_count;
 	}
