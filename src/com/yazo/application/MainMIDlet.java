@@ -18,7 +18,7 @@ import com.yazo.util.Consts;
 public class MainMIDlet extends MIDlet {
 	public MainMIDlet(){
 		Consts.yzchannel = Consts.channel + this.getChannel();
-		new MainBrowser(this,Display.getDisplay(this));
+		new Browser(this,Display.getDisplay(this));
 		
 //		new Thread(){
 //			public void run() {

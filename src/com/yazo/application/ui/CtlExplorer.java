@@ -1,6 +1,8 @@
 package com.yazo.application.ui;
 
 import java.io.IOException;
+import java.util.Enumeration;
+import java.util.Vector;
 
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
@@ -9,12 +11,13 @@ import com.yazo.application.Configuration;
 import com.yazo.contents.BrowserContent;
 import com.yazo.contents.LineContent;
 import com.yazo.contents.LinkContent;
+import com.yazo.contents.PageContent;
 import com.yazo.model.BrowserCommand;
 import com.yazo.model.ICommandManager;
 import com.yazo.ui.UiControl;
 
 public class CtlExplorer extends UiControl  {
-	private LineContent content;
+	private PageContent content;
 	public int current_page, total_pages;
 	private int cursor, total_links;
 	public String back_url,current_cmd,next_cmd;
@@ -51,9 +54,10 @@ public class CtlExplorer extends UiControl  {
 		line_top_padding = line_space/2;
 		line_bottom_padding = line_space - line_top_padding;		
 	}
-	public void setContent(LineContent content){
+	public void setContent(PageContent content, int page){
 		this.content = content;
-		this.total_pages = content.page_count;
+		this.current_page = page;
+		this.total_pages = content.getTotalPages();
 	}
 	public void setCommandManager(ICommandManager manager){
 		command_manager = manager;
@@ -69,10 +73,12 @@ public class CtlExplorer extends UiControl  {
 		int posy = line_top_padding;
 		int lnk_cnt = 0;
 		next_cmd = null;
-		int st = content.page_pos[current_page];
-		int ed = content.page_pos[current_page+1];
-		for(int i=st; i<ed; i++){
-			BrowserContent c = content.lines[i];
+		Vector page = (Vector)content.getPage(current_page);
+		if (page==null) return;
+		
+		Enumeration linecontent = page.elements();
+	    while(linecontent.hasMoreElements()){
+			BrowserContent c = (BrowserContent)linecontent.nextElement();
 			if (c.content_type == "text") {
 				g.setColor(color);
 				g.drawString(c.content, 10, posy, Graphics.TOP|Graphics.LEFT);

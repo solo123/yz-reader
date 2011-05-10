@@ -5,12 +5,7 @@ import java.util.Vector;
 import com.yazo.application.Configuration;
 
 public class LineContent {
-	private Vector pages;
-	
-	
-	
-	public Vector lines;
-	//public BrowserContent[] lines;
+	public BrowserContent[] lines;
 	public int[] page_pos;
 	public int page_count;
 	public int line_count;
@@ -24,9 +19,6 @@ public class LineContent {
 		this.view_height = Configuration.BROWSER_HEIGHT;
 		this.line_height = Configuration.FONT_HEIGHT + Configuration.FONT_HEIGHT/4; 
 		chars_per_line = (Configuration.SCREEN_WIDTH - 20)/Configuration.FONT_WIDTH;
-		pages = new Vector();
-		
-		lines = new Vector(10,10);
 		line_count = 0;
 		page_pos = new int[100];
 		page_count = 0;

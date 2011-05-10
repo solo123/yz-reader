@@ -2,13 +2,17 @@ package com.yazo.contents;
 
 import java.util.Vector;
 
-import com.sun.perseus.model.Font;
+import javax.microedition.lcdui.Font;
+
+import com.yazo.application.Configuration;
 
 public class PageContent {
 	private Vector pages;
 	private Vector contents;
-	private int width, height, default_lineheight, current_content_height;
+	private int width, height, default_lineheight, current_content_height, chars_per_line;
 	private Font font;
+	public String header, url;
+	public Boolean load_from_cache;
 	
 	public PageContent(int width, int height, int default_lineheight, Font default_font){
 		this.width = width;
@@ -17,15 +21,43 @@ public class PageContent {
 		this.font = default_font;
 		pages = new Vector();
 		current_content_height = 100000;
+		chars_per_line = (width - 20)/font.charWidth('国');
 	}
 	public void addContent(BrowserContent content){
-		if(current_con)
+		int h = content.height;
+		if (h==0) h = default_lineheight;
+		if(current_content_height>0 && current_content_height + h >= height){
+			contents = new Vector();
+			pages.addElement(contents);
+			current_content_height = 0;
+		}
+		contents.addElement(content);
+		current_content_height += h;
 	}
 	
 	public void addLink(String arrow, String text, String desc, String url){
-		LinkContent lc = new LinkContent(arrow, text, desc, url);
-		if(current_content_height>0 && current_content_height + lc.height > height){
-			
+		addContent(new LinkContent(arrow, text, desc, url));
+	}
+	public int getTotalPages(){
+		if (pages==null) return 0;
+		else return pages.size();
+	}
+	public Vector getPage(int page){
+		if(pages!=null && page<pages.size())
+			return (Vector)pages.elementAt(page);
+		else
+			return null;
+	}
+	public void addText(String text){
+		if (text == null || chars_per_line<1 ) return;
+		int len = text.length();
+		int pos_idx = 0;
+		int end_idx = 0;
+		while(pos_idx<len){
+			end_idx = pos_idx + chars_per_line;
+			if (end_idx > len) end_idx = len;  
+			addContent(new TextContent(text.substring(pos_idx, end_idx)));
+			pos_idx = end_idx;
 		}
 	}
 
