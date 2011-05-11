@@ -65,7 +65,7 @@ public class CtlMenu extends UiControl {
 	public void setFont(Font font){
 		this.font = font;
 	}
-	private void paint_bar(){
+	public void paint_bar(){
 		if (font==null) font = Font.getFont(Font.FACE_SYSTEM, Font.STYLE_PLAIN, Font.SIZE_MEDIUM);
 		int y = (height-font.getHeight())/2 +2;
 		g_bar.setColor(bgcolor);
@@ -81,7 +81,7 @@ public class CtlMenu extends UiControl {
 		if (middle_text!=null)
 			g_bar.drawString(middle_text, width/2, y, Graphics.HCENTER|Graphics.TOP);
 	}
-	private void repaint_menu(){
+	public void repaint_menu(){
 		if (g_menu==null) return;
 		int leftGrid = 20;
 		g_menu.setColor(0x999999);
@@ -176,20 +176,14 @@ public class CtlMenu extends UiControl {
 		case -7:
 			if (state>0) activeMenu();
 			else{
-				if(command_manager!=null) command_manager.command_callback(BrowserCommand.GOTO_URL, menu_cmd1);
+				if(command_manager!=null) command_manager.command_callback(BrowserCommand.DO_COMMAND, menu_cmd1);
 			}
 			break;
 		case -5: // selected
 			state = 0;
 			LinkContent lc = (LinkContent)menu_contents.elementAt(cursor);
 			System.out.println("menu cmd:" + lc.content + ", cmd:" + lc.url);
-			if (command_manager!=null){
-				if (lc.url.startsWith("CMD_")){ 
-					if(lc.url.equals("CMD_SEARCH")) command_manager.command_callback(BrowserCommand.SEARCH, null);
-				} else {
-					command_manager.command_callback(BrowserCommand.GOTO_URL, lc.url);
-				}
-			}
+			if(command_manager!=null) command_manager.command_callback(BrowserCommand.DO_COMMAND, lc.url);
 			break;
 		}
 	}

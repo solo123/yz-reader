@@ -46,7 +46,9 @@ public class ContentManager{
 	public void loadContentFromUrl(String service, String url){
 		Object buf = content_buffer.get(url);
 		if (buf!=null){
-			if (command_manager!=null) command_manager.command_callback(BrowserCommand.AFTER_LINECONTENT_LOADED, buf);
+			content = (PageContent)buf;
+			content.load_from_cache = Boolean.TRUE;
+			if (command_manager!=null) command_manager.command_callback(BrowserCommand.AFTER_LINECONTENT_LOADED, null);
 			return;
 		}
 		WaitCallback callback = new WaitCallback() {

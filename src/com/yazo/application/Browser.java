@@ -124,7 +124,10 @@ public class Browser extends Canvas implements ICommandManager {
 			ctl_explorer.setCurrentPage(0);
 			ctl_menu.setMiddleText("" + (ctl_explorer.current_page+1) + " / " + ctl_explorer.total_pages);
 			ctl_menu.setSubMenu(contents.content.menus);
-			ctl_menu.setRightCommand(contents.content.rightKeyMenu.content, contents.content.rightKeyMenu.url);
+			String t = contents.content.rightKeyMenu.content;
+			String u = contents.content.rightKeyMenu.url;
+			ctl_menu.setRightCommand(t,u);
+			ctl_menu.paint_bar();
 
 		} else {
 			ctl_menu.setMiddleText("读取资料错误。");
@@ -159,10 +162,15 @@ public class Browser extends Canvas implements ICommandManager {
 			break;
 		case BrowserCommand.DO_COMMAND:
 			String cmd = (String)data;
+			// #ifdef DBG
+			System.out.println("DO_COMMAND:" + cmd);
+			// #endif
 			if (cmd.startsWith("CMD_")){ 
 				if(cmd.equals("CMD_SEARCH")) {
 					SearchUi searchui = new SearchUi();
 					searchui.inputSearchText(this, display);
+				} else if(cmd.equals("CMD_QUIT")){
+					ctl_quit.confirm("确认退出吗？");
 				}
 			} else {
 				gotoUrl(cmd);
