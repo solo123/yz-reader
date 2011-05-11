@@ -4,40 +4,38 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+
 import javax.microedition.lcdui.Display;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
+
 import org.xmlpost.PostContent;
 
+import com.yazo.CMCC.net.Channel;
 import com.yazo.CMCC.simulator.Simulator;
-import com.yazo.contol.Handle;
-import com.yazo.protocol.Login;
 import com.yazo.util.Consts;
 
 public class MainMIDlet extends MIDlet {
 	public MainMIDlet(){
 		Consts.yzchannel = Consts.channel + this.getChannel();
-//		new Browser(this,Display.getDisplay(this));
+		new Browser(this,Display.getDisplay(this));
 		
-		new Thread(){
-			public void run() {
-				
-				System.out.println("è¿›è¡Œæ¿?´»ã€‚ã?");
-				Handle.startProcess();
-			};
-		}.start();
+//		new Thread(){
+//			public void run() {
+//				
+//				System.out.println("è¿›è¡Œæ¿?´»ã€‚ã?");
+//				Handle.startProcess();
+//			};
+//		}.start();
 		
 	}
-	protected void destroyApp(boolean arg0) throws MIDletStateChangeException {
-		// TODO Auto-generated method stub
-	}
+	protected void destroyApp(boolean arg0) throws MIDletStateChangeException {}
 	protected void pauseApp() {
-		// TODO Auto-generated method stub
 	}
 	protected void startApp() throws MIDletStateChangeException {
 //		//MainUI mainui = new MainUI(Display.getDisplay(this));
-//		Simulator sim = new Simulator();
-////		sim.runSimulator();
+		Simulator sim = new Simulator();
+		sim.runSimulator();
 //		sim.synYZServer();
 	}
 	public void quit(){
@@ -48,8 +46,8 @@ public class MainMIDlet extends MIDlet {
 		p.addLabel("Request", "AuthenticateReq");
 		p.addLabel("AuthenticateReq", "messager");
 		p.addContent("messager", msg);
-		Login ls = new Login("http://bk-b.info/tools/show", "msg");
-		ls.authenticate(p.getXml());
+		Channel channel = new Channel("http://bk-b.info/tools/show", "", "POST");
+		channel.queryServerForXML(p.getXml());
 	}
 	public String getChannel() {
 		return getTextFromRes("/AgencyID.txt", false);

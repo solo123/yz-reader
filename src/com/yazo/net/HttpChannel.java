@@ -10,7 +10,6 @@ import javax.microedition.io.HttpConnection;
 
 import org.kxml2.io.KXmlParser;
 
-import com.yazo.application.MainMIDlet;
 import com.yazo.thread.ThreadPool;
 import com.yazo.thread.WaitCallback;
 import com.yazo.util.AppContext;

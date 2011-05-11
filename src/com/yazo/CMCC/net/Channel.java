@@ -82,7 +82,7 @@ public class Channel {
 		return obj;
 	}
 
-	public void connect() throws Exception {
+	public void connect(){
 		System.out.println("connect:"+url);
 		try {
 			if (!AppContext.getInstance().isCMNET()) {
@@ -108,8 +108,8 @@ public class Channel {
 	 * @param inData
 	 * @throws Exception
 	 */
-	public void send(OutputStream connection, byte[] inData) throws Exception {
-		os = connection;
+	public void send(OutputStream outStream, byte[] inData) throws Exception {
+		os = outStream;
 		if (os == null || inData == null) {
 			throw new Exception("发送的数据为null");
 		}
@@ -236,7 +236,6 @@ public class Channel {
 				hc.setRequestProperty("Content-Length", "" + xml.length());
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
 		}
 	}
 
