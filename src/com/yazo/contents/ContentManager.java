@@ -17,7 +17,7 @@ import com.yazo.thread.WaitCallback;
 
 public class ContentManager{
 	public String header;
-	public LineContent content;
+	public PageContent content;
 	public PageCache content_buffer;
 	public Vector menu_contents;
 	private ICommandManager command_manager;
@@ -52,10 +52,10 @@ public class ContentManager{
 		WaitCallback callback = new WaitCallback() {
 			public void execute(Object data) {
 				CommandManagerObject manager = (CommandManagerObject)data;
-				PageContent lc = getAndParseContent((String)manager.data1 + (String)manager.data2);
-				if (lc!=null) {
-					content_buffer.put((String)manager.data2, lc);
-					manager.manager.command_callback(BrowserCommand.AFTER_LINECONTENT_LOADED, lc);
+				content = getAndParseContent((String)manager.data1 + (String)manager.data2);
+				if (content!=null) {
+					content_buffer.put((String)manager.data2, content);
+					manager.manager.command_callback(BrowserCommand.AFTER_LINECONTENT_LOADED, null);
 				} else {
 					manager.manager.command_callback(BrowserCommand.LOAD_ERROR, null);
 				}
@@ -112,6 +112,34 @@ public class ContentManager{
 						}
 						parser.require(XmlPullParser.END_TAG, null, nn);
 					}
+				} else if (name.equals("menu")){
+					while(parser.nextTag()!=XmlPullParser.END_TAG){
+						parser.require(XmlPullParser.START_TAG, null,null);
+						String nn = parser.getName();
+						if (nn.equals("link")){
+							String text=null, aurl=null;
+							while(parser.nextTag()!=XmlPullParser.END_TAG){
+								parser.require(XmlPullParser.START_TAG, null, null);
+								String n = parser.getName();
+								String t = parser.nextText();
+								if (n.equals("text")) text = t;
+								else if (n.equals("url")) aurl = t;
+								parser.require(XmlPullParser.END_TAG, null, n);
+							}
+							c.menus.addElement(new LinkContent(text, aurl));
+						}
+					}
+				} else if (name.equals("rightkey")){
+					String text=null, aurl=null;
+					while(parser.nextTag()!=XmlPullParser.END_TAG){
+						parser.require(XmlPullParser.START_TAG, null, null);
+						String n = parser.getName();
+						String t = parser.nextText();
+						if (n.equals("text")) text = t;
+						else if (n.equals("url")) aurl = t;
+						parser.require(XmlPullParser.END_TAG, null, n);
+					}
+					c.rightKeyMenu = new LinkContent(text, aurl);
 				}
 				parser.require(XmlPullParser.END_TAG, null, name);
 			}

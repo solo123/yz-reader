@@ -100,9 +100,9 @@ public class Browser extends Canvas implements ICommandManager {
 		repaint();
 	}
 	
-	private void after_content_loaded(PageContent content){
+	private void after_content_loaded(){
 		if (flash!=null){
-			if (content==null){
+			if (contents.content==null){
 				flash.retryNetwork();
 				try {
 					Thread.sleep(1000);
@@ -117,14 +117,14 @@ public class Browser extends Canvas implements ICommandManager {
 				flash = null;
 			}
 		}
-		if (content!=null) {
+		if (contents.content!=null) {
 			//contents.content = lineContent;
-			ctl_header.setTitle(content.header);
-			ctl_explorer.setContent(content, 0);
+			ctl_header.setTitle(contents.content.header);
+			ctl_explorer.setContent(contents.content, 0);
 			ctl_explorer.setCurrentPage(0);
 			ctl_menu.setMiddleText("" + (ctl_explorer.current_page+1) + " / " + ctl_explorer.total_pages);
-			ctl_menu.setSubMenu(contents.menu_contents);
-			ctl_menu.setRightCommand("目录", "home");
+			ctl_menu.setSubMenu(contents.content.menus);
+			ctl_menu.setRightCommand(contents.content.rightKeyMenu.content, contents.content.rightKeyMenu.url);
 
 		} else {
 			ctl_menu.setMiddleText("读取资料错误。");
@@ -152,10 +152,10 @@ public class Browser extends Canvas implements ICommandManager {
 			ctl_menu.setMiddleText("正在读取网络...");
 			break;
 		case BrowserCommand.AFTER_LINECONTENT_LOADED:
-			after_content_loaded((PageContent)data);
+			after_content_loaded();
 			break;
 		case BrowserCommand.LOAD_ERROR:
-			after_content_loaded(null);			
+			after_content_loaded();			
 			break;
 		case BrowserCommand.DO_COMMAND:
 			String cmd = (String)data;

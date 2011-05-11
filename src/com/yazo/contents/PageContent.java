@@ -10,6 +10,8 @@ public class PageContent {
 	private Font font;
 	public String header, url;
 	public Boolean load_from_cache;
+	public Vector menus;
+	public LinkContent rightKeyMenu = null;
 	
 	public PageContent(int width, int height, int default_lineheight, Font default_font){
 		this.width = width;
@@ -17,6 +19,7 @@ public class PageContent {
 		this.default_lineheight = default_lineheight;
 		this.font = default_font;
 		pages = new Vector();
+		menus = new Vector();
 		current_content_height = 100000;
 		chars_per_line = (width - 20)/font.charWidth('国');
 	}
