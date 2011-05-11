@@ -32,6 +32,8 @@ public class LineContent {
 	}
 	public void addText(String text){
 		if (text == null ) return;
+		text = text.replace('\n', ' ');
+		text = text.replace('\r', ' ');
 		int len = text.length();
 		int pos_idx = 0;
 		int end_idx = 0;

@@ -28,15 +28,8 @@ public class ContentManager{
 		content_buffer = new PageCache();
 		command_manager = manager;
 		menu_contents = new Vector();
-		loadMenuContent();
 	}
-	private void loadMenuContent(){
-		menu_contents.addElement(new LinkContent("1. 搜索图书", "CMD_SEARCH"));
-		menu_contents.addElement(new LinkContent("2. 系统设置", "config_page"));
-		menu_contents.addElement(new LinkContent("3. 用户帮助", "help_page"));
-		menu_contents.addElement(new LinkContent("4. 软件升级", "upgrade_page"));
-		menu_contents.addElement(new LinkContent("5. 返回首页", "home"));
-	}
+
 	public void command_callback(int command, Object data) {
 		switch(command){
 		case BrowserCommand.PARSE_XML:
@@ -110,7 +103,8 @@ public class ContentManager{
 							}
 							c.addLink(arrow, text, desc, aurl);
 						}else if(nn.equals("text")){
-							c.addText(parser.nextText());
+							String t = parser.nextText();
+							c.addText(t);
 						}
 						parser.require(XmlPullParser.END_TAG, null, nn);
 					}

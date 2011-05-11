@@ -49,7 +49,7 @@ public class CtlHeader extends UiControl {
 		
 		g.setColor(color);
 		if (font!=null) g.setFont(font);
-		g.drawString(title, 24, y, Graphics.TOP|Graphics.LEFT);
+		if (title!=null) g.drawString(title, 24, y, Graphics.TOP|Graphics.LEFT);
 		
 		//shadow line
 		g.setColor(0xeeeeee);

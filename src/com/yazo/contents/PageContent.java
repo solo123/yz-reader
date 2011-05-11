@@ -50,6 +50,8 @@ public class PageContent {
 	}
 	public void addText(String text){
 		if (text == null || chars_per_line<1 ) return;
+//		text = text.replace('\n', ' ');
+//		text = text.replace('\r', ' ');
 		int len = text.length();
 		int pos_idx = 0;
 		int end_idx = 0;
