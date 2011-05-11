@@ -1,14 +1,10 @@
 package com.yazo.application;
 
-import java.util.Vector;
-
 import com.yazo.application.ui.*;
 import com.yazo.contents.*;
 import com.yazo.model.BrowserCommand;
 import com.yazo.model.ICommandManager;
-import com.yazo.tools.ImageZone;
 import com.yazo.ui.UiContainer;
-
 import javax.microedition.lcdui.*;
 
 public class Browser extends Canvas implements ICommandManager {
@@ -16,6 +12,7 @@ public class Browser extends Canvas implements ICommandManager {
 	private CtlHeader ctl_header;
 	private CtlExplorer ctl_explorer;
 	private CtlMenu ctl_menu;
+	private CtlQuit ctl_quit;
 	
 	public ContentManager contents;
 	private MainMIDlet midlet;
@@ -23,7 +20,6 @@ public class Browser extends Canvas implements ICommandManager {
 	private SplashCanvas flash;
 	private Boolean on_net_reading;
 	private BookMenu book_menu;
-	private HistoryManager history_manager;
 	
 	public Browser(MainMIDlet midlet, Display display){
 		this.display = display;
@@ -46,7 +42,6 @@ public class Browser extends Canvas implements ICommandManager {
 		Configuration.SetFontSize(Font.SIZE_MEDIUM);
 		
 		book_menu = new BookMenu();
-		history_manager = new HistoryManager(book_menu);
 		contents = new ContentManager(this);
 		
 		ctl_header = new CtlHeader();
@@ -63,9 +58,18 @@ public class Browser extends Canvas implements ICommandManager {
 
 		ctl_menu = new CtlMenu();
 		ctl_menu.setSize(Configuration.SCREEN_WIDTH, Configuration.MENU_HEIGHT);
-		ctl_menu.setPos(0, Configuration.SCREEN_HEIGHT, Graphics.BOTTOM|Graphics.LEFT);
+		ctl_menu.setPos(0, Configuration.SCREEN_HEIGHT-1, Graphics.BOTTOM|Graphics.LEFT);
 		ctl_menu.setMenuText("返回");
+		ctl_menu.setCommandManager(this);
 		container.addControl(ctl_menu);
+		
+		ctl_quit = new CtlQuit();
+		ctl_quit.setSize(Configuration.SCREEN_WIDTH-30, 60);
+		ctl_quit.setPos(15, Configuration.SCREEN_HEIGHT-Configuration.MENU_HEIGHT-10, Graphics.BOTTOM|Graphics.LEFT);
+		ctl_quit.setFont(Configuration.DEFAULT_FONT);
+		ctl_quit.setBar(Configuration.SCREEN_WIDTH, Configuration.MENU_HEIGHT, Configuration.SCREEN_HEIGHT-1);
+		ctl_quit.setCommandManager(this);
+		container.addControl(ctl_quit);
 		
 		gotoUrl(Configuration.CONTENT_HOME);
 	}
@@ -85,16 +89,14 @@ public class Browser extends Canvas implements ICommandManager {
 		int action = getGameAction(keyCode);
 		System.out.println(" action:" + action + ", keycode:" + keyCode);
 // #endif
-		int key = ctl_explorer.keyReleased(keyCode);
-		switch(key){
-		case -6:
-			//menu_zone.activeMenu();
-			break;
-		case -7:
-			//gotoUrl(history_manager.getBackUrl());
-			break;
+		if (ctl_quit.state>0) {
+			ctl_quit.keyReleased(keyCode);
+		} else if (ctl_menu.state>0){
+			ctl_menu.keyReleased(keyCode);
+		} else {
+			int key = ctl_explorer.keyReleased(keyCode);
+			if (key!=0) ctl_menu.keyReleased(key);
 		}
-		ctl_menu.setMiddleText("" + (ctl_explorer.current_page+1) + " / " + ctl_explorer.total_pages);
 		repaint();
 	}
 	
@@ -121,6 +123,8 @@ public class Browser extends Canvas implements ICommandManager {
 			ctl_explorer.setContent(content, 0);
 			ctl_explorer.setCurrentPage(0);
 			ctl_menu.setMiddleText("" + (ctl_explorer.current_page+1) + " / " + ctl_explorer.total_pages);
+			ctl_menu.setSubMenu(contents.menu_contents);
+			ctl_menu.setRightCommand("目录", "home");
 
 		} else {
 			ctl_menu.setMiddleText("读取资料错误。");
@@ -153,6 +157,17 @@ public class Browser extends Canvas implements ICommandManager {
 		case BrowserCommand.LOAD_ERROR:
 			after_content_loaded(null);			
 			break;
+		case BrowserCommand.DO_COMMAND:
+			String cmd = (String)data;
+			if (cmd.startsWith("CMD_")){ 
+				if(cmd.equals("CMD_SEARCH")) {
+					SearchUi searchui = new SearchUi();
+					searchui.inputSearchText(this, display);
+				}
+			} else {
+				gotoUrl(cmd);
+			}
+			break;
 		case BrowserCommand.GOTO_URL:
 			gotoUrl((String)data);
 			break;
@@ -165,10 +180,12 @@ public class Browser extends Canvas implements ICommandManager {
 			break;
 		case BrowserCommand.SEARCH:
 			SearchUi searchui = new SearchUi();
-			//searchui.inputSearchText(this, display);
+			searchui.inputSearchText(this, display);
 			break;
 		case BrowserCommand.SEARCH_TEXT:
 			System.out.println("Search text:" + data);
+			display.setCurrent(this);
+			setFullScreenMode(true);
 			gotoUrl("search?s=" + data);
 			break;
 

@@ -1,5 +1,7 @@
 package com.yazo.contents;
 
+import java.util.Vector;
+
 import javax.microedition.io.Connector;
 import javax.microedition.io.HttpConnection;
 
@@ -17,6 +19,7 @@ public class ContentManager{
 	public String header;
 	public LineContent content;
 	public PageCache content_buffer;
+	public Vector menu_contents;
 	private ICommandManager command_manager;
 	
 	public ContentManager(ICommandManager manager){
@@ -24,6 +27,15 @@ public class ContentManager{
 		content = null;
 		content_buffer = new PageCache();
 		command_manager = manager;
+		menu_contents = new Vector();
+		loadMenuContent();
+	}
+	private void loadMenuContent(){
+		menu_contents.addElement(new LinkContent("1. 搜索图书", "CMD_SEARCH"));
+		menu_contents.addElement(new LinkContent("2. 系统设置", "config_page"));
+		menu_contents.addElement(new LinkContent("3. 用户帮助", "help_page"));
+		menu_contents.addElement(new LinkContent("4. 软件升级", "upgrade_page"));
+		menu_contents.addElement(new LinkContent("5. 返回首页", "home"));
 	}
 	public void command_callback(int command, Object data) {
 		switch(command){

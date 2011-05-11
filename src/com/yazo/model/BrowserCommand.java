@@ -8,6 +8,7 @@ public class BrowserCommand {
 	public static final int LOADING_FROM_INTERNET = 5;
 	public static final int AFTER_LINECONTENT_LOADED = 6;
 	public static final int LOAD_ERROR = 7;
+	public static final int DO_COMMAND = 8;
 	public static final int QUIT_APPLICATION = 9;
 
 	public static final int SEARCH = 10;

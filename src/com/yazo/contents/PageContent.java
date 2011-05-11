@@ -1,10 +1,7 @@
 package com.yazo.contents;
 
 import java.util.Vector;
-
 import javax.microedition.lcdui.Font;
-
-import com.yazo.application.Configuration;
 
 public class PageContent {
 	private Vector pages;
