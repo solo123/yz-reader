@@ -55,7 +55,7 @@ public class Connect {
 	}
 
 	/**
-	 * 普通查询服务器
+	 * 普�?查询服务�?
 	 * 
 	 * @param inData
 	 * @return
@@ -100,7 +100,7 @@ public class Connect {
 	}
 	
 	/**
-	 * 通过xml查询服务器
+	 * 通过xml查询服务�?
 	 * 
 	 * @param xml
 	 * @return

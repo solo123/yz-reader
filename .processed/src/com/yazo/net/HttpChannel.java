@@ -145,7 +145,7 @@ public class HttpChannel extends TCPChannel {
 
 
 	/**
-	 * 普通接收数据
+	 * 普�?接收数据
 	 */
 	public byte[] receive(InputStream inputstream) throws Exception {
 		try {
@@ -332,7 +332,7 @@ public class HttpChannel extends TCPChannel {
 	public int send(OutputStream connection, byte[] inData) throws Exception {
 		dataArray = inData;
 		if (connection == null || inData == null) {
-			throw new Exception("发送的数据为null");
+			throw new Exception("发�?的数据为null");
 		}
 
 		QueryServerData data = new QueryServerData();

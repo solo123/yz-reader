@@ -102,7 +102,7 @@ public class ParserXml {
 		return result.toString();
 	}
 	/**
-	 * 用于获取专区的类型数组
+	 * 用于获取专区的类型数�?
 	 * @param parser
 	 * @return
 	 */
