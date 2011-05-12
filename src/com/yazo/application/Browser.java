@@ -12,7 +12,7 @@ public class Browser extends Canvas implements ICommandManager {
 	private CtlHeader ctl_header;
 	private CtlExplorer ctl_explorer;
 	private CtlMenu ctl_menu;
-	private CtlQuit ctl_quit;
+	private CtlAlert ctl_alert;
 	
 	public ContentManager contents;
 	private MainMIDlet midlet;
@@ -63,13 +63,13 @@ public class Browser extends Canvas implements ICommandManager {
 		ctl_menu.setCommandManager(this);
 		container.addControl(ctl_menu);
 		
-		ctl_quit = new CtlQuit();
-		ctl_quit.setSize(Configuration.SCREEN_WIDTH-30, 60);
-		ctl_quit.setPos(15, Configuration.SCREEN_HEIGHT-Configuration.MENU_HEIGHT-10, Graphics.BOTTOM|Graphics.LEFT);
-		ctl_quit.setFont(Configuration.DEFAULT_FONT);
-		ctl_quit.setBar(Configuration.SCREEN_WIDTH, Configuration.MENU_HEIGHT, Configuration.SCREEN_HEIGHT-1);
-		ctl_quit.setCommandManager(this);
-		container.addControl(ctl_quit);
+		ctl_alert = new CtlAlert();
+		ctl_alert.setSize(Configuration.SCREEN_WIDTH-30, 60);
+		ctl_alert.setPos(15, Configuration.SCREEN_HEIGHT-Configuration.MENU_HEIGHT-10, Graphics.BOTTOM|Graphics.LEFT);
+		ctl_alert.setFont(Configuration.DEFAULT_FONT);
+		ctl_alert.setBar(Configuration.SCREEN_WIDTH, Configuration.MENU_HEIGHT, Configuration.SCREEN_HEIGHT-1);
+		ctl_alert.setCommandManager(this);
+		container.addControl(ctl_alert);
 		
 		gotoUrl(Configuration.CONTENT_HOME);
 	}
@@ -89,8 +89,8 @@ public class Browser extends Canvas implements ICommandManager {
 		int action = getGameAction(keyCode);
 		System.out.println(" action:" + action + ", keycode:" + keyCode);
 // #endif
-		if (ctl_quit.state>0) {
-			ctl_quit.keyReleased(keyCode);
+		if (ctl_alert.state>0) {
+			ctl_alert.keyReleased(keyCode);
 		} else if (ctl_menu.state>0){
 			ctl_menu.keyReleased(keyCode);
 		} else {
@@ -124,10 +124,12 @@ public class Browser extends Canvas implements ICommandManager {
 			ctl_explorer.setCurrentPage(0);
 			ctl_menu.setMiddleText("" + (ctl_explorer.current_page+1) + " / " + ctl_explorer.total_pages);
 			ctl_menu.setSubMenu(contents.content.menus);
-			String t = contents.content.rightKeyMenu.content;
-			String u = contents.content.rightKeyMenu.url;
-			ctl_menu.setRightCommand(t,u);
-			ctl_menu.paint_bar();
+			if (contents.content.rightKeyMenu!=null){
+				String t = contents.content.rightKeyMenu.content;
+				String u = contents.content.rightKeyMenu.url;
+				ctl_menu.setRightCommand(t,u);
+				ctl_menu.paint_bar();
+			}
 
 		} else {
 			ctl_menu.setMiddleText("读取资料错误。");
@@ -170,7 +172,9 @@ public class Browser extends Canvas implements ICommandManager {
 					SearchUi searchui = new SearchUi();
 					searchui.inputSearchText(this, display);
 				} else if(cmd.equals("CMD_QUIT")){
-					ctl_quit.confirm("确认退出吗？");
+					ctl_alert.confirm("确认退出吗？", "CMD_QUIT_NOW");
+				} else if(cmd.equals("CMD_QUIT_NOW")){
+					midlet.quit();
 				}
 			} else {
 				gotoUrl(cmd);

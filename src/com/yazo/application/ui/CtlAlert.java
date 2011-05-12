@@ -9,15 +9,16 @@ import com.yazo.model.BrowserCommand;
 import com.yazo.model.ICommandManager;
 import com.yazo.ui.UiControl;
 
-public class CtlQuit extends UiControl {
+public class CtlAlert extends UiControl {
+	private ICommandManager command_manager = null;
 	private Image img, img_shadow, img_bar;
 	private Graphics g;
 	private int color, bgcolor, bordercolor, bar_posy;
 	private Font font = null;
 	public int state = 0;
-	private ICommandManager command_manager = null;
+	private String confirmCommand = null;
 	
-	public CtlQuit(){
+	public CtlAlert(){
 		super();
 		img = img_bar = null;
 		g = null;
@@ -63,12 +64,13 @@ public class CtlQuit extends UiControl {
 		int y = (height-font.getHeight())/2 +2;
 		g.setColor(0);
 		g.setFont(font);
-		g.drawString("退出程序", 4, y, Graphics.TOP|Graphics.LEFT);
-		g.drawString("返回", width-4, y, Graphics.TOP|Graphics.RIGHT);
+		g.drawString("确定", 4, y, Graphics.TOP|Graphics.LEFT);
+		g.drawString("取消", width-4, y, Graphics.TOP|Graphics.RIGHT);
 		g = null;
 	}
 	
-	public void confirm(String message){
+	public void confirm(String message, String command){
+		confirmCommand = command;
 		g.setColor(bordercolor);
 		g.drawRect(0, 0, width-1, height-1);
 		g.setColor(0xffffff);
@@ -89,15 +91,15 @@ public class CtlQuit extends UiControl {
 			if (img_bar!=null) g.drawImage(img_bar, 0, bar_posy, Graphics.BOTTOM|Graphics.LEFT);
 		}
 	}
-	public int keyReleased(int keyCode) {
+	public void keyReleased(int keyCode) {
 		// #ifdef DBG_KEYS
 		System.out.println("quit key:" + keyCode);
 		// #endif
 		if (keyCode==-7) state=0;
 		else if (keyCode==-6){
-			if(command_manager!=null) command_manager.command_callback(BrowserCommand.QUIT_APPLICATION, null);
+			state = 0;
+			if(confirmCommand!=null && command_manager!=null) command_manager.command_callback(BrowserCommand.DO_COMMAND, confirmCommand);
 		}
-		return 0;
 	}
 	
 }
