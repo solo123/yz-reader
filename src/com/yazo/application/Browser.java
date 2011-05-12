@@ -175,6 +175,8 @@ public class Browser extends Canvas implements ICommandManager {
 					ctl_alert.confirm("确认退出吗？", "CMD_QUIT_NOW");
 				} else if(cmd.equals("CMD_QUIT_NOW")){
 					midlet.quit();
+				} else if(cmd.startsWith("CMD_ALERT")){
+					ctl_alert.confirm(cmd.substring(10), "CMD_NOP");
 				}
 			} else {
 				gotoUrl(cmd);
@@ -199,6 +201,9 @@ public class Browser extends Canvas implements ICommandManager {
 			display.setCurrent(this);
 			setFullScreenMode(true);
 			gotoUrl("search?s=" + data);
+			break;
+		case BrowserCommand.REFRESH_STATUS:
+			ctl_menu.setMiddleText("" + (ctl_explorer.current_page+1) + " / " + ctl_explorer.total_pages);
 			break;
 
 		}

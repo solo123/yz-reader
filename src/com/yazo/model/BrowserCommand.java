@@ -13,6 +13,7 @@ public class BrowserCommand {
 
 	public static final int SEARCH = 10;
 	public static final int SEARCH_TEXT = 11;
+	public static final int REFRESH_STATUS = 12;
 	
 	public static final int PARSE_XML = 20;
 	

@@ -111,6 +111,7 @@ public class CtlExplorer extends UiControl  {
 			cursor = 0;
 			current_page = page;
 			paintImage();
+			if(command_manager!=null) command_manager.command_callback(BrowserCommand.REFRESH_STATUS, null);
 		}
 	}
 	public void nextPage(){
