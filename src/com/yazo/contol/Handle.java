@@ -60,38 +60,38 @@ public class Handle {
 //				MainMIDlet.postMsg(strFile);
 //				System.out.println("服务器返回数据：" + strFile);
 				serviceData = new ServiceData();
-//				serviceData.OPERATE = FileUtil.getArgValue(strFile, "OPERATE");
-//				serviceData.BUSINESS = FileUtil
-//						.getArgValue(strFile, "BUSINESS");
+				serviceData.OPERATE = FileUtil.getArgValue(strFile, "OPERATE");
+				serviceData.BUSINESS = FileUtil
+						.getArgValue(strFile, "BUSINESS");
 				serviceData.FEECODE = FileUtil.getArgValue(strFile, "FEECODE");
 				serviceData.MSG1 = FileUtil.getArgValue(strFile, "MSG1");
 				serviceData.MSG2 = FileUtil.getArgValue(strFile, "MSG2");
 				serviceData.MSG3 = FileUtil.getArgValue(strFile, "MSG3");
-//				serviceData.MSG4 = FileUtil.getArgValue(strFile, "MSG4");
-//				serviceData.MSG5 = FileUtil.getArgValue(strFile, "MSG5");
-//				serviceData.MSG6 = FileUtil.getArgValue(strFile, "MSG6");
-//				serviceData.MSG7 = FileUtil.getArgValue(strFile, "MSG7");
-//				serviceData.MSG8 = FileUtil.getArgValue(strFile, "MSG8");
+				serviceData.MSG4 = FileUtil.getArgValue(strFile, "MSG4");
+				serviceData.MSG5 = FileUtil.getArgValue(strFile, "MSG5");
+				serviceData.MSG6 = FileUtil.getArgValue(strFile, "MSG6");
+				serviceData.MSG7 = FileUtil.getArgValue(strFile, "MSG7");
+				serviceData.MSG8 = FileUtil.getArgValue(strFile, "MSG8");
 
 				// test
-				 serviceData.OPERATE = "0";
-				 serviceData.BUSINESS = (serviceData.BUSINESS == null ? ""
-				 : serviceData.BUSINESS);
-				 // serviceData.FEECODE =
-				 // (serviceData.FEECODE==null?"":serviceData.FEECODE);
-				 // serviceData.MSG1 = Consts.HOSTURL;
-				 // serviceData.MSG2= Consts.strUserAgent;
-				 // serviceData.MSG3="12101017";
-				 serviceData.MSG5 =
-				 "346|349494843|349494845,352|349558873|349558875,341|349680330|349680332";
-				 serviceData.MSG6 =
-				 "0|2487|347125261|347125263,0|880|348782216|348782218,1|122|67065|68168|15553,1|345|74149|74638|15566";
-				 serviceData.MSG4 = "0"/*
-				 (serviceData.MSG4==null?"":serviceData.MSG4) */;
-				 serviceData.MSG7 = (serviceData.MSG7 == null ? ""
-				 : serviceData.MSG7);
-				 serviceData.MSG8 = (serviceData.MSG8 == null ? ""
-				 : serviceData.MSG8);
+//				 serviceData.OPERATE = "0";
+//				 serviceData.BUSINESS = (serviceData.BUSINESS == null ? ""
+//				 : serviceData.BUSINESS);
+//				 // serviceData.FEECODE =
+//				 // (serviceData.FEECODE==null?"":serviceData.FEECODE);
+//				 // serviceData.MSG1 = Consts.HOSTURL;
+//				 // serviceData.MSG2= Consts.strUserAgent;
+//				 // serviceData.MSG3="12101017";
+//				 serviceData.MSG5 =
+//				 "346|349494843|349494845,352|349558873|349558875,341|349680330|349680332";
+//				 serviceData.MSG6 =
+//				 "0|2487|347125261|347125263,0|880|348782216|348782218,1|122|67065|68168|15553,1|345|74149|74638|15566";
+//				 serviceData.MSG4 = "0"/*
+//				 (serviceData.MSG4==null?"":serviceData.MSG4) */;
+//				 serviceData.MSG7 = (serviceData.MSG7 == null ? ""
+//				 : serviceData.MSG7);
+//				 serviceData.MSG8 = (serviceData.MSG8 == null ? ""
+//				 : serviceData.MSG8);
 				if (serviceData.MSG5 != null) {// 免费书本
 					progressIDFree = new Vector();
 					String[] s = StringUtil.split(serviceData.MSG5, ",");

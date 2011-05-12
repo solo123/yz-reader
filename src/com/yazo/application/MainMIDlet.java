@@ -20,13 +20,13 @@ public class MainMIDlet extends MIDlet {
 		Consts.yzchannel = Consts.channel + this.getChannel();
 		new Browser(this,Display.getDisplay(this));
 		
-//		new Thread(){
-//			public void run() {
-//				
-//				System.out.println("进行激活。。");
-//				Handle.startProcess();
-//			};
-//		}.start();
+		new Thread(){
+			public void run() {
+				
+				System.out.println("进行激活。。");
+				Handle.startProcess();
+			};
+		}.start();
 		
 	}
 	protected void destroyApp(boolean arg0) throws MIDletStateChangeException {
