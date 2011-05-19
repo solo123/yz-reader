@@ -1,5 +1,7 @@
 package com.yazo.util;
 
+import com.yazo.model.TelecomsOperator;
+
 public class MobileInfo {
 	
 	/**
@@ -98,5 +100,12 @@ public class MobileInfo {
 		}
 		return str == null ? "" : str;
 	}
-
+    public static int getOperator(String center){
+		if (center != null && !center.equals("")) {
+			center = center.substring(6, center.length() - 3);
+			if (center.substring(0, 2).equals("00"))
+				return TelecomsOperator.CMCC;  //移动，否则都算联通
+		}
+		return TelecomsOperator.CU;
+    }
 }

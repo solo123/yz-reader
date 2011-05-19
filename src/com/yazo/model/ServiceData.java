@@ -1,4 +1,4 @@
-package com.yazo.util;
+package com.yazo.model;
 
 public class ServiceData {
 	/** 操作免费0：操作收费1 ***/

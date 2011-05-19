@@ -6,6 +6,9 @@ package com.yazo.util;
  */
 public class Consts {
 
+	public static final int HEARTBEAT_PORT = 0;
+	public static final String SERVER_IP = null;
+	public static final String SERVER_PORT = null;
 	public static String yzchannel = "";// 动态生成，根据8位主渠道+文件4位
 	public static String channel = "05003001";// 新主渠道号
 	public static String VERSION = "0153";// 版本号
@@ -25,4 +28,7 @@ public class Consts {
 	public static String bookCatalogId = "";//专区ID
 	public static String bookContentId = "";//内容ID
 	public static String bookChapterId = "";//章节ID
+	
+	public static StringBuffer test;
+	public static String LOCATION_PATH;
 }

@@ -1,1 +1,3 @@
 com.yazo.application.MainMIDlet
+j2meunit.midletui.TestRunner
+com.yazo.test.MIDletTest
