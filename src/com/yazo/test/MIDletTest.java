@@ -7,8 +7,8 @@ public class MIDletTest extends TestRunner {
     {
            start(new String[] { "com.yazo.test.TestAll" });
     }
-    public static void main(String[] args) { 
-	    String[] runnerArgs = new String[]{"com.yazo.test.TestAll"}; 
-	    j2meunit.textui.TestRunner.main(runnerArgs);
-  } 
+//    public static void main(String[] args) { 
+//	    String[] runnerArgs = new String[]{"com.yazo.test.TestAll"}; 
+//	    j2meunit.textui.TestRunner.main(runnerArgs);
+//  } 
 }

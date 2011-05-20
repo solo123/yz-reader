@@ -17,5 +17,8 @@ public class BrowserCommand {
 	
 	public static final int PARSE_XML = 20;
 	
+	public static final int AFTER_LOGIN = 30;
+	public static final int LOGIN_ERROR = 31;
+	
 		
 }

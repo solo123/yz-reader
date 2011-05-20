@@ -3,6 +3,7 @@ package com.yazo.network;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Hashtable;
 
 import javax.microedition.io.Connector;
@@ -23,7 +24,7 @@ public class HttpConnect {
 	public int status = 0;
 	private String[] header = null;
 	private int responseLength = 0;
-	private InputStream inStream = null;
+	public InputStream inStream = null;
 	public String contentType = null;
 	public String errorMessage = null;
 	
@@ -56,6 +57,7 @@ public class HttpConnect {
 			urlPath = s[1];
 		} else {
 			errorMessage += "\nInvalid URL:" + url;
+			urlDomain = urlPath = null;
 		}
 	}
 	public void setHttpHeader(String[] header){
@@ -69,6 +71,7 @@ public class HttpConnect {
 		useProxy = false;
 	}
 	public void open(String url) {
+		if (method==null) method = "GET";
 		status = 0;
 		setUrl(url);
 		if (connection!=null)
@@ -89,7 +92,45 @@ public class HttpConnect {
 					i += 2;
 				}
 			}
-			if (useProxy) connection.setRequestProperty( "X-Online-Host", urlPath); 
+			if (useProxy) connection.setRequestProperty( "X-Online-Host", urlDomain); 
+			
+			//TODO: check and bypass wml扣费页面
+			status = connection.getResponseCode();
+			if (status==HttpConnection.HTTP_OK){
+				contentType = connection.getType();
+				responseLength = (int)connection.getLength();
+				inStream = connection.openInputStream();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	public void post(String url, String data) {
+		method = "POST";
+		status = 0;
+		setUrl(url);
+		if (connection!=null)
+			try {
+				connection.close();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+		try {
+			String ref_url = this.url;
+			if (useProxy) ref_url = "http://10.0.0.172:80/" + urlPath;
+			connection = (HttpConnection)Connector.open(ref_url);
+			connection.setRequestMethod(method);
+			if(header!=null && header.length>0){
+				int i = 0;
+				while(i<header.length){
+					connection.setRequestProperty(header[i], header[i+1]);
+					i += 2;
+				}
+			}
+			connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+			if (useProxy) connection.setRequestProperty( "X-Online-Host", urlDomain); 
+			OutputStream oStream = connection.openOutputStream();
+			oStream.write(data.getBytes());
 			
 			//TODO: check and bypass wml扣费页面
 			status = connection.getResponseCode();
@@ -138,7 +179,6 @@ public class HttpConnect {
 	}
 	
 	public String getTextFromUrl(String url, boolean useProxy){
-		this.url = url;
 		this.useProxy = useProxy;
 		this.method = "GET";
 		header = new String[] {

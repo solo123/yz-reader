@@ -8,8 +8,8 @@ public class PageContent {
 	private Vector contents;
 	private int width, height, default_lineheight, current_content_height, chars_per_line;
 	private Font font;
-	public String header, url;
-	public Boolean load_from_cache;
+	public String header, url, action=null;
+	public boolean load_from_cache;
 	public Vector menus;
 	public LinkContent rightKeyMenu = null;
 	
@@ -18,6 +18,7 @@ public class PageContent {
 		this.height = height;
 		this.default_lineheight = default_lineheight;
 		this.font = default_font;
+		if(font==null) font = Font.getDefaultFont();
 		pages = new Vector();
 		menus = new Vector();
 		current_content_height = 100000;

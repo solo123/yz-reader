@@ -166,7 +166,7 @@ com.yazo.contents.BrowserContent -> at:
     java.lang.String content_type -> a
     java.lang.String content -> b
     int height -> c
-com.yazo.contents.ContentManager -> r:
+com.yazo.contents.ContentManager -> s:
     com.yazo.contents.PageContent content -> a
     com.yazo.contents.PageCache content_buffer -> b
     com.yazo.application.Browser command_manager$5641b1ee -> c
@@ -301,7 +301,7 @@ com.yazo.protocol.RefreshPv -> e:
     java.lang.String doRefreshPv(java.lang.String) -> b
 com.yazo.protocol.Register -> d:
     java.lang.Object getParser(java.lang.String) -> b
-com.yazo.protocol.WelcomeInfo -> aq:
+com.yazo.protocol.WelcomeInfo -> ao:
     java.lang.Object getClientWelcomeInfo$9543ced() -> a
 com.yazo.protocol.YaZhouChannel -> an:
     java.lang.Object getYaZhou(java.lang.String) -> b
@@ -319,7 +319,7 @@ com.yazo.rms.RmsManager -> bb:
     java.util.Vector getAllChanges() -> b
 com.yazo.test.MIDletTest -> com.yazo.test.MIDletTest:
     void startApp() -> startApp
-com.yazo.thread.ThreadPool -> s:
+com.yazo.thread.ThreadPool -> r:
     boolean initialized -> b
     java.util.Vector pooledWorkThreads -> a
     com.yazo.thread.WorkThread innerThread -> c
@@ -420,7 +420,7 @@ com.yazo.util.MD5 -> az:
     void Encode(byte[],long[],int) -> a
     long b2iu(byte) -> a
     java.lang.String toMD5(java.lang.String) -> a
-com.yazo.util.MemoryStream -> ao:
+com.yazo.util.MemoryStream -> aq:
     byte[] buffer -> a
     int capacity -> b
     int length -> c

@@ -46,11 +46,12 @@ public class NetworkConnectionTest extends TestCase {
 				})
 		);	
 		suite.addTest(
-				new NetworkConnectionTest("connectToCmccProxy", new TestMethod()
+				new NetworkConnectionTest("getWrongUrlStatus", new TestMethod()
 				{public void run(TestCase tc){
-					((NetworkConnectionTest) tc).connectToCmccProxy();}
+					((NetworkConnectionTest) tc).getWrongUrlStatus();}
 				})
 		);	
+	
 		suite.addTest(
 				new NetworkConnectionTest("getWapByProxy", new TestMethod()
 				{public void run(TestCase tc){
@@ -102,34 +103,22 @@ public class NetworkConnectionTest extends TestCase {
 		HttpConnect conn = new HttpConnect();
 		String result = conn.getTextFromUrl("http://some.wrong.url/", false);
 		assertNull(result);
-		assertTrue(conn.status==0);
 		conn.close();
 		conn = null;
 	}
-	
-	private void connectToCmccProxy(){
-		HttpConnect conn = new HttpConnect("", "", "GET");
-		conn.setNoProxy();
-		String[] header = {
-				"Accept", "*/*"
-				};
-		conn.setHttpHeader(header);
-		conn.open("http://10.0.0.172");
-		System.out.println("Status="+conn.status);
-		assertEquals(HttpConnection.HTTP_OK, conn.status);
-		if (conn.status == HttpConnection.HTTP_OK){
-			String s = conn.getContent();
-			System.out.println("Content length:[" + s.length() + "]");
-			assertTrue(s!=null && s.length()>0);
-		}
+	private void getWrongUrlStatus(){
+		HttpConnect conn = new HttpConnect();
+		conn.getTextFromUrl("http://some.wrong.url/", false);
+		assertTrue(conn.status!=200);
 		conn.close();
 		conn = null;
-	}
+	}	
+
 	private void getWapByProxy(){
 		HttpConnect conn = new HttpConnect();
-		String result = conn.getTextFromUrl("http://25800.com", true);
-		assertNotNull(result);
+		String result = conn.getTextFromUrl("http://wap.baidu.com", true);
 		assertEquals(HttpConnection.HTTP_OK, conn.status);
+		assertNotNull(result);
 		conn.close();
 		conn = null;		
 	}

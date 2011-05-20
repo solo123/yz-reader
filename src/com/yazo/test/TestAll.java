@@ -8,9 +8,9 @@ public class TestAll extends TestCase
        {
               TestSuite suite = new TestSuite();
               suite.addTest(new MyTest().suite());
-              suite.addTest(new NetworkConnectionTest().suite());
               suite.addTest(new MobileFuncTest().suite());
-              suite.addTest(new ContentWebTest().suite());
+              suite.addTest(new KVPTest().suite());
+//              suite.addTest(new TestAllNet().suite());
               return suite;
        }
 

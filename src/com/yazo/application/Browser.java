@@ -1,9 +1,12 @@
 package com.yazo.application;
 
+import com.yazo.application.thread.ThreadManager;
 import com.yazo.application.ui.*;
 import com.yazo.contents.*;
+import com.yazo.mobile.MobileSysData;
 import com.yazo.model.BrowserCommand;
 import com.yazo.model.ICommandManager;
+import com.yazo.network.HttpConnect;
 import com.yazo.ui.UiContainer;
 import javax.microedition.lcdui.*;
 
@@ -15,6 +18,7 @@ public class Browser extends Canvas implements ICommandManager {
 	private CtlAlert ctl_alert;
 	
 	public ContentManager contents;
+	private ThreadManager threadManager;
 	private MainMIDlet midlet;
 	private Display display;
 	private SplashCanvas flash;
@@ -33,7 +37,8 @@ public class Browser extends Canvas implements ICommandManager {
 				init_browser();
 			}
 		}.start();
-		
+
+
 	}
 	private void init_browser(){
 		setFullScreenMode(true);
@@ -43,6 +48,7 @@ public class Browser extends Canvas implements ICommandManager {
 		
 		book_menu = new BookMenu();
 		contents = new ContentManager(this);
+		threadManager = new ThreadManager();
 		
 		ctl_header = new CtlHeader();
 		ctl_header.setSize(Configuration.SCREEN_WIDTH, Configuration.HEADER_HEIGHT);
@@ -74,6 +80,7 @@ public class Browser extends Canvas implements ICommandManager {
 		gotoUrl(Configuration.CONTENT_HOME);
 	}
 	
+	
 	protected void paint(Graphics g) {
 		container.paint(g);
 	}
@@ -100,9 +107,9 @@ public class Browser extends Canvas implements ICommandManager {
 		repaint();
 	}
 	
-	private void after_content_loaded(){
+	private void after_content_loaded(Object data){
 		if (flash!=null){
-			if (contents.content==null){
+			if (data==null){
 				flash.retryNetwork();
 				try {
 					Thread.sleep(1000);
@@ -115,10 +122,12 @@ public class Browser extends Canvas implements ICommandManager {
 				flash.stopTimer();
 				display.setCurrent(this);
 				flash = null;
+				threadManager.loginThread(this);
 			}
 		}
-		if (contents.content!=null) {
-			//contents.content = lineContent;
+		if (data!=null) {
+			contents.setCurrentContent(data);
+
 			ctl_header.setTitle(contents.content.header);
 			ctl_explorer.setContent(contents.content, 0);
 			ctl_explorer.setCurrentPage(0);
@@ -142,7 +151,7 @@ public class Browser extends Canvas implements ICommandManager {
 		// #ifdef DBG
 		System.out.println("gotoURL:" + url);
 		// #endif
-		contents.loadContentFromUrl(Configuration.CONTENT_PATH, url);
+		threadManager.getPageContentThread(Configuration.CONTENT_PATH, url, this);
 		// after loaded callback command_callback
 	}
 	
@@ -157,10 +166,10 @@ public class Browser extends Canvas implements ICommandManager {
 			ctl_menu.setMiddleText("正在读取网络...");
 			break;
 		case BrowserCommand.AFTER_LINECONTENT_LOADED:
-			after_content_loaded();
+			after_content_loaded(data);
 			break;
 		case BrowserCommand.LOAD_ERROR:
-			after_content_loaded();			
+			after_content_loaded(null);			
 			break;
 		case BrowserCommand.DO_COMMAND:
 			String cmd = (String)data;
@@ -204,6 +213,10 @@ public class Browser extends Canvas implements ICommandManager {
 			break;
 		case BrowserCommand.REFRESH_STATUS:
 			ctl_menu.setMiddleText("" + (ctl_explorer.current_page+1) + " / " + ctl_explorer.total_pages);
+			break;
+		case BrowserCommand.AFTER_LOGIN:
+			break;
+		case BrowserCommand.LOGIN_ERROR:
 			break;
 
 		}
