@@ -19,6 +19,7 @@ public class BrowserCommand {
 	
 	public static final int AFTER_LOGIN = 30;
 	public static final int LOGIN_ERROR = 31;
+	public static final int NO_NETWORK = 32;
 	
 		
 }

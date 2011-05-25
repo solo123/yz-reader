@@ -1,6 +1,6 @@
 package com.yazo.test;
 
-import com.yazo.mobile.MobileSysData;
+import com.yazo.tools.mobile.MobileSysData;
 import j2meunit.framework.*;
 
 public class MobileFuncTest extends TestCase {

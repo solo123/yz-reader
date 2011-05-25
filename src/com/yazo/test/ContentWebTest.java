@@ -6,7 +6,7 @@ import j2meunit.framework.TestMethod;
 import j2meunit.framework.TestSuite;
 
 import com.yazo.contents.ContentService;
-import com.yazo.mobile.MobileSysData;
+import com.yazo.tools.mobile.MobileSysData;
 import com.yazo.model.ServiceData;
 
 

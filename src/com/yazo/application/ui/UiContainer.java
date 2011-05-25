@@ -1,4 +1,4 @@
-package com.yazo.ui;
+package com.yazo.application.ui;
 
 import java.util.Enumeration;
 import java.util.Vector;

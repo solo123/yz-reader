@@ -1,3 +1,20 @@
-#Fri May 20 11:29:56 CST 2011
+#Tue May 24 10:28:05 CST 2011
 eclipse.preferences.version=1
+encoding//.processed/src/com/yazo/CMCC/simulator/Simulator.java=UTF-8
+encoding//.processed/src/com/yazo/application/Browser.java=UTF-8
+encoding//.processed/src/com/yazo/application/SearchUi.java=UTF-8
+encoding//.processed/src/com/yazo/application/SplashCanvas.java=UTF-8
+encoding//.processed/src/com/yazo/application/biz/BookBiz.java=UTF-8
+encoding//.processed/src/com/yazo/application/biz/Config.java=UTF-8
+encoding//.processed/src/com/yazo/application/thread/ThreadJobLogin.java=UTF-8
+encoding//.processed/src/com/yazo/application/thread/ThreadJobPageContent.java=UTF-8
+encoding//.processed/src/com/yazo/application/thread/ThreadManager.java=UTF-8
+encoding//.processed/src/com/yazo/application/ui/CtlAlert.java=UTF-8
+encoding//.processed/src/com/yazo/application/ui/CtlExplorer.java=UTF-8
+encoding//.processed/src/com/yazo/application/ui/CtlMenu.java=UTF-8
+encoding//.processed/src/com/yazo/contents/ContentManager.java=UTF-8
+encoding//.processed/src/com/yazo/contents/LineContent.java=UTF-8
+encoding//.processed/src/com/yazo/model/CommandManagerObject.java=UTF-8
+encoding//.processed/src/com/yazo/model/ConfigKeys.java=UTF-8
+encoding//.processed/src/com/yazo/model/ICommandListener.java=UTF-8
 encoding/<project>=UTF-8

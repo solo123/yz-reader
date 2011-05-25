@@ -35,7 +35,7 @@ public class SearchUi implements CommandListener {
 	public void commandAction(Command c, Displayable d) {
 		if (c==cmd1){
 			result = textbox.getString();
-			this.browser.command_callback(BrowserCommand.SEARCH_TEXT, result);
+			this.browser.execute_command(BrowserCommand.SEARCH_TEXT, result);
 		} else if (c==cmd2) {
 			result = null;
 			System.out.println("cmd2");

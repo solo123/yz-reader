@@ -8,7 +8,7 @@ public class PageContent {
 	private Vector contents;
 	private int width, height, default_lineheight, current_content_height, chars_per_line;
 	private Font font;
-	public String header, url, action=null;
+	public String header, service, action=null;
 	public boolean load_from_cache;
 	public Vector menus;
 	public LinkContent rightKeyMenu = null;

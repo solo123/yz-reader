@@ -9,9 +9,7 @@ import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
 import org.xmlpost.PostContent;
 
-import com.yazo.CMCC.simulator.Simulator;
-import com.yazo.contol.Handle;
-import com.yazo.protocol.Login;
+import com.yazo.CMCC.CmccSimulator;
 import com.yazo.test.UiTest;
 import com.yazo.util.Consts;
 
@@ -51,8 +49,8 @@ public class MainMIDlet extends MIDlet {
 		p.addLabel("Request", "AuthenticateReq");
 		p.addLabel("AuthenticateReq", "messager");
 		p.addContent("messager", msg);
-		Login ls = new Login("http://bk-b.info/tools/show", "msg");
-		ls.authenticate(p.getXml());
+		// TODO: Login ls = new Login("http://bk-b.info/tools/show", "msg");
+		// ls.authenticate(p.getXml());
 	}
 	public String getChannel() {
 		return getTextFromRes("/AgencyID.txt", false);

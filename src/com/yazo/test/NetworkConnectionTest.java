@@ -6,8 +6,6 @@ import javax.microedition.io.Connector;
 import javax.microedition.io.HttpConnection;
 
 
-import com.yazo.network.AppException;
-import com.yazo.network.Connect;
 import com.yazo.network.HttpConnect;
 
 public class NetworkConnectionTest extends TestCase {

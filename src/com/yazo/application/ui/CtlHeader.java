@@ -3,7 +3,6 @@ package com.yazo.application.ui;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.Font;
-import com.yazo.ui.UiControl;
 
 public class CtlHeader extends UiControl {
 	private Image img;

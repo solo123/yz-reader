@@ -63,6 +63,16 @@ public class HttpConnect {
 	public void setHttpHeader(String[] header){
 		this.header = header;
 	}
+	public String getHttpHeader(String key){
+		if(connection==null) return null;
+		
+		try {
+			return connection.getHeaderField(key);
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 	public void setCmccProxy(){
 		useProxy = true;
 		proxy = "10.0.0.172";
@@ -101,7 +111,9 @@ public class HttpConnect {
 				responseLength = (int)connection.getLength();
 				inStream = connection.openInputStream();
 			}
-		} catch (IOException e) {
+		} catch (SecurityException ex){
+			status = -1;
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
@@ -130,7 +142,7 @@ public class HttpConnect {
 			connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 			if (useProxy) connection.setRequestProperty( "X-Online-Host", urlDomain); 
 			OutputStream oStream = connection.openOutputStream();
-			oStream.write(data.getBytes());
+			oStream.write(data.getBytes("UTF-8"));
 			
 			//TODO: check and bypass wml扣费页面
 			status = connection.getResponseCode();

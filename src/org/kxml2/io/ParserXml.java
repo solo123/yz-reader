@@ -38,6 +38,7 @@ public class ParserXml {
 
 	/**
 	 * 获得注册和登录返回的信息
+	 * <userinfo>userid</userinfo>
 	 */
 	public static String registerAndLogin(KXmlParser parser) {
 		StringBuffer result = new StringBuffer();

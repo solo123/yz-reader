@@ -7,14 +7,14 @@ import java.util.Vector;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
-import com.yazo.application.Configuration;
+import com.yazo.application.biz.Config;
 import com.yazo.contents.BrowserContent;
 import com.yazo.contents.LineContent;
 import com.yazo.contents.LinkContent;
 import com.yazo.contents.PageContent;
 import com.yazo.model.BrowserCommand;
-import com.yazo.model.ICommandManager;
-import com.yazo.ui.UiControl;
+import com.yazo.model.ConfigKeys;
+import com.yazo.model.ICommandListener;
 
 public class CtlExplorer extends UiControl  {
 	private PageContent content;
@@ -26,7 +26,8 @@ public class CtlExplorer extends UiControl  {
 	private Graphics g;
 	public int line_height;
 	private int font_height, line_space, line_top_padding, line_bottom_padding;
-	private ICommandManager command_manager;
+	private ICommandListener command_manager;
+	private Config config = Config.getInstance();
 
 	public CtlExplorer(){
 		super();
@@ -48,7 +49,7 @@ public class CtlExplorer extends UiControl  {
 		bgcolor = 0xdde4ec;
 		color = 0x363636;
 		
-		font_height = Configuration.FONT_HEIGHT;
+		font_height = config.getInt(ConfigKeys.FONT_HEIGHT);
 		line_space =  font_height/4;
 		line_height = font_height + line_space;
 		line_top_padding = line_space/2;
@@ -59,7 +60,7 @@ public class CtlExplorer extends UiControl  {
 		this.current_page = page;
 		this.total_pages = content.getTotalPages();
 	}
-	public void setCommandManager(ICommandManager manager){
+	public void setCommandManager(ICommandListener manager){
 		command_manager = manager;
 	}
 	private void paintImage(){
@@ -111,7 +112,7 @@ public class CtlExplorer extends UiControl  {
 			cursor = 0;
 			current_page = page;
 			paintImage();
-			if(command_manager!=null) command_manager.command_callback(BrowserCommand.REFRESH_STATUS, null);
+			if(command_manager!=null) command_manager.execute_command(BrowserCommand.REFRESH_STATUS, null);
 		}
 	}
 	public void nextPage(){
@@ -157,7 +158,7 @@ public class CtlExplorer extends UiControl  {
 			System.out.println("run command:" + next_cmd);
 			// #endif			
 			if(next_cmd!=null && command_manager!=null)
-				command_manager.command_callback(BrowserCommand.GOTO_URL, next_cmd);
+				command_manager.execute_command(BrowserCommand.GOTO_URL, next_cmd);
 			break;
 		default:
 			k = keyCode;

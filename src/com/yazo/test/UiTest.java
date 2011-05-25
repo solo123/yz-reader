@@ -7,7 +7,7 @@ import javax.microedition.lcdui.Graphics;
 import com.yazo.application.ui.CtlExplorer;
 import com.yazo.application.ui.CtlHeader;
 import com.yazo.application.ui.CtlMenu;
-import com.yazo.ui.UiContainer;
+import com.yazo.application.ui.UiContainer;
 
 public class UiTest extends Canvas {
 	private UiContainer container = new UiContainer();

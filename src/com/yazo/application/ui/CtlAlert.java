@@ -4,13 +4,11 @@ import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.Font;
 
-import com.yazo.application.Configuration;
 import com.yazo.model.BrowserCommand;
-import com.yazo.model.ICommandManager;
-import com.yazo.ui.UiControl;
+import com.yazo.model.ICommandListener;
 
 public class CtlAlert extends UiControl {
-	private ICommandManager command_manager = null;
+	private ICommandListener command_manager = null;
 	private Image img, img_shadow, img_bar;
 	private Graphics g;
 	private int color, bgcolor, bordercolor, bar_posy;
@@ -46,7 +44,7 @@ public class CtlAlert extends UiControl {
 	public void setFont(Font font){
 		this.font = font;
 	}
-	public void setCommandManager(ICommandManager manager){
+	public void setCommandManager(ICommandListener manager){
 		command_manager = manager;
 	}
 	public void setBar(int width, int height, int posy){
@@ -98,7 +96,7 @@ public class CtlAlert extends UiControl {
 		if (keyCode==-7) state=0;
 		else if (keyCode==-6){
 			state = 0;
-			if(confirmCommand!=null && command_manager!=null) command_manager.command_callback(BrowserCommand.DO_COMMAND, confirmCommand);
+			if(confirmCommand!=null && command_manager!=null) command_manager.execute_command(BrowserCommand.DO_COMMAND, confirmCommand);
 		}
 	}
 	

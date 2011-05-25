@@ -1,4 +1,4 @@
-package com.yazo.mobile;
+package com.yazo.tools.mobile;
 
 import com.yazo.model.MobileData;
 import com.yazo.model.TelecomsOperator;

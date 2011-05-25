@@ -2,7 +2,8 @@ package com.yazo.contents;
 
 import java.util.Vector;
 
-import com.yazo.application.Configuration;
+import com.yazo.application.biz.Config;
+import com.yazo.model.ConfigKeys;
 
 public class LineContent {
 	public BrowserContent[] lines;
@@ -14,11 +15,12 @@ public class LineContent {
 	public Boolean load_from_cache;
 	private int line_height, view_height;
 	private int chars_per_line;
+	private Config config = Config.getInstance();
 	
 	public LineContent(){
-		this.view_height = Configuration.BROWSER_HEIGHT;
-		this.line_height = Configuration.FONT_HEIGHT + Configuration.FONT_HEIGHT/4; 
-		chars_per_line = (Configuration.SCREEN_WIDTH - 20)/Configuration.FONT_WIDTH;
+		this.view_height = config.getInt(ConfigKeys.BROWSER_HEIGHT);
+		this.line_height = config.getInt(ConfigKeys.LINE_HEIGHT); 
+		chars_per_line = (config.getInt(ConfigKeys.SCREEN_WIDTH) - 20)/config.getInt(ConfigKeys.FONT_WIDTH);
 		line_count = 0;
 		page_pos = new int[100];
 		page_count = 0;

@@ -10,8 +10,7 @@ import javax.microedition.lcdui.Font;
 import com.yazo.contents.BrowserContent;
 import com.yazo.contents.LinkContent;
 import com.yazo.model.BrowserCommand;
-import com.yazo.model.ICommandManager;
-import com.yazo.ui.UiControl;
+import com.yazo.model.ICommandListener;
 
 public class CtlMenu extends UiControl {
 	private Image img_bar, img_menu, img_shadow;
@@ -22,7 +21,7 @@ public class CtlMenu extends UiControl {
 	public int state = 0;
 	private int menu_width, menu_height, line_height, cursor, max_items;
 	private Vector menu_contents;
-	private ICommandManager command_manager=null;
+	private ICommandListener command_manager=null;
 	
 	public CtlMenu(){
 		super();
@@ -44,7 +43,7 @@ public class CtlMenu extends UiControl {
 		middle_text = text;
 		paint_bar();
 	}
-	public void setCommandManager(ICommandManager manager){
+	public void setCommandManager(ICommandListener manager){
 		command_manager = manager;
 	}
 	public void setRightCommand(String name, String url){
@@ -176,14 +175,14 @@ public class CtlMenu extends UiControl {
 		case -7:
 			if (state>0) activeMenu();
 			else{
-				if(command_manager!=null) command_manager.command_callback(BrowserCommand.DO_COMMAND, menu_cmd1);
+				if(command_manager!=null) command_manager.execute_command(BrowserCommand.DO_COMMAND, menu_cmd1);
 			}
 			break;
 		case -5: // selected
 			state = 0;
 			LinkContent lc = (LinkContent)menu_contents.elementAt(cursor);
 			System.out.println("menu cmd:" + lc.content + ", cmd:" + lc.url);
-			if(command_manager!=null) command_manager.command_callback(BrowserCommand.DO_COMMAND, lc.url);
+			if(command_manager!=null) command_manager.execute_command(BrowserCommand.DO_COMMAND, lc.url);
 			break;
 		}
 	}

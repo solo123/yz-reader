@@ -1,10 +1,10 @@
-package com.yazo.ui;
+package com.yazo.application.ui;
 
 import javax.microedition.lcdui.Graphics;
 
 public abstract class UiControl {
 	protected int width, height, posx, posy, align;
-	
+
 	public UiControl(){
 		width = height = posx = posy = align = 0;
 	}

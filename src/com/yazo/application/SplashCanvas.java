@@ -2,11 +2,9 @@
 
 import java.util.Timer;
 import java.util.TimerTask;
-import javax.microedition.lcdui.Canvas;
-import javax.microedition.lcdui.Font;
-import javax.microedition.lcdui.Graphics;
-import javax.microedition.lcdui.Image;
-import javax.microedition.m3g.Loader;
+import javax.microedition.lcdui.*;
+import com.yazo.application.biz.Config;
+import com.yazo.model.ConfigKeys;
 
 public class SplashCanvas extends Canvas{
 	private int width;
@@ -18,6 +16,8 @@ public class SplashCanvas extends Canvas{
 	private Image splash_image;
 	private int c1,c2,c3, cw;
 	private int retry_times = 0;
+	private Config config = Config.getInstance();
+	private int error_color = 0;
 	
 	public SplashCanvas(MainMIDlet midlet){
 		this.setFullScreenMode(true);
@@ -51,8 +51,9 @@ public class SplashCanvas extends Canvas{
 		posy += splash_image.getHeight()/2 + font_height;
 		g.setFont(font);
 		g.setColor(0);
-		g.drawString("欢迎使用"+Configuration.APP_NAME, posx, posy, Graphics.TOP|Graphics.HCENTER);
+		g.drawString("欢迎使用" + config.getString(ConfigKeys.APP_NAME), posx, posy, Graphics.TOP|Graphics.HCENTER);
 		posy += font_height + font_height/4;
+		g.setColor(error_color);
 		g.drawString(error, posx, posy, Graphics.TOP|Graphics.HCENTER);
 		int barw = font.stringWidth(error);
 		
@@ -69,7 +70,7 @@ public class SplashCanvas extends Canvas{
 		g.fillRect(posx, posy, barw, font_height);
 		g.setColor(c2);
 		g.fillRect(posx, posy, cw, font_height);
-		
+		g.setColor(0);
 		if (retry_times > 0 ){
 			posy += font_height +font_height;
 			g.drawString("连接网络错误，重试第"+retry_times+"次", width/2, posy, Graphics.TOP|Graphics.HCENTER);
@@ -79,6 +80,8 @@ public class SplashCanvas extends Canvas{
 	}
 	public void setError(String error){
 		this.error=error;
+		error_color = 0xFF0000;
+		if(timer!=null) timer.cancel();
 		repaint();
 	}
 

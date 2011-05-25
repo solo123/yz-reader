@@ -1,6 +1,6 @@
 package com.yazo.contents;
 
-import com.yazo.mobile.MobileSysData;
+import com.yazo.tools.mobile.MobileSysData;
 import com.yazo.model.ServiceData;
 
 public class ContentService {

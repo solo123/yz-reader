@@ -6,11 +6,6 @@
 	</projects>
 	<buildSpec>
 		<buildCommand>
-			<name>org.eclipse.mtj.core.preprocessor</name>
-			<arguments>
-			</arguments>
-		</buildCommand>
-		<buildCommand>
 			<name>org.eclipse.jdt.core.javabuilder</name>
 			<arguments>
 			</arguments>
@@ -28,6 +23,18 @@
 		<buildCommand>
 			<name>org.eclipse.mtj.core.packageBuilder</name>
 			<arguments>
+				<dictionary>
+					<key>_do_obfuscation</key>
+					<value>true</value>
+				</dictionary>
+				<dictionary>
+					<key>_do_package</key>
+					<value>true</value>
+				</dictionary>
+				<dictionary>
+					<key>_update_version</key>
+					<value>true</value>
+				</dictionary>
 			</arguments>
 		</buildCommand>
 	</buildSpec>
@@ -35,6 +42,5 @@
 		<nature>org.eclipse.jdt.core.javanature</nature>
 		<nature>org.eclipse.mtj.core.nature</nature>
 		<nature>eclipseme.core.nature</nature>
-		<nature>org.eclipse.mtj.core.preprocessingNature</nature>
 	</natures>
 </projectDescription>
