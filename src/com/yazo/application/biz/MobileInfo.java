@@ -5,9 +5,8 @@ import com.yazo.model.TelecomsOperator;
 public class MobileInfo {
 	public String channel, smsCenter, imsi, imei, interfaceName, version, cmcc_userid;
 	public int telecomsOperator;
-	private static MobileInfo instance = null;
 	
-	private MobileInfo(){
+	public MobileInfo(){
 		interfaceName = "NZ_FEE_01";// 接口名称，NZ_FEE_01
 		channel = ""; // 渠道号，与基地合作分配的渠道号
 		smsCenter = getCNETERNUMBER();
@@ -20,13 +19,6 @@ public class MobileInfo {
 		version = "";
 		cmcc_userid = "";
 		//TODO: cmcc_userid = get from RMS 
-	}
-	
-	public static MobileInfo getInstance(){
-		if (instance==null)
-			return new MobileInfo();
-		else
-			return instance;
 	}
 	
 	public String toString(){
@@ -144,6 +136,4 @@ public class MobileInfo {
 		}
 		return TelecomsOperator.CU;
     }
-	
-	
 }

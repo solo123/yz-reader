@@ -25,7 +25,7 @@ public class MobileFuncTest extends TestCase {
 
 	
 	private void getMobileInfoTest(){
-		MobileInfo mb = MobileInfo.getInstance();
+		MobileInfo mb = new MobileInfo();
 		assertNotNull(mb);
 		assertNotNull(mb.channel);
 		assertNotNull(mb.imei);

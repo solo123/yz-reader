@@ -8,6 +8,7 @@ import com.yazo.network.HttpConnect;
 
 public class BookBiz {
 	private Config config = Config.getInstance();
+	
 	public  int network_connect_status = 0; 
 	public PageContent getPageContentFromUrl(String service, String action) {
 		String url = service+action;
@@ -38,7 +39,7 @@ public class BookBiz {
 	}
 	
 	public String doLogin(){
-		MobileInfo mb = MobileInfo.getInstance();
+		MobileInfo mb =  new MobileInfo();
 		HttpConnect conn = new HttpConnect();
 		conn.setNoProxy();
 		String data = "channel="+mb.channel+
