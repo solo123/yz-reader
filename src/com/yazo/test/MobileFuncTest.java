@@ -1,6 +1,7 @@
 package com.yazo.test;
 
-import com.yazo.tools.mobile.MobileSysData;
+import com.yazo.application.biz.MobileInfo;
+
 import j2meunit.framework.*;
 
 public class MobileFuncTest extends TestCase {
@@ -24,7 +25,7 @@ public class MobileFuncTest extends TestCase {
 
 	
 	private void getMobileInfoTest(){
-		MobileSysData mb = new MobileSysData();
+		MobileInfo mb = MobileInfo.getInstance();
 		assertNotNull(mb);
 		assertNotNull(mb.channel);
 		assertNotNull(mb.imei);

@@ -1,6 +1,6 @@
 package com.yazo.contents;
 
-import com.yazo.tools.mobile.MobileSysData;
+import com.yazo.application.biz.MobileInfo;
 import com.yazo.model.ServiceData;
 
 public class ContentService {
@@ -10,7 +10,7 @@ public class ContentService {
 		this.serviceUrl = serviceUrl;
 	}
 
-	public ServiceData login(MobileSysData data){
+	public ServiceData login(MobileInfo data){
 		ServiceData sd = new ServiceData();
 		sd.BUSINESS = "business";
 		return sd;

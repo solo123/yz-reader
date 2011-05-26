@@ -1,9 +1,9 @@
 package com.yazo.application;
 
 import com.yazo.application.biz.Config;
+import com.yazo.application.biz.ContentManager;
 import com.yazo.application.thread.ThreadManager;
 import com.yazo.application.ui.*;
-import com.yazo.contents.*;
 import com.yazo.model.BrowserCommand;
 import com.yazo.model.ConfigKeys;
 import com.yazo.model.ICommandListener;
@@ -93,8 +93,8 @@ public class Browser extends Canvas implements ICommandListener {
 		config.add(ConfigKeys.BROWSER_HEIGHT, screen_height - header_height - menu_height);
 		
 		config.add(ConfigKeys.APP_NAME, "app name"); //TODO: 从打包配置中读取app name
-		config.add(ConfigKeys.CONTENT_SERVER, "http://bk-b.info");
-		config.add(ConfigKeys.CONTENT_PATH, "http://bk-b.info/reader/pages/");
+		config.add(ConfigKeys.CONTENT_SERVER, "http://192.168.0.110:3000");
+		config.add(ConfigKeys.CONTENT_PATH, "http://192.168.0.110:3000/reader/pages/");
 		config.add(ConfigKeys.CONTENT_HOME, "home");
 	}
 	

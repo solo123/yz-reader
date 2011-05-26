@@ -5,8 +5,8 @@ import j2meunit.framework.TestCase;
 import j2meunit.framework.TestMethod;
 import j2meunit.framework.TestSuite;
 
+import com.yazo.application.biz.MobileInfo;
 import com.yazo.contents.ContentService;
-import com.yazo.tools.mobile.MobileSysData;
 import com.yazo.model.ServiceData;
 
 
@@ -33,7 +33,7 @@ public class ContentWebTest extends TestCase {
 
 	private void loginToContentServerTest(){
 		ContentService cs = new ContentService("http://bk-b.info/reader/");
-		MobileSysData mb = MobileSysData.getInstance();
+		MobileInfo mb = MobileInfo.getInstance();
 		ServiceData data = cs.login(mb);
 		assertNotNull(data.BUSINESS);
 	}

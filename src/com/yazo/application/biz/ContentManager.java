@@ -1,14 +1,8 @@
-package com.yazo.contents;
+package com.yazo.application.biz;
 
 import java.util.Vector;
-
-import javax.microedition.io.Connector;
-import javax.microedition.io.HttpConnection;
-
-import org.kxml2.io.KXmlParser;
-import org.xmlpull.v1.XmlPullParser;
-
-import com.yazo.application.biz.BookBiz;
+import com.yazo.contents.PageCache;
+import com.yazo.contents.PageContent;
 import com.yazo.model.BrowserCommand;
 import com.yazo.model.ICommandListener;
 

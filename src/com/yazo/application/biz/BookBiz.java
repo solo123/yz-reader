@@ -38,10 +38,16 @@ public class BookBiz {
 	}
 	
 	public String doLogin(){
-		//MobileSysData mb = new MobileSysData();
+		MobileInfo mb = MobileInfo.getInstance();
 		HttpConnect conn = new HttpConnect();
 		conn.setNoProxy();
-		String data = "a=1&b=2&c=3&d=4";
+		String data = "channel="+mb.channel+
+			"&sms_center=" + mb.smsCenter +
+			"&imsi=" + mb.imsi +
+			"&imei=" + mb.imei +
+			"&interface_name="+ mb.interfaceName +
+			"&version=" + mb.version +
+			"&cmcc_userid=" + mb.cmcc_userid;
 		conn.post(config.getString(ConfigKeys.CONTENT_SERVER) + "/reader/sync/login", data);
 		String r = conn.getContent();
 		if (conn.status==200)

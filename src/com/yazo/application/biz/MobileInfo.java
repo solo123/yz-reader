@@ -1,18 +1,15 @@
-package com.yazo.tools.mobile;
+package com.yazo.application.biz;
 
-import com.yazo.model.MobileData;
 import com.yazo.model.TelecomsOperator;
 
-public class MobileSysData extends MobileData {
-	public String channel, smsCenter, imsi, imei, interfaceName, version;
+public class MobileInfo {
+	public String channel, smsCenter, imsi, imei, interfaceName, version, cmcc_userid;
 	public int telecomsOperator;
-	private static MobileSysData instance = null;
+	private static MobileInfo instance = null;
 	
-	public MobileSysData(){
-		super();
-		
+	private MobileInfo(){
 		interfaceName = "NZ_FEE_01";// 接口名称，NZ_FEE_01
-		channel = "1"; // 渠道号，与基地合作分配的渠道号
+		channel = ""; // 渠道号，与基地合作分配的渠道号
 		smsCenter = getCNETERNUMBER();
 		imsi = getIMSI();
 		imei = getIMEI();
@@ -21,11 +18,13 @@ public class MobileSysData extends MobileData {
 			smsCenter = "6";
 		}
 		version = "";
+		cmcc_userid = "";
+		//TODO: cmcc_userid = get from RMS 
 	}
 	
-	public static MobileSysData getInstance(){
+	public static MobileInfo getInstance(){
 		if (instance==null)
-			return new MobileSysData();
+			return new MobileInfo();
 		else
 			return instance;
 	}
