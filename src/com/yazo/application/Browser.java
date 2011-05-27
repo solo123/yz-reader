@@ -2,11 +2,14 @@ package com.yazo.application;
 
 import com.yazo.application.biz.Config;
 import com.yazo.application.biz.ContentManager;
+import com.yazo.application.biz.RmsManager;
 import com.yazo.application.thread.ThreadManager;
 import com.yazo.application.ui.*;
 import com.yazo.model.BrowserCommand;
 import com.yazo.model.ConfigKeys;
 import com.yazo.model.ICommandListener;
+import com.yazo.tools.IniParser;
+
 import javax.microedition.lcdui.*;
 
 public class Browser extends Canvas implements ICommandListener {
@@ -23,16 +26,16 @@ public class Browser extends Canvas implements ICommandListener {
 	private SplashCanvas splash;
 	private Boolean on_net_reading;
 	private Config config = Config.getInstance();
+	private RmsManager rms = RmsManager.getInstance();
 	
 	public Browser(MainMIDlet midlet, Display display){
 		setFullScreenMode(true);
 		this.display = display;
 		this.midlet = midlet;
-		initConfig();
 		
 		splash = new SplashCanvas(midlet);
 		display.setCurrent(splash);
-		
+		initConfig();
 		new Thread(){
 			public void run(){
 				init_browser();
@@ -92,12 +95,15 @@ public class Browser extends Canvas implements ICommandListener {
 		config.add(ConfigKeys.MENU_HEIGHT, menu_height);
 		config.add(ConfigKeys.BROWSER_HEIGHT, screen_height - header_height - menu_height);
 		
-		config.add(ConfigKeys.APP_NAME, "app name"); //TODO: 从打包配置中读取app name
-		config.add(ConfigKeys.CONTENT_SERVER, "http://192.168.0.110:3000");
-		config.add(ConfigKeys.CONTENT_PATH, "http://192.168.0.110:3000/reader/pages/");
+		// load config from config.ini
+		config.add(ConfigKeys.APP_NAME, midlet.getAppProperty("MIDlet-Name"));
+		config.add(ConfigKeys.CONTENT_SERVER, "http://192.168.0.102:3000");
+		config.add(ConfigKeys.CONTENT_PATH, "http://192.168.0.102:3000/reader/pages/");
 		config.add(ConfigKeys.CONTENT_HOME, "home");
-		
+		config.loadString(midlet.getTextFromRes("/config.ini",true));
+
 		// load config from RMS
+		rms.load(config);
 	}
 	
 	
@@ -167,11 +173,11 @@ public class Browser extends Canvas implements ICommandListener {
 		repaint();
 	}
 	
-	private void gotoUrl(String url){
+	private void gotoUrl(String action){
 		// #ifdef DBG
-		System.out.println("gotoURL:" + url);
+		System.out.println("gotoURL:" + config.getString(ConfigKeys.CONTENT_PATH) + action);
 		// #endif
-		threadManager.getPageContentThread(config.getString(ConfigKeys.CONTENT_PATH), url, this);
+		threadManager.getPageContentThread(config.getString(ConfigKeys.CONTENT_PATH), action, this);
 		// after loaded callback command_callback
 	}
 	
@@ -235,9 +241,9 @@ public class Browser extends Canvas implements ICommandListener {
 			ctl_menu.setMiddleText("" + (ctl_explorer.current_page+1) + " / " + ctl_explorer.total_pages);
 			break;
 		case BrowserCommand.AFTER_LOGIN:
-			// TODO: run CMCC simulator if configed to run
-			if (config.getInt(ConfigKeys.APP_RUN_CMCC)==1){
-				
+			config.loadString((String)data);
+			if (config.getString(ConfigKeys.APP_RUN_CMCC)=="1"){
+				System.out.println("RUN CMCC!!!!!!");
 			}
 			break;
 		case BrowserCommand.LOGIN_ERROR:

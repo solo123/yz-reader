@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
+import com.yazo.tools.IniParser;
+
 public class Config {
 	private Hashtable configs = new Hashtable();
 	private static Config instance = null;
@@ -79,6 +81,17 @@ public class Config {
 			e.printStackTrace();
 		}
 		
+	}
+	/*
+	 * Load config
+	 */
+	public void loadString(String str){
+		for(IniParser ipr = new IniParser(str); ipr.hasMoreElements();){
+			ipr.next();
+			if (ipr.key!=null && ipr.value!=null){
+				add(Integer.parseInt(ipr.key), ipr.value);
+			}
+		}
 	}
 	public int getInt(int key){
 		Object o = configs.get(new Integer(key));

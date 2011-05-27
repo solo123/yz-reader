@@ -16,6 +16,8 @@ public class ConfigKeys {
 	public static final int CONTENT_PATH = 12;
 	public static final int CONTENT_HOME = 13;
 	
+	public static final int CLIENT_CHANNEL = 51;
+	
 	public static final int APP_RUN_CMCC = 101;
 	public static final int CMCC_USER_AGENT = 102;
 	public static final int CMCC_CLIENT_PASSWORD = 103;

@@ -51,10 +51,10 @@ public class BookBiz {
 			"&cmcc_userid=" + mb.cmcc_userid;
 		conn.post(config.getString(ConfigKeys.CONTENT_SERVER) + "/reader/sync/login", data);
 		String r = conn.getContent();
-		if (conn.status==200)
-			System.out.println("login ok");
-		System.out.println("login:" + r);
-		
+		if (conn.status==200){
+			System.out.println("login:" + r);
+			
+		}
 		conn.close();
 		conn = null;
 		return r;

@@ -12,6 +12,7 @@ public class TestAll extends TestCase
               suite.addTest(new KVPTest().suite());
               suite.addTest(new ConfigTest().suite());
               suite.addTest(new RmsTest().suite());
+              suite.addTest(new IniParserTest().suite());
 //              suite.addTest(new TestAllNet().suite());
               return suite;
        }
