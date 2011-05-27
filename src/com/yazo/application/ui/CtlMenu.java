@@ -7,7 +7,6 @@ import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.Font;
 
-import com.yazo.contents.BrowserContent;
 import com.yazo.contents.LinkContent;
 import com.yazo.model.BrowserCommand;
 import com.yazo.model.ICommandListener;

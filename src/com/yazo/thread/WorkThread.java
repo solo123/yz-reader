@@ -29,7 +29,7 @@ class WorkThread extends Thread {
 						int size=ThreadPool.pooledWorkThreads.size();
 						for (int i = 0; i < size; i++) {  //高等级运行完后回复正常等级
 							if (!((WorkThread) ThreadPool.pooledWorkThreads.elementAt(i)).IsIdle()) {
-								((WorkThread) ThreadPool.pooledWorkThreads.elementAt(i)).setPriority(WorkThread.NORM_PRIORITY);
+								((WorkThread) ThreadPool.pooledWorkThreads.elementAt(i)).setPriority(Thread.NORM_PRIORITY);
 							}
 						}
 				    }

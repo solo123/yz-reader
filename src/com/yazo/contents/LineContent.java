@@ -1,7 +1,5 @@
 package com.yazo.contents;
 
-import java.util.Vector;
-
 import com.yazo.application.biz.Config;
 import com.yazo.model.ConfigKeys;
 

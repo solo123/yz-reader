@@ -10,6 +10,8 @@ public class TestAll extends TestCase
               suite.addTest(new MyTest().suite());
               suite.addTest(new MobileFuncTest().suite());
               suite.addTest(new KVPTest().suite());
+              suite.addTest(new ConfigTest().suite());
+              suite.addTest(new RmsTest().suite());
 //              suite.addTest(new TestAllNet().suite());
               return suite;
        }

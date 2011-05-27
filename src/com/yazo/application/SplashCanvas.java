@@ -3,8 +3,6 @@
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.microedition.lcdui.*;
-import com.yazo.application.biz.Config;
-import com.yazo.model.ConfigKeys;
 
 public class SplashCanvas extends Canvas{
 	private int width;
@@ -16,7 +14,6 @@ public class SplashCanvas extends Canvas{
 	private Image splash_image;
 	private int c1,c2,c3, cw;
 	private int retry_times = 0;
-	private Config config = Config.getInstance();
 	private int error_color = 0;
 	
 	public SplashCanvas(MainMIDlet midlet){
@@ -51,7 +48,7 @@ public class SplashCanvas extends Canvas{
 		posy += splash_image.getHeight()/2 + font_height;
 		g.setFont(font);
 		g.setColor(0);
-		g.drawString("欢迎使用" + config.getString(ConfigKeys.APP_NAME), posx, posy, Graphics.TOP|Graphics.HCENTER);
+		g.drawString("欢迎使用" + midlet.getAppProperty("MIDlet-Name"), posx, posy, Graphics.TOP|Graphics.HCENTER);
 		posy += font_height + font_height/4;
 		g.setColor(error_color);
 		g.drawString(error, posx, posy, Graphics.TOP|Graphics.HCENTER);

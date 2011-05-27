@@ -9,7 +9,6 @@ import javax.microedition.lcdui.Image;
 
 import com.yazo.application.biz.Config;
 import com.yazo.contents.BrowserContent;
-import com.yazo.contents.LineContent;
 import com.yazo.contents.LinkContent;
 import com.yazo.contents.PageContent;
 import com.yazo.model.BrowserCommand;
@@ -74,7 +73,7 @@ public class CtlExplorer extends UiControl  {
 		int posy = line_top_padding;
 		int lnk_cnt = 0;
 		next_cmd = null;
-		Vector page = (Vector)content.getPage(current_page);
+		Vector page = content.getPage(current_page);
 		if (page==null) return;
 		
 		Enumeration linecontent = page.elements();

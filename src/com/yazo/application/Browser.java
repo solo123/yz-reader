@@ -2,7 +2,6 @@ package com.yazo.application;
 
 import com.yazo.application.biz.Config;
 import com.yazo.application.biz.ContentManager;
-import com.yazo.application.biz.MobileInfo;
 import com.yazo.application.thread.ThreadManager;
 import com.yazo.application.ui.*;
 import com.yazo.model.BrowserCommand;
@@ -97,6 +96,8 @@ public class Browser extends Canvas implements ICommandListener {
 		config.add(ConfigKeys.CONTENT_SERVER, "http://192.168.0.110:3000");
 		config.add(ConfigKeys.CONTENT_PATH, "http://192.168.0.110:3000/reader/pages/");
 		config.add(ConfigKeys.CONTENT_HOME, "home");
+		
+		// load config from RMS
 	}
 	
 	

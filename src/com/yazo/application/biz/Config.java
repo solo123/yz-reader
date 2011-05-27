@@ -1,5 +1,11 @@
 package com.yazo.application.biz;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.util.Enumeration;
 import java.util.Hashtable;
 
 public class Config {
@@ -25,6 +31,54 @@ public class Config {
 		Object o = configs.get(new Integer(key));
 		if (o!=null && o instanceof String) return (String)o;
 		else return null;
+	}
+	/*
+	 * 序列化配置信息，仅200>id>100
+	 */
+	public byte[] getBytes(){
+		byte[] buf = null;
+		try {
+			ByteArrayOutputStream bos = new ByteArrayOutputStream();
+			DataOutputStream dos = new DataOutputStream(bos);
+			for (Enumeration e = configs.keys(); e.hasMoreElements(); ) {
+				Integer k = (Integer)e.nextElement();
+				if (k.intValue()>100 && k.intValue()<200){
+					String v = (String)configs.get(k);
+					if (v!=null && v.length()>0){
+						dos.writeInt(k.intValue());
+						dos.writeUTF(v);
+					}
+				}
+			}
+			buf = bos.toByteArray();
+			dos.flush();
+			bos.reset();
+			dos.close();
+			bos.close();
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		return buf;
+	}
+	/*
+	 * 反序列化配置信息
+	 */
+	public void loadBytes(byte[] buf){
+		if(buf==null || buf.length<1) return;
+		try{
+			ByteArrayInputStream bis = new ByteArrayInputStream(buf);
+			DataInputStream dis = new DataInputStream(bis);
+			while(dis.available()>0){
+				Integer k = new Integer(dis.readInt());
+				String v = dis.readUTF();
+				configs.put(k,v);
+			}
+			bis.close();
+			dis.close();
+		} catch (Exception e){
+			e.printStackTrace();
+		}
+		
 	}
 	public int getInt(int key){
 		Object o = configs.get(new Integer(key));

@@ -1,7 +1,6 @@
 package com.yazo.test;
 
 import javax.microedition.lcdui.Canvas;
-import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Graphics;
 
 import com.yazo.application.ui.CtlExplorer;

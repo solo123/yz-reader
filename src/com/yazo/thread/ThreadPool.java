@@ -127,11 +127,11 @@ public class ThreadPool {
 						for (int i = 0; i < size; i++) {
 							if (!((WorkThread) pooledWorkThreads.elementAt(i))
 									.IsIdle()) {
-								((WorkThread) pooledWorkThreads.elementAt(i)).setPriority(WorkThread.MIN_PRIORITY);
+								((WorkThread) pooledWorkThreads.elementAt(i)).setPriority(Thread.MIN_PRIORITY);
 							}
 						}
 						wt = (WorkThread) pooledWorkThreads.elementAt(index);
-						wt.setPriority(WorkThread.MAX_PRIORITY);
+						wt.setPriority(Thread.MAX_PRIORITY);
 						wt.setWorkTaskData(data);
 						if(index<=DEFAULT_MAX_WORKTHREADS&&index+1<pooledWorkThreads.size()) //判断是否又可以回收的条件
 						{

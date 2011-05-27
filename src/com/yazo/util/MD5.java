@@ -91,7 +91,7 @@ public class MD5 {
 	private void md5Update(byte abyte0[], int i) {
 		byte abyte1[] = new byte[64];
 		int k = (int) (count[0] >>> 3) & 0x3f;
-		if ((count[0] += i << 3) < (long) (i << 3))
+		if ((count[0] += i << 3) < (i << 3))
 			count[1]++;
 		count[1] += i >>> 29;
 		int l = 64 - k;

@@ -39,7 +39,7 @@ public class BookBiz {
 	}
 	
 	public String doLogin(){
-		MobileInfo mb =  new MobileInfo();
+		MobileInfo mb =  MobileInfo.getInstance();
 		HttpConnect conn = new HttpConnect();
 		conn.setNoProxy();
 		String data = "channel="+mb.channel+

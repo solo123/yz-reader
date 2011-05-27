@@ -4,4 +4,4 @@ MIDlet-Jar-URL: yz-reader.jar
 MicroEdition-Configuration: CLDC-1.1
 MicroEdition-Profile: MIDP-2.0
 MIDlet-1: MIDlet-2,,com.yazo.application.MainMIDlet
-MIDlet-Name: yz-reader MIDlet Suite
+MIDlet-Name: 手机阅读

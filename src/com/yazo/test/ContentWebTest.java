@@ -33,7 +33,7 @@ public class ContentWebTest extends TestCase {
 
 	private void loginToContentServerTest(){
 		ContentService cs = new ContentService("http://bk-b.info/reader/");
-		MobileInfo mb = new MobileInfo();
+		MobileInfo mb = MobileInfo.getInstance();
 		ServiceData data = cs.login(mb);
 		assertNotNull(data.BUSINESS);
 	}

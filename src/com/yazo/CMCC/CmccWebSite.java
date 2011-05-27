@@ -2,8 +2,6 @@ package com.yazo.CMCC;
 
 import com.yazo.model.IXmlParser;
 import com.yazo.network.HttpConnect;
-import com.yazo.util.Consts;
-import com.yazo.util.User;
 
 public class CmccWebSite {
 	private String cookie = "";

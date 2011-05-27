@@ -2,7 +2,6 @@ package com.yazo.test;
 
 import j2meunit.framework.*;
 
-import javax.microedition.io.Connector;
 import javax.microedition.io.HttpConnection;
 
 

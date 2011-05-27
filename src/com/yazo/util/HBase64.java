@@ -18,9 +18,9 @@ public class HBase64 {
         int n = 0;
 
         while (i <= end) {
-            int d = ((((int) data[i]) & 0x0ff) << 16)
-                    | ((((int) data[i + 1]) & 0x0ff) << 8)
-                    | (((int) data[i + 2]) & 0x0ff);
+            int d = (((data[i]) & 0x0ff) << 16)
+                    | (((data[i + 1]) & 0x0ff) << 8)
+                    | ((data[i + 2]) & 0x0ff);
 
             buf.append(legalChars[(d >> 18) & 63]);
             buf.append(legalChars[(d >> 12) & 63]);
@@ -36,15 +36,15 @@ public class HBase64 {
         }
 
         if (i == start + len - 2) {
-            int d = ((((int) data[i]) & 0x0ff) << 16)
-                    | ((((int) data[i + 1]) & 255) << 8);
+            int d = (((data[i]) & 0x0ff) << 16)
+                    | (((data[i + 1]) & 255) << 8);
 
             buf.append(legalChars[(d >> 18) & 63]);
             buf.append(legalChars[(d >> 12) & 63]);
             buf.append(legalChars[(d >> 6) & 63]);
             buf.append("=");
         } else if (i == start + len - 1) {
-            int d = (((int) data[i]) & 0x0ff) << 16;
+            int d = ((data[i]) & 0x0ff) << 16;
 
             buf.append(legalChars[(d >> 18) & 63]);
             buf.append(legalChars[(d >> 12) & 63]);
@@ -56,11 +56,11 @@ public class HBase64 {
 
     private static int decode(char c) {
         if (c >= 'A' && c <= 'Z')
-            return ((int) c) - 65;
+            return (c) - 65;
         else if (c >= 'a' && c <= 'z')
-            return ((int) c) - 97 + 26;
+            return (c) - 97 + 26;
         else if (c >= '0' && c <= '9')
-            return ((int) c) - 48 + 26 + 26;
+            return (c) - 48 + 26 + 26;
         else
             switch (c) {
             case '+':
