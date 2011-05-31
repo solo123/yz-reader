@@ -18,7 +18,7 @@ public class BookBiz {
 		if (conn.status == HttpConnection.HTTP_OK){
 			PageContentParser parser = new PageContentParser(
 					config.getInt(ConfigKeys.SCREEN_WIDTH),
-					config.getInt(ConfigKeys.SCREEN_WIDTH),
+					config.getInt(ConfigKeys.BROWSER_HEIGHT),
 					config.getInt(ConfigKeys.LINE_HEIGHT),
 					(Font)config.getObject(ConfigKeys.DEFAULT_FONT));
 			Object r = parser.parse(conn.inStream);
@@ -51,10 +51,11 @@ public class BookBiz {
 			"&cmcc_userid=" + mb.cmcc_userid;
 		conn.post(config.getString(ConfigKeys.CONTENT_SERVER) + "/reader/sync/login", data);
 		String r = conn.getContent();
+		// #ifdef DBG
 		if (conn.status==200){
-			System.out.println("login:" + r);
-			
+			System.out.println("login config:" + r);
 		}
+		// #endif
 		conn.close();
 		conn = null;
 		return r;

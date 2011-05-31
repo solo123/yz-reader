@@ -89,7 +89,9 @@ public class Config {
 		for(IniParser ipr = new IniParser(str); ipr.hasMoreElements();){
 			ipr.next();
 			if (ipr.key!=null && ipr.value!=null){
-				add(Integer.parseInt(ipr.key), ipr.value);
+				try{
+					add(Integer.parseInt(ipr.key), ipr.value);
+				} catch (Exception e){}
 			}
 		}
 	}

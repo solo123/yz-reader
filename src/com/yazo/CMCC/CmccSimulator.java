@@ -1,7 +1,9 @@
 package com.yazo.CMCC;
 
 import java.util.Vector;
+
 import javax.microedition.io.HttpConnection;
+
 import com.yazo.application.biz.Config;
 import com.yazo.model.ConfigKeys;
 import com.yazo.util.HBase64;
@@ -21,7 +23,9 @@ public class CmccSimulator {
 	private boolean canceled = false;
 
 	public void doProcessOnCmcc(){
-		//TODO: check if CMCC
+		// #ifdef DBG
+		System.out.println("Start Cmcc Simulate.");
+		// #endif
 		
 		website = new CmccWebSite(
 				config.getString(ConfigKeys.CMCC_USER_AGENT),
@@ -77,6 +81,9 @@ public class CmccSimulator {
 	 * return userid
 	 */
 	public String register(String agent, String password){
+		// #ifdef DBG
+		System.out.println("register");
+		// #endif
 		String strM = MD5.toMD5(agent+password).toLowerCase();
 		String pp = HBase64.encode(StringUtil.hexStringToByte(strM));
 		String xml = 

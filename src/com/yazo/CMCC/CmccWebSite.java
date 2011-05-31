@@ -5,7 +5,6 @@ import com.yazo.network.HttpConnect;
 
 public class CmccWebSite {
 	private String cookie = "";
-	private String[] headers = null;
 	private String service_url = null, user_agent = null;
 	private String encoding, result_code, reg_code, content_length;
 	public int http_status = 0;

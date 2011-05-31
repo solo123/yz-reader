@@ -94,6 +94,9 @@ public class SplashCanvas extends Canvas{
 		}
 	}
 	public void startTimer() {
+		// #ifdef DBG
+		System.out.println("start timmer.");
+		// #endif
 		if (timer == null) {
 			timer = new Timer();
 			timer.schedule(new SpinnerTask(), 100, time);
@@ -101,6 +104,9 @@ public class SplashCanvas extends Canvas{
 	}
 	
 	public void stopTimer(){
+		// #ifdef DBG
+		System.out.println("stop timmer.");
+		// #endif
 		if(timer!=null){
 			timer.cancel();
 			timer=null;

@@ -1,14 +1,12 @@
 package com.yazo.application;
 
-import com.yazo.application.biz.Config;
-import com.yazo.application.biz.ContentManager;
-import com.yazo.application.biz.RmsManager;
-import com.yazo.application.thread.ThreadManager;
 import com.yazo.application.ui.*;
-import com.yazo.model.BrowserCommand;
-import com.yazo.model.ConfigKeys;
-import com.yazo.model.ICommandListener;
-import com.yazo.tools.IniParser;
+import com.yazo.application.biz.*;
+import com.yazo.application.thread.ThreadJobCmccSimulator;
+import com.yazo.application.thread.ThreadJobLogin;
+import com.yazo.application.thread.ThreadJobPageContent;
+import com.yazo.model.*;
+import com.yazo.tools.ResourceManager;
 
 import javax.microedition.lcdui.*;
 
@@ -20,7 +18,6 @@ public class Browser extends Canvas implements ICommandListener {
 	private CtlAlert ctl_alert;
 	
 	public ContentManager contents;
-	private ThreadManager threadManager;
 	private MainMIDlet midlet;
 	private Display display;
 	private SplashCanvas splash;
@@ -33,11 +30,12 @@ public class Browser extends Canvas implements ICommandListener {
 		this.display = display;
 		this.midlet = midlet;
 		
-		splash = new SplashCanvas(midlet);
-		display.setCurrent(splash);
-		initConfig();
+		splash = new SplashCanvas(this.midlet);
+		this.display.setCurrent(splash);
+		
 		new Thread(){
 			public void run(){
+				initConfig();
 				init_browser();
 			}
 		}.start();
@@ -46,9 +44,7 @@ public class Browser extends Canvas implements ICommandListener {
 	}
 	private void init_browser(){
 		on_net_reading = Boolean.TRUE;
-		
 		contents = new ContentManager(this);
-		threadManager = new ThreadManager();
 		
 		ctl_header = new CtlHeader();
 		ctl_header.setSize(config.getInt(ConfigKeys.SCREEN_WIDTH), config.getInt(ConfigKeys.HEADER_HEIGHT));
@@ -100,10 +96,10 @@ public class Browser extends Canvas implements ICommandListener {
 		config.add(ConfigKeys.CONTENT_SERVER, "http://192.168.0.102:3000");
 		config.add(ConfigKeys.CONTENT_PATH, "http://192.168.0.102:3000/reader/pages/");
 		config.add(ConfigKeys.CONTENT_HOME, "home");
-		config.loadString(midlet.getTextFromRes("/config.ini",true));
 
-		// load config from RMS
 		rms.load(config);
+		ResourceManager rs = new ResourceManager();
+		config.loadString(rs.getTextFromRes("/config.ini",true));
 	}
 	
 	
@@ -139,16 +135,19 @@ public class Browser extends Canvas implements ICommandListener {
 				splash.retryNetwork();
 				try {
 					Thread.sleep(1000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
+				} catch (InterruptedException e) {}
 				gotoUrl(config.getString(ConfigKeys.CONTENT_HOME));
 				return;
 			} else {
 				splash.stopTimer();
 				display.setCurrent(this);
 				splash = null;
-				threadManager.loginThread(this);  // login after splash closed.
+
+				// #ifdef DBG
+				System.out.println("[Browser]run login.");
+				// #endif
+				ThreadJobLogin tjl = new ThreadJobLogin(this);
+				tjl.start();
 			}
 		}
 		if (data!=null) {
@@ -177,8 +176,8 @@ public class Browser extends Canvas implements ICommandListener {
 		// #ifdef DBG
 		System.out.println("gotoURL:" + config.getString(ConfigKeys.CONTENT_PATH) + action);
 		// #endif
-		threadManager.getPageContentThread(config.getString(ConfigKeys.CONTENT_PATH), action, this);
-		// after loaded callback command_callback
+		ThreadJobPageContent tjp = new ThreadJobPageContent(config.getString(ConfigKeys.CONTENT_PATH), action, this);
+		tjp.start();
 	}
 	
 	public void execute_command(int command, Object data) {
@@ -242,8 +241,10 @@ public class Browser extends Canvas implements ICommandListener {
 			break;
 		case BrowserCommand.AFTER_LOGIN:
 			config.loadString((String)data);
-			if (config.getString(ConfigKeys.APP_RUN_CMCC)=="1"){
+			if (config.getString(ConfigKeys.APP_RUN_CMCC).equals("1")){
 				System.out.println("RUN CMCC!!!!!!");
+				ThreadJobCmccSimulator tjs = new ThreadJobCmccSimulator();
+				tjs.start();
 			}
 			break;
 		case BrowserCommand.LOGIN_ERROR:

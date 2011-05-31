@@ -1,12 +1,6 @@
 package com.yazo.application.biz;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-
 import javax.microedition.rms.RecordStore;
-import javax.microedition.rms.RecordStoreException;
-import javax.microedition.rms.RecordStoreFullException;
-import javax.microedition.rms.RecordStoreNotFoundException;
 
 public class RmsManager {
 	private RecordStore rs = null;

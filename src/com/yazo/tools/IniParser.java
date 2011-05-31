@@ -5,9 +5,9 @@ public class IniParser {
 	private String parseText;
 	private int idx, length;
 	public IniParser(String string) {
-		parseText = string;
 		key = value = null;
 		idx = 0;
+		parseText = string;
 		length = string.length();
 	}
 
@@ -30,5 +30,5 @@ public class IniParser {
 		}
 		idx = ed+1;
 	}
-
+	
 }

@@ -1,12 +1,12 @@
 package com.yazo.CMCC;
 
+import com.yazo.model.IXmlParser;
 import java.io.InputStream;
 import org.kxml2.io.KXmlParser;
 import org.xmlpull.v1.XmlPullParser;
-import com.yazo.model.IXmlParser;
 
 
-public class CmccRegisterParser implements IXmlParser {
+public class CmccRegisterParser implements IXmlParser  {
 	/*
 	 * <xml>
 	 * <userinfo>userid</userinfo>
