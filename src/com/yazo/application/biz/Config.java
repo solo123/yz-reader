@@ -13,8 +13,7 @@ import com.yazo.tools.IniParser;
 public class Config {
 	private Hashtable configs = new Hashtable();
 	private static Config instance = null;
-	private Config(){
-	}
+	private Config(){}
 	public static Config getInstance(){
 		if (instance==null) instance = new Config();
 		return instance;
@@ -90,7 +89,12 @@ public class Config {
 			ipr.next();
 			if (ipr.key!=null && ipr.value!=null){
 				try{
-					add(Integer.parseInt(ipr.key), ipr.value);
+					if (ipr.value.startsWith("i.")){
+						int val = Integer.parseInt(ipr.value.substring(2));
+						add(Integer.parseInt(ipr.key), new Integer(val));
+					} else {
+						add(Integer.parseInt(ipr.key), ipr.value);
+					}
 				} catch (Exception e){}
 			}
 		}

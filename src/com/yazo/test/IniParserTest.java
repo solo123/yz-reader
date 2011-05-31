@@ -106,4 +106,5 @@ public class IniParserTest extends TestCase {
 		assertEquals("aa", ipr.key);
 		assertEquals("bb", ipr.value);
 	}
+
 }

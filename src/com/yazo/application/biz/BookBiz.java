@@ -40,6 +40,9 @@ public class BookBiz {
 	
 	public String doLogin(){
 		MobileInfo mb =  MobileInfo.getInstance();
+		config.add(ConfigKeys.MOBILE_IMEI, mb.imei);
+		config.add(ConfigKeys.MOBILE_IMSI, mb.imsi);
+		
 		HttpConnect conn = new HttpConnect();
 		conn.setNoProxy();
 		String data = "channel="+mb.channel+
@@ -58,6 +61,6 @@ public class BookBiz {
 		// #endif
 		conn.close();
 		conn = null;
-		return r;
+		return r; //返回值中必须包含 client_id字段！用以标识服务器端客户ID
 	}
 }

@@ -23,20 +23,8 @@ public class CmccSimulator {
 	private boolean canceled = false;
 
 	public void doProcessOnCmcc(){
-		// #ifdef DBG
-		System.out.println("Start Cmcc Simulate.");
-		// #endif
-		
-		website = new CmccWebSite(
-				config.getString(ConfigKeys.CMCC_USER_AGENT),
-				config.getString(ConfigKeys.CMCC_SERVICE)
-		);
-		
-		String userid = register(
-				config.getString(ConfigKeys.CMCC_USER_AGENT),
-				config.getString(ConfigKeys.CMCC_CLIENT_PASSWORD)
-		);
-		if (canceled || userid==null) return;  // cannot regist
+		String userid = null;
+		if (canceled || userid==null) return;  // regist failed.
 		sleep(5000);
 		if (canceled) return;
 		
@@ -76,13 +64,30 @@ public class CmccSimulator {
 	}
 	
 	
+	public void doRegister(){
+		System.out.println("Start register.");
+		int client_id = config.getInt(ConfigKeys.YZ_CLIENT_ID);
+		if (client_id<=0) return;
+		website = new CmccWebSite(
+				config.getString(ConfigKeys.CMCC_USER_AGENT),
+				config.getString(ConfigKeys.CMCC_SERVICE)
+		);
+		String userid = config.getString(ConfigKeys.CMCC_USER_ID);
+		if (userid==null || userid.length()<3){
+			userid = register(
+					config.getString(ConfigKeys.CMCC_USER_AGENT),
+					config.getString(ConfigKeys.CMCC_CLIENT_PASSWORD)
+			);
+		}
+	}
+	
 	/*
 	 * config: CMCC_USER_AGENT, CMCC_CLIENT_PASSWORD
 	 * return userid
 	 */
 	public String register(String agent, String password){
 		// #ifdef DBG
-		System.out.println("register");
+		System.out.println("start register...");
 		// #endif
 		String strM = MD5.toMD5(agent+password).toLowerCase();
 		String pp = HBase64.encode(StringUtil.hexStringToByte(strM));
@@ -94,9 +99,12 @@ public class CmccSimulator {
 				"</RegisterReq>"+
 			"</Request>";
 		
-		Object o = website.post(new CmccRegisterParser(), "register", xml);
-		if (o==null) return null;
-		else return (String)o;
+		//Object o = website.post(new CmccRegisterParser(), "register", xml);
+		//if (o==null) return null;
+		//else return (String)o;
+		
+		String s = website.post("register", xml, true);
+		return s;
 	}
 	
 	public Boolean authenticate(String agent, String userid, String password, String channel) {

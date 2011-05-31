@@ -28,6 +28,18 @@ public class ConfigTest extends TestCase {
 					((ConfigTest) tc).intStringTest();}
 				})
 		);
+		suite.addTest(
+				new ConfigTest("loadIniIntTest", new TestMethod()
+				{public void run(TestCase tc){
+					((ConfigTest) tc).loadIniIntTest();}
+				})
+		);
+		suite.addTest(
+				new ConfigTest("loadIniStringTest", new TestMethod()
+				{public void run(TestCase tc){
+					((ConfigTest) tc).loadIniStringTest();}
+				})
+		);		
 		return suite;
 	}
 	
@@ -40,6 +52,16 @@ public class ConfigTest extends TestCase {
 		Config config = Config.getInstance();
 		config.add(1, "ab100");
 		assertEquals("ab100", config.getString(1));
+	}
+	private void loadIniIntTest(){
+		Config config = Config.getInstance();
+		config.loadString("\n900=abc\n901=i.586\n902=");
+		assertEquals(586, config.getInt(901));
+	}
+	private void loadIniStringTest(){
+		Config config = Config.getInstance();
+		config.loadString("\n900=abc\n901=i586\n902=");
+		assertEquals("i586", config.getString(901));
 	}
 
 }

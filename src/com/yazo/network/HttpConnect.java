@@ -24,6 +24,7 @@ public class HttpConnect {
 	public InputStream inStream = null;
 	public String contentType = null;
 	public String errorMessage = null;
+	public String headerText = null;
 	
 	public HttpConnect() {
 		this.url = null;
@@ -179,6 +180,16 @@ public class HttpConnect {
 		                data[i++] = (byte)ch;
 		            }
 		            s = new String(data,0,i);
+		            
+		            int idx = 1;
+		            String key = "";
+		            String value = "";
+		            String content = "";
+		            while ((value = connection.getHeaderField(idx)) != null) {
+		              key = connection.getHeaderFieldKey(idx++);
+		              content += key + ":" + value + "\n";
+		            }
+		            headerText = content;
 	        }
 			} catch (Exception e) {
 				e.printStackTrace();
