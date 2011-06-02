@@ -19,6 +19,8 @@ public class ConfigKeys {
 	public static final int MOBILE_IMEI = 21;
 	public static final int MOBILE_IMSI = 22;
 	
+	public static final int TEST_FUNCS = 30;
+	
 	public static final int CLIENT_CHANNEL = 51;
 	
 	public static final int APP_RUN_CMCC = 101;
@@ -27,6 +29,7 @@ public class ConfigKeys {
 	public static final int CMCC_SERVICE = 104;
 	public static final int CMCC_USER_ID = 105;
 	public static final int CMCC_CHANNEL = 106;
+	public static final int CMCC_DEBUG = 107;
 	
 	public static final int YZ_CLIENT_ID = 111;
 	

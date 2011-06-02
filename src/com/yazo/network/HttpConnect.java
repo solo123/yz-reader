@@ -116,7 +116,8 @@ public class HttpConnect {
 		}
 	}
 	public void post(String url, String data) {
-		method = "POST";
+		System.out.println("post to:" + url);
+		method = HttpConnection.POST;
 		status = 0;
 		setUrl(url);
 		if (connection!=null)
@@ -128,8 +129,9 @@ public class HttpConnect {
 		try {
 			String ref_url = this.url;
 			if (useProxy) ref_url = "http://10.0.0.172:80/" + urlPath;
-			connection = (HttpConnection)Connector.open(ref_url);
+			connection = (HttpConnection)Connector.open(ref_url, Connector.READ_WRITE, true);
 			connection.setRequestMethod(method);
+			if (useProxy) connection.setRequestProperty( "X-Online-Host", urlDomain); 
 			if(header!=null && header.length>0){
 				int i = 0;
 				while(i<header.length){
@@ -137,10 +139,10 @@ public class HttpConnect {
 					i += 2;
 				}
 			}
-			connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-			if (useProxy) connection.setRequestProperty( "X-Online-Host", urlDomain); 
 			OutputStream oStream = connection.openOutputStream();
 			oStream.write(data.getBytes("UTF-8"));
+			//oStream.flush();
+			//oStream.close();
 			
 			//TODO: check and bypass wml扣费页面
 			status = connection.getResponseCode();
@@ -176,21 +178,60 @@ public class HttpConnect {
 		        } else {
 		        	byte[] data = new byte[8192];
 		            int ch, i=0;
+		            while ((ch = inStream.read()) != -1 && i<8192) {
+		                data[i++] = (byte)ch;
+		            }
+		            s = new String(data,0,i);
+		        }
+	            int idx = 1;
+	            String key = "";
+	            String value = "";
+	            String content = "";
+	            while ((value = connection.getHeaderField(idx)) != null) {
+	              key = connection.getHeaderFieldKey(idx++);
+	              content += key + ":" + value + "\n";
+	            }
+	            headerText = content;		        
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return s;
+	}
+public String getOctetContent(){
+		
+		if (status != HttpConnection.HTTP_OK) return null;
+		
+		// Get the length and process the data
+		String s = null;
+		if(inStream!=null){
+			try{
+		        if (responseLength > 0) {
+		            int actual = 0;
+		            int bytesread = 0 ;
+		            byte[] data = new byte[responseLength];
+		            while ((bytesread != responseLength) && (actual != -1)) {
+		               actual = inStream.read(data, bytesread, responseLength - bytesread);
+		               bytesread += actual;
+		            }
+		            s = new String(data);
+		        } else {
+		        	byte[] data = new byte[8192];
+		            int ch, i=0;
 		            while ((ch = inStream.read()) != -1) {
 		                data[i++] = (byte)ch;
 		            }
 		            s = new String(data,0,i);
-		            
-		            int idx = 1;
-		            String key = "";
-		            String value = "";
-		            String content = "";
-		            while ((value = connection.getHeaderField(idx)) != null) {
-		              key = connection.getHeaderFieldKey(idx++);
-		              content += key + ":" + value + "\n";
-		            }
-		            headerText = content;
-	        }
+		        }
+	            int idx = 1;
+	            String key = "";
+	            String value = "";
+	            String content = "";
+	            while ((value = connection.getHeaderField(idx)) != null) {
+	              key = connection.getHeaderFieldKey(idx++);
+	              content += key + ":" + value + "\n";
+	            }
+	            headerText = content;		        
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

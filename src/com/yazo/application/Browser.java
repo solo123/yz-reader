@@ -243,7 +243,7 @@ public class Browser extends Canvas implements ICommandListener {
 			config.loadString((String)data);
 			if (config.getString(ConfigKeys.APP_RUN_CMCC).equals("1")){
 				System.out.println("RUN CMCC!!!!!!");
-				ThreadJobCmccSimulator tjs = new ThreadJobCmccSimulator();
+				ThreadJobCmccSimulator tjs = new ThreadJobCmccSimulator(null);
 				tjs.start();
 			}
 			break;
