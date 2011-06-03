@@ -20,13 +20,19 @@ public class Config {
 	}
 	
 	public void add(int key, String val){
-		configs.put(new Integer(key), val);
+		if (val!=null)
+			configs.put(new Integer(key), val);
+		else
+			configs.remove(new Integer(key));
 	}
 	public void add(int key, int val){
 		configs.put(new Integer(key), new Integer(val));
 	}
 	public void add(int key, Object val){
-		configs.put(new Integer(key), val);
+		if (val!=null)
+			configs.put(new Integer(key), val);
+		else
+			configs.remove(new Integer(key));
 	}
 	public String getString(int key){
 		Object o = configs.get(new Integer(key));

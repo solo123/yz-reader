@@ -1,7 +1,7 @@
 MIDlet-Version: 1.0.0
 MIDlet-Vendor: MIDlet Suite Vendor
-MIDlet-Jar-URL: yz-reader.jar
+MIDlet-Jar-URL: reader.jar
 MicroEdition-Configuration: CLDC-1.1
 MicroEdition-Profile: MIDP-2.0
-MIDlet-1: MIDlet-Cmcc,,com.yazo.application.CmccMIDlet
+MIDlet-1: 阅读测试,,com.yazo.application.CmccMIDlet
 MIDlet-Name: 手机阅读

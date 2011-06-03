@@ -141,7 +141,7 @@ public class HttpConnect {
 			}
 			OutputStream oStream = connection.openOutputStream();
 			oStream.write(data.getBytes("UTF-8"));
-			//oStream.flush();
+			oStream.flush();
 			//oStream.close();
 			
 			//TODO: check and bypass wml扣费页面
@@ -158,70 +158,30 @@ public class HttpConnect {
 	public int getTimeout() {
 		return timeout;
 	}
-	public String getContent(){
+	public byte[] getContent(){
 		
 		if (status != HttpConnection.HTTP_OK) return null;
 		
 		// Get the length and process the data
-		String s = null;
+		byte[] s = null;
 		if(inStream!=null){
 			try{
 		        if (responseLength > 0) {
 		            int actual = 0;
 		            int bytesread = 0 ;
-		            byte[] data = new byte[responseLength];
+		            s = new byte[responseLength];
 		            while ((bytesread != responseLength) && (actual != -1)) {
-		               actual = inStream.read(data, bytesread, responseLength - bytesread);
+		               actual = inStream.read(s, bytesread, responseLength - bytesread);
 		               bytesread += actual;
 		            }
-		            s = new String(data);
 		        } else {
 		        	byte[] data = new byte[8192];
 		            int ch, i=0;
 		            while ((ch = inStream.read()) != -1 && i<8192) {
 		                data[i++] = (byte)ch;
 		            }
-		            s = new String(data,0,i);
-		        }
-	            int idx = 1;
-	            String key = "";
-	            String value = "";
-	            String content = "";
-	            while ((value = connection.getHeaderField(idx)) != null) {
-	              key = connection.getHeaderFieldKey(idx++);
-	              content += key + ":" + value + "\n";
-	            }
-	            headerText = content;		        
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		return s;
-	}
-public String getOctetContent(){
-		
-		if (status != HttpConnection.HTTP_OK) return null;
-		
-		// Get the length and process the data
-		String s = null;
-		if(inStream!=null){
-			try{
-		        if (responseLength > 0) {
-		            int actual = 0;
-		            int bytesread = 0 ;
-		            byte[] data = new byte[responseLength];
-		            while ((bytesread != responseLength) && (actual != -1)) {
-		               actual = inStream.read(data, bytesread, responseLength - bytesread);
-		               bytesread += actual;
-		            }
-		            s = new String(data);
-		        } else {
-		        	byte[] data = new byte[8192];
-		            int ch, i=0;
-		            while ((ch = inStream.read()) != -1) {
-		                data[i++] = (byte)ch;
-		            }
-		            s = new String(data,0,i);
+		            s = new byte[i];
+		            for(int j=0; j<i; j++) s[j] = data[j];
 		        }
 	            int idx = 1;
 	            String key = "";
@@ -247,7 +207,7 @@ public String getOctetContent(){
 				"Accept", "*/*"
 				};
 		open(url);
-		return getContent();
+		return new String(getContent());
 	}
 	public void close() {
 		try{

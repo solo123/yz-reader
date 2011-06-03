@@ -72,9 +72,9 @@ public class NetworkConnectionTest extends TestCase {
 		System.out.println("Status="+conn.status);
 		assertEquals(conn.status, HttpConnection.HTTP_OK);
 		if (conn.status == HttpConnection.HTTP_OK){
-			String s = conn.getContent();
-			System.out.println("Content length:[" + s.length() + "]");
-			assertTrue(s!=null && s.length()>0);
+			byte[] s = conn.getContent();
+			System.out.println("Content length:[" + s.length + "]");
+			assertTrue(s!=null && s.length>0);
 		}
 		conn.close();
 		conn = null;

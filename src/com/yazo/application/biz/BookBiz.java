@@ -53,7 +53,7 @@ public class BookBiz {
 			"&version=" + mb.version +
 			"&cmcc_userid=" + mb.cmcc_userid;
 		conn.post(config.getString(ConfigKeys.CONTENT_SERVER) + "/reader/sync/login", data);
-		String r = conn.getContent();
+		String r = new String(conn.getContent());
 		// #ifdef DBG
 		if (conn.status==200){
 			System.out.println("login config:" + r);

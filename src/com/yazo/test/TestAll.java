@@ -1,5 +1,7 @@
 package com.yazo.test;
 
+import com.yazo.test.cmcc.TestAllCmcc;
+
 import j2meunit.framework.*;
 
 public class TestAll extends TestCase
@@ -13,6 +15,8 @@ public class TestAll extends TestCase
               suite.addTest(new ConfigTest().suite());
               suite.addTest(new RmsTest().suite());
               suite.addTest(new IniParserTest().suite());
+              suite.addTest(new UtilTest().suite());
+              suite.addTest(new TestAllCmcc().suite());
 //              suite.addTest(new TestAllNet().suite());
               return suite;
        }

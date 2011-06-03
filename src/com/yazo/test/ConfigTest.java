@@ -40,6 +40,12 @@ public class ConfigTest extends TestCase {
 					((ConfigTest) tc).loadIniStringTest();}
 				})
 		);		
+		suite.addTest(
+				new ConfigTest("nullStringTest", new TestMethod()
+				{public void run(TestCase tc){
+					((ConfigTest) tc).nullStringTest();}
+				})
+		);	
 		return suite;
 	}
 	
@@ -63,5 +69,12 @@ public class ConfigTest extends TestCase {
 		config.loadString("\n900=abc\n901=i586\n902=");
 		assertEquals("i586", config.getString(901));
 	}
+	private void nullStringTest(){
+		Config config = Config.getInstance();
+		config.add(900, "abc");
+		config.add(900, null);
+		assertNull(config.getString(900));
+	}
+	
 
 }
