@@ -40,7 +40,8 @@ public class WebSite {
 		use_cmcc_proxy = false;
 		http_status = 0;
 		cookie = "";
-		response_encoding = response_result_code = reg_code = response_content_length = response_location_path = null;
+		response_encoding = null;
+		response_content_length = 0;
 		error_code = 0;
 		error_message = null;
 		response_headers = null;
@@ -48,6 +49,7 @@ public class WebSite {
 	
 	public byte[] post(String url, String[] header, String data){
 		byte[] inData = null;
+		error_code = 0;
 		String url_domain = null, url_path = null;
 		if(use_cmcc_proxy){
 			String[] ss = splitUrl(url);
@@ -62,55 +64,111 @@ public class WebSite {
 		}
 		
 		HttpConnection conn = null;
-		if(use_cmcc_proxy){
-			conn = (HttpConnection)Connector.open(cmcc_proxy + url_path);
-			conn.setRequestProperty("X-Online-Host", url_domain);
-		}else
-			conn = (HttpConnection)Connector.open(url);
-		conn.setRequestMethod(HttpConnection.POST);
-		if(header!=null && header.length>0){
-			int i = 0;
-			while(i<header.length){
-				conn.setRequestProperty(header[i], header[i+1]);
-				i += 2;
-			}
+		try{
+			if(use_cmcc_proxy){
+				conn = (HttpConnection)Connector.open(cmcc_proxy + url_path);
+				conn.setRequestProperty("X-Online-Host", url_domain);
+			}else
+				conn = (HttpConnection)Connector.open(url);
+			conn.setRequestMethod(HttpConnection.POST);
+		} catch (Exception e){
+			// #ifdef DBG
+			e.printStackTrace();
+			// #endif
 		}
-		conn.setRequestProperty("Content-Length", "" + data.length());
+		if (conn==null){
+			error_code = 102;
+			error_message = "打开URL失败！" + url;
+			return null;
+		}
+		
+		try{
+			if(header!=null && header.length>0){
+				int i = 0;
+				while(i<header.length){
+					conn.setRequestProperty(header[i], header[i+1]);
+					i += 2;
+				}
+			}
+			conn.setRequestProperty("Content-Length", "" + data.length());
+		} catch (Exception e){
+			error_code = 103;
+			error_message = "设置http header出错。";
+			try {
+				conn.close();
+			} catch (IOException e1) {}
+			conn = null;
+			return null;
+		}
+		
+		try{
 		OutputStream oStream = conn.openOutputStream();
 		oStream.write(data.getBytes("UTF-8"));
 		oStream.flush();
 		//oStream.close();
+		} catch (Exception e){
+			error_code = 104;
+			error_message = "写入post data出错。";
+			try {
+				conn.close();
+			} catch (IOException e1) {}
+			conn = null;
+			return null;
+		}
 		
 		//TODO: check and bypass wml扣费页面
 		
-		http_status = conn.getResponseCode();
-		if (http_status==HttpConnection.HTTP_OK){
-            // read response header
-			int h_idx = 1;
-            String h_key = "";
-            String h_val = "";
-            response_headers = new Hashtable();
-            while ((h_val = conn.getHeaderField(h_idx)) != null) {
-            	h_key = conn.getHeaderFieldKey(h_idx++);
-            	response_headers.put(h_key.toLowerCase(), h_val);
-            }
-            cookie = getHttpHeader(conn, "Cookie");
-            response_encoding = getHttpHeader(conn, "Encoding-Type");
-            String l = getHttpHeader(conn, "Content-Length");
-            if (l!=null){
-            	try{
-            		response_content_length = Integer.parseInt(l);
-            	} catch (Exception e){
-            		e.printStackTrace();
-            		response_content_length = 0;
-            	}
-            }
-            
-            // read data
-            inData = getContent(conn.openInputStream());
+		
+		try {
+			http_status = conn.getResponseCode();
+		} catch (IOException e) {
+			error_code = 105;
+			http_status = -1;
+			error_message = "无法取得response code.";
+			try {
+				conn.close();
+			} catch (IOException e1) {}
+			return null;
 		}
 		
-		conn.close();
+		if (http_status==HttpConnection.HTTP_OK){
+			try{
+	            // read response header
+				int h_idx = 1;
+	            String h_key = "";
+	            String h_val = "";
+	            response_headers = new Hashtable();
+	            while ((h_val = conn.getHeaderField(h_idx)) != null) {
+	            	h_key = conn.getHeaderFieldKey(h_idx++);
+	            	response_headers.put(h_key.toLowerCase(), h_val);
+	            }
+	            cookie = getHttpHeader(conn, "Cookie");
+	            response_encoding = getHttpHeader(conn, "Encoding-Type");
+	            String l = getHttpHeader(conn, "Content-Length");
+	            if (l!=null){
+	            	try{
+	            		response_content_length = Integer.parseInt(l);
+	            	} catch (Exception e){
+	            		e.printStackTrace();
+	            		response_content_length = 0;
+	            	}
+	            }
+	            
+	            // read data
+	            inData = getContent(conn.openInputStream());
+			} catch (Exception e){
+				error_code = 106;
+				error_message = "无法读取response信息。";
+				try {
+					conn.close();
+				} catch (IOException e1) {}
+				return null;
+			}
+		}
+		
+		try{
+			conn.close();
+		} catch (Exception e){}
 		conn = null;
 		return inData;
 	}
@@ -126,14 +184,15 @@ public class WebSite {
 	}
 public byte[] getContent(InputStream inStream){
 		byte[] s = null;
+		byte[] result = null;
 		if(inStream!=null){
 			try{
-		        if (responseLength > 0) {
+		        if (response_content_length > 0) {
 		            int actual = 0;
 		            int bytesread = 0 ;
-		            s = new byte[responseLength];
-		            while ((bytesread != responseLength) && (actual != -1)) {
-		               actual = inStream.read(s, bytesread, responseLength - bytesread);
+		            s = new byte[response_content_length];
+		            while ((bytesread != response_content_length) && (actual != -1)) {
+		               actual = inStream.read(s, bytesread, response_content_length - bytesread);
 		               bytesread += actual;
 		            }
 		        } else {
@@ -150,18 +209,17 @@ public byte[] getContent(InputStream inStream){
 				e.printStackTrace();
 			}
 		}
-		return s;
+		
+		if (response_encoding!=null && response_encoding.equals("gzip")){
+			try {
+				result = GZIP.inflate(s);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} else result = s;
+		return result;
 	}
 	
-	public String get(String action, String params){
-		HttpConnect conn = new HttpConnect();
-		conn.setCmccProxy();
-		conn.setHttpHeader(CmccHeader(0));
-		conn.open(cmcc_service_url+action+params);
-		conn.close();
-		conn = null;
-		return null;
-	}
 	private String[] splitUrl(String url) {
 		String shema = "http://";
         String[] urls = new String[2];   
@@ -181,5 +239,12 @@ public byte[] getContent(InputStream inStream){
         }   
         return urls;   
       }   
+	
+	public String getErrorMessage(){
+		if (error_code>0){
+			return "Error["+ error_code +"]:["+ (error_message!=null ? error_message : "") +"]";
+		} else
+			return "ok";
+	}
 	
 }
