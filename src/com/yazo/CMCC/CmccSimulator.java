@@ -55,15 +55,26 @@ public class CmccSimulator extends Thread {
 		queue.add(cmd);
 	}
 	public void runCommand(SimCommand cmd){
+//		config.add(ConfigKeys.YZ_CLIENT_ID, 100);
+//		config.add(ConfigKeys.CMCC_USER_AGENT, "CMREAD_JavaLS_V1.50_101221");
+//		config.add(ConfigKeys.CMCC_SERVICE, "http://211.140.17.83/cmread/portalapi");
+//		config.add(ConfigKeys.CMCC_CLIENT_PASSWORD, "12101017");
+//		config.add(ConfigKeys.CONTENT_SERVER, "http://bk-b.info");
+//		config.add(ConfigKeys.CMCC_DEBUG, 1);
+		
 		printDbg("run [" + cmd.command + "]");
 		if(cmd.command.equals("stop")){
 			continue_run = false;
 		} else if (cmd.command.equals("register")){
-			doRegister();
+			printDbg("Start register.");
+			cmcc.register();
+			printDbg("end register, user_id=" + cmcc.cmcc_user_id);
 		} else if(cmd.command.equals("authenticate")){
 			printDbg("authenticate:" + cmcc.authenticate());
 		}else if(cmd.command.equals("welcome")){
-			doWelcome();
+			printDbg("Start Welcome.");
+			String s = cmcc.welcome();
+			printDbg("end welcome:[" + s.length() + "]");
 		} else if(cmd.command.equals("bk-b")){
 			WebSite ws = new WebSite();
 			byte[] buf = ws.post("http://bk-b.info/reader/pages/home", null, "");
@@ -78,16 +89,6 @@ public class CmccSimulator extends Thread {
 		}
 	}
 	
-	public void doTest(){
-//		config.add(ConfigKeys.YZ_CLIENT_ID, 100);
-//		config.add(ConfigKeys.CMCC_USER_AGENT, "CMREAD_JavaLS_V1.50_101221");
-//		config.add(ConfigKeys.CMCC_SERVICE, "http://211.140.17.83/cmread/portalapi");
-//		config.add(ConfigKeys.CMCC_CLIENT_PASSWORD, "12101017");
-//		config.add(ConfigKeys.CONTENT_SERVER, "http://bk-b.info");
-//		config.add(ConfigKeys.CMCC_DEBUG, 1);
-
-		
-	}
 	public void doProcessOnCmcc(){
 //		String userid = null;
 //		if (canceled || userid==null) return;  // regist failed.
@@ -129,26 +130,6 @@ public class CmccSimulator extends Thread {
 		// get subscribeContent?contentId=xxx&chapterId=xxx&productId=xxx
 	}
 	
-	
-	public void doRegister(){
-		printDbg("Start register.");
-		cmcc.register();
-		printDbg("end register, user_id=" + cmcc.cmcc_user_id);
-	}
-	
-	public void doWelcome(){
-		printDbg("Start Welcome.");
-		String s = cmcc.welcome();
-		printDbg("end welcome:[" + s.length() + "]");
-	}
-	
-	
-	
-	public Boolean authenticate(String agent, String userid, String password, String channel) {
-
-		return Boolean.FALSE;
-	}
-
 	private void sleep(int millis){
 		try {
 			Thread.sleep(millis);
