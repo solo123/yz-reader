@@ -111,6 +111,8 @@ public class CmccWebsite {
 			return "Error["+ website.error_code +"]:" + website.error_message; 
 	}
 	public String getCatalogInfo(String catalogId){
+		if(cmcc_user_id==null || cmcc_user_id.length()<1)
+			return "请先register!";
 		String[] header = cmccHeader("getCatalogInfo");
 		byte[] buf = website.post(cmcc_service_url + "?catalogId="+catalogId, header, "");
 		String r = new String(buf);
@@ -119,6 +121,8 @@ public class CmccWebsite {
 		return r;
 	}
 	public String getContentInfo(String contentId){
+		if(cmcc_user_id==null || cmcc_user_id.length()<1)
+			return "请先register!";
 		String[] header = cmccHeader("getContentInfo");
 		byte[] buf = website.post(cmcc_service_url + "?contentId="+contentId, header, "");
 		String r = new String(buf);
@@ -127,6 +131,8 @@ public class CmccWebsite {
 		return r;
 	}
 	public String getChapterInfo(String contentId, String chapterId){
+		if(cmcc_user_id==null || cmcc_user_id.length()<1)
+			return "请先register!";
 		String[] header = cmccHeader("getChapterInfo");
 		byte[] buf = website.post(cmcc_service_url + "?contentId=" +contentId+"&chapterId="+chapterId, header, "");
 		String r = new String(buf);
@@ -135,6 +141,8 @@ public class CmccWebsite {
 		return r;
 	}
 	public String getContentProductInfo(String contentId, String chapterId){
+		if(cmcc_user_id==null || cmcc_user_id.length()<1)
+			return "请先register!";
 		String[] header = cmccHeader("getContentProductInfo");
 		String para = "?contentId=" +contentId;
 		if (chapterId!=null)
@@ -150,6 +158,8 @@ public class CmccWebsite {
 	 * 目录包月
 	 */
 	public String subscribeCatalog(String catalogId){
+		if(cmcc_user_id==null || cmcc_user_id.length()<1)
+			return "请先register!";
 		String[] header = cmccHeader("subscribeCatalog");
 		byte[] buf = website.post(cmcc_service_url + "?catalogId=" +catalogId, header, "");
 		String r = new String(buf);
@@ -161,6 +171,8 @@ public class CmccWebsite {
 	 * 购买图书
 	 */
 	public String subscribeContent(String contentId, String productId){
+		if(cmcc_user_id==null || cmcc_user_id.length()<1)
+			return "请先register!";
 		String[] header = cmccHeader("subscribeCatalog");
 		byte[] buf = website.post(cmcc_service_url + "?contentId=" + contentId +"&productId=" + productId, header, "");
 		String r = new String(buf);
@@ -172,6 +184,8 @@ public class CmccWebsite {
 	 * 购买章节
 	 */
 	public String subscribeContent(String contentId, String chapterId,  String productId){
+		if(cmcc_user_id==null || cmcc_user_id.length()<1)
+			return "请先register!";
 		String[] header = cmccHeader("subscribeContent");
 		byte[] buf = website.post(cmcc_service_url + "?contentId=" + contentId + "&chapterId=" + chapterId + "&productId=xxx" + productId, header, "");
 		String r = new String(buf);

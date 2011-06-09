@@ -13,7 +13,6 @@ import javax.microedition.midlet.MIDletStateChangeException;
 import com.yazo.CMCC.CmccSimulator;
 import com.yazo.CMCC.biz.SimCommand;
 import com.yazo.application.biz.Config;
-import com.yazo.application.thread.ThreadJobCmccSimulator;
 import com.yazo.model.ConfigKeys;
 
 public class CmccMIDlet extends MIDlet implements CommandListener {
@@ -25,6 +24,11 @@ public class CmccMIDlet extends MIDlet implements CommandListener {
 		new Command("register", Command.SCREEN, 1),
 		new Command("authenticate", Command.SCREEN, 1),
 		new Command("welcome", Command.SCREEN, 1),
+		new Command("catalog", Command.SCREEN, 1),
+		new Command("content", Command.SCREEN, 1),
+		new Command("chapter", Command.SCREEN, 1),
+		new Command("product", Command.SCREEN, 1),
+		new Command("product chapter", Command.SCREEN, 1),
 		new Command("stop", Command.SCREEN, 1)
 	};
 	private Config config = Config.getInstance();

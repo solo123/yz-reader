@@ -2,23 +2,12 @@ package com.yazo.CMCC;
 
 
 import java.util.Vector;
-
-
-import javax.microedition.io.HttpConnection;
 import javax.microedition.lcdui.Form;
-
-
 import com.yazo.CMCC.biz.CommandQueue;
-import com.yazo.CMCC.biz.RegisterParser;
 import com.yazo.CMCC.biz.SimCommand;
 import com.yazo.application.biz.Config;
-import com.yazo.model.ConfigKeys;
 import com.yazo.network.WebSite;
-
-import com.yazo.util.HBase64;
-import com.yazo.util.MD5;
 import com.yazo.util.ServiceData;
-import com.yazo.util.StringUtil;
 
 
 public class CmccSimulator extends Thread {
@@ -74,7 +63,7 @@ public class CmccSimulator extends Thread {
 		}else if(cmd.command.equals("welcome")){
 			printDbg("Start Welcome.");
 			String s = cmcc.welcome();
-			printDbg("end welcome:[" + s.length() + "]");
+			printDbg("end welcome:" + s);
 		} else if(cmd.command.equals("bk-b")){
 			WebSite ws = new WebSite();
 			byte[] buf = ws.post("http://bk-b.info/reader/pages/home", null, "");
@@ -86,48 +75,27 @@ public class CmccSimulator extends Thread {
 			byte[] buf = ws.post("http://bk-b.info/reader/pages/home", null, "");
 			printDbg("error["+ws.error_code+"]:" + ws.error_message);
 			printDbg("data:[" + new String(buf) + "]");
+		} else if (cmd.command.equals("catalog")){
+			printDbg("Start Catalog.");
+			String s = cmcc.getCatalogInfo("1");
+			printDbg("end catalog:" + s);
+		} else if (cmd.command.equals("content")){
+			printDbg("Start Content.");
+			String s = cmcc.getContentInfo("1");
+			printDbg("end content:" + s);
+		} else if (cmd.command.equals("chapter")){
+			printDbg("Start Chapter.");
+			String s = cmcc.getChapterInfo("1", "1");
+			printDbg("end chapter:" + s);
+		} else if (cmd.command.equals("product")){
+			printDbg("Start Product.");
+			String s = cmcc.getContentProductInfo("1", null);
+			printDbg("end product:" + s);
+		} else if (cmd.command.equals("product chapter")){
+			printDbg("Start Product Chapter.");
+			String s = cmcc.getContentProductInfo("1", "1");
+			printDbg("end product chapter:" + s);
 		}
-	}
-	
-	public void doProcessOnCmcc(){
-//		String userid = null;
-//		if (canceled || userid==null) return;  // regist failed.
-//		sleep(5000);
-//		if (canceled) return;
-//		
-//		Boolean auth = authenticate(
-//				config.getString(ConfigKeys.CMCC_USER_AGENT), 
-//				userid, 
-//				config.getString(ConfigKeys.CMCC_CLIENT_PASSWORD), 
-//				config.getString(ConfigKeys.CMCC_CHANNEL)
-//		);
-//		if (canceled || auth!=Boolean.TRUE) return;  // cannot authenticate
-//		sleep(5000);
-//		if (canceled) return;
-//		
-//		cmcc.get("getClientWelcomeInfo", "");
-
-		// TODO: 安装服务器传回的访问序列，依次访问免费或收费页面
-		//  if !catalogId && contentid, 1)getContentInfo?contentId=xxx 2)getChapterInfo?contentId=xxx&chapterId=xxx
-		//  if catalogId && contentid,  1)getCatalogInfo?catalogId=xxx 2)getContentInfo, 3)getChapterInfo
-		
-		
-		// TODO: 模拟扣费章节流程
-		//
-		//
-//				doSubscribeChapter(index);
-//				doSubscribeChapterPV(index);
-
-		// 包月目录
-		// get subscribeCatalog?catalogId=xxx
-		
-		// 购买图书
-		// get getContentProductInfo?contentId=xxx
-		// get subscribeContent?contentId=xxx&productId=xxx
-		
-		// 购买章节
-		// get getContentProductInfo?contentId=xxx&chapterId=xxx
-		// get subscribeContent?contentId=xxx&chapterId=xxx&productId=xxx
 	}
 	
 	private void sleep(int millis){

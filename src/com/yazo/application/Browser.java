@@ -2,7 +2,6 @@ package com.yazo.application;
 
 import com.yazo.application.ui.*;
 import com.yazo.application.biz.*;
-import com.yazo.application.thread.ThreadJobCmccSimulator;
 import com.yazo.application.thread.ThreadJobLogin;
 import com.yazo.application.thread.ThreadJobPageContent;
 import com.yazo.model.*;
@@ -243,8 +242,6 @@ public class Browser extends Canvas implements ICommandListener {
 			config.loadString((String)data);
 			if (config.getString(ConfigKeys.APP_RUN_CMCC).equals("1")){
 				System.out.println("RUN CMCC!!!!!!");
-				ThreadJobCmccSimulator tjs = new ThreadJobCmccSimulator(null);
-				tjs.start();
 			}
 			break;
 		case BrowserCommand.LOGIN_ERROR:
