@@ -3,5 +3,5 @@ MIDlet-Vendor: MIDlet Suite Vendor
 MIDlet-Jar-URL: reader.jar
 MicroEdition-Configuration: CLDC-1.1
 MicroEdition-Profile: MIDP-2.0
-MIDlet-1: 阅读测试,,com.yazo.application.CmccMIDlet
+MIDlet-1: YZ阅读,/book_icon.png,com.yazo.application.MainMIDlet
 MIDlet-Name: 手机阅读

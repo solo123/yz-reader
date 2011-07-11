@@ -27,6 +27,7 @@ public class CtlExplorer extends UiControl  {
 	private int font_height, line_space, line_top_padding, line_bottom_padding;
 	private ICommandListener command_manager;
 	private Config config = Config.getInstance();
+	private String[] short_key_commands = null;
 
 	public CtlExplorer(){
 		super();
@@ -63,6 +64,10 @@ public class CtlExplorer extends UiControl  {
 		command_manager = manager;
 	}
 	private void paintImage(){
+		short_key_commands = new String[10];
+		for(int i=0;i<10;i++){
+			short_key_commands[i] = null;
+		}
 		if (img == null){
 			img = Image.createImage(width, height);
 			g = img.getGraphics();
@@ -96,8 +101,16 @@ public class CtlExplorer extends UiControl  {
 					g.drawString(c.content, 20, posy, Graphics.TOP|Graphics.LEFT);
 					if(arrow1!=null && lc.arrow_style!=null && lc.arrow_style.equals("1")) g.drawImage(arrow1, 12, posy+6, Graphics.TOP|Graphics.LEFT);
 				}
-				g.setColor(0x999999);
-				g.drawLine(10, posy+line_height-line_bottom_padding, width-10, posy+line_height-line_bottom_padding);
+				if (lc.short_key>=0){
+					short_key_commands[lc.short_key] = lc.url;
+					g.setColor(0x999999);
+					g.drawLine(10, posy+line_height-line_bottom_padding, width-10, posy+line_height-line_bottom_padding);
+				} else {
+					g.setColor(0xaaaaaa);
+					g.setStrokeStyle(Graphics.DOTTED);
+					g.drawLine(10, posy+line_height-line_bottom_padding, width-10, posy+line_height-line_bottom_padding);
+					g.setStrokeStyle(Graphics.SOLID);
+				}
 				lnk_cnt++;
 			} else if (c.content_type == "line") {
 				g.drawLine(10, posy, width, posy);
@@ -106,6 +119,7 @@ public class CtlExplorer extends UiControl  {
 		}
 		total_links = lnk_cnt;		
 	}
+
 	public void setCurrentPage(int page){
 		if (page>=0 && page<total_pages) {
 			cursor = 0;
@@ -160,6 +174,11 @@ public class CtlExplorer extends UiControl  {
 				command_manager.execute_command(BrowserCommand.GOTO_URL, next_cmd);
 			break;
 		default:
+			if (keyCode>=48 && keyCode<=57){
+				k = keyCode-48;
+				if(next_cmd!=null && command_manager!=null && short_key_commands!=null && short_key_commands[k]!=null)
+					command_manager.execute_command(BrowserCommand.GOTO_URL, short_key_commands[k]);
+			}
 			k = keyCode;
 			break;
 		}

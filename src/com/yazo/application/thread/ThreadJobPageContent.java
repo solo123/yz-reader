@@ -17,6 +17,7 @@ public class ThreadJobPageContent extends ThreadJob {
 	}
 	public void run(){
 		synchronized (lock) {
+			manager.execute_command(BrowserCommand.LOADING_FROM_INTERNET, null);
 			BookBiz bp = new BookBiz();
 			PageContent pc = bp.getPageContentFromUrl(service, action);
 			if (pc!=null) {

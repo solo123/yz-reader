@@ -1,4 +1,4 @@
-package com.yazo.application;
+package com.yazo.CMCC;
 
 import java.util.Vector;
 
@@ -10,7 +10,6 @@ import javax.microedition.lcdui.Form;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
 
-import com.yazo.CMCC.CmccSimulator;
 import com.yazo.CMCC.biz.SimCommand;
 import com.yazo.application.biz.Config;
 import com.yazo.model.ConfigKeys;

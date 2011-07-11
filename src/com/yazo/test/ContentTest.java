@@ -6,6 +6,7 @@ import j2meunit.framework.TestMethod;
 import j2meunit.framework.TestSuite;
 
 import com.yazo.application.biz.BookBiz;
+import com.yazo.contents.LinkContent;
 import com.yazo.contents.PageContent;
 
 public class ContentTest extends TestCase  {
@@ -23,7 +24,7 @@ public class ContentTest extends TestCase  {
 					((ContentTest) tc).getTextContent();}
 				})
 		);
-		
+
 		return suite;
 		
 	}
@@ -33,4 +34,5 @@ public class ContentTest extends TestCase  {
 		PageContent pc = bp.getPageContentFromUrl("http://bk-b.info/reader/pages/", "home");
 		assertNotNull(pc);
 	}
+
 }

@@ -16,6 +16,7 @@ public class TestAll extends TestCase
               suite.addTest(new RmsTest().suite());
               suite.addTest(new IniParserTest().suite());
               suite.addTest(new UtilTest().suite());
+              suite.addTest(new ContentBizTest().suite());
               suite.addTest(new TestAllCmcc().suite());
 //              suite.addTest(new TestAllNet().suite());
               return suite;

@@ -15,6 +15,7 @@ public class Browser extends Canvas implements ICommandListener {
 	private CtlExplorer ctl_explorer;
 	private CtlMenu ctl_menu;
 	private CtlAlert ctl_alert;
+	private CtlNetIndicator ctl_net;
 	
 	public ContentManager contents;
 	private MainMIDlet midlet;
@@ -71,6 +72,10 @@ public class Browser extends Canvas implements ICommandListener {
 		ctl_alert.setBar(config.getInt(ConfigKeys.SCREEN_WIDTH), config.getInt(ConfigKeys.MENU_HEIGHT), config.getInt(ConfigKeys.SCREEN_HEIGHT)-1);
 		ctl_alert.setCommandManager(this);
 		container.addControl(ctl_alert);
+		
+		ctl_net = new CtlNetIndicator();
+		ctl_net.setPos(config.getInt(ConfigKeys.SCREEN_WIDTH)/2, config.getInt(ConfigKeys.SCREEN_HEIGHT), Graphics.BOTTOM|Graphics.HCENTER);
+		container.addControl(ctl_net);
 		
 		gotoUrl(config.getString(ConfigKeys.CONTENT_HOME));
 	}
@@ -129,6 +134,7 @@ public class Browser extends Canvas implements ICommandListener {
 	}
 	
 	private void after_content_loaded(Object data){
+		ctl_net.on_reading = false;
 		if (splash!=null){
 			if (data==null){
 				splash.retryNetwork();
@@ -186,8 +192,8 @@ public class Browser extends Canvas implements ICommandListener {
 		
 		switch(command){
 		case BrowserCommand.LOADING_FROM_INTERNET:
-			on_net_reading = Boolean.TRUE;
-			ctl_menu.setMiddleText("正在读取网络...");
+			ctl_net.on_reading = true;
+			repaint();
 			break;
 		case BrowserCommand.AFTER_LINECONTENT_LOADED:
 			after_content_loaded(data);

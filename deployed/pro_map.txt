@@ -1,4 +1,13 @@
-com.yazo.CMCC.CmccSimulator -> a:
+com.yazo.CMCC.CmccMIDlet -> com.yazo.CMCC.CmccMIDlet:
+    javax.microedition.lcdui.Form frm -> a
+    javax.microedition.lcdui.Display display -> b
+    javax.microedition.lcdui.Command[] cmds -> c
+    com.yazo.CMCC.CmccSimulator sim -> d
+    void destroyApp(boolean) -> destroyApp
+    void pauseApp() -> pauseApp
+    void startApp() -> startApp
+    void commandAction(javax.microedition.lcdui.Command,javax.microedition.lcdui.Displayable) -> commandAction
+com.yazo.CMCC.CmccSimulator -> com.yazo.CMCC.a:
     com.yazo.CMCC.CmccWebsite cmcc -> a
     javax.microedition.lcdui.Form form -> b
     boolean continue_run -> c
@@ -7,7 +16,7 @@ com.yazo.CMCC.CmccSimulator -> a:
     void run() -> run
     void addCommand(com.yazo.CMCC.biz.SimCommand) -> a
     void printDbg(java.lang.String) -> a
-com.yazo.CMCC.CmccWebsite -> d:
+com.yazo.CMCC.CmccWebsite -> com.yazo.CMCC.b:
     java.lang.String cmcc_user_id -> a
     java.lang.String cmcc_service_url -> c
     java.lang.String cmcc_user_agent -> d
@@ -27,16 +36,16 @@ com.yazo.CMCC.CmccWebsite -> d:
     java.lang.String getContentProductInfo(java.lang.String,java.lang.String) -> b
     void logToServer(java.lang.String,java.lang.String,java.lang.String,java.lang.String[],java.util.Hashtable) -> a
     java.lang.String[] cmccHeader(java.lang.String) -> c
-com.yazo.CMCC.biz.CommandQueue -> ab:
+com.yazo.CMCC.biz.CommandQueue -> aa:
     com.yazo.CMCC.biz.SimCommand[] buf -> a
     int i -> b
     int j -> c
     void add(com.yazo.CMCC.biz.SimCommand) -> a
     com.yazo.CMCC.biz.SimCommand get() -> a
     boolean hasElement() -> b
-com.yazo.CMCC.biz.RegisterParser -> ak:
+com.yazo.CMCC.biz.RegisterParser -> aj:
     java.lang.Object parse(java.io.InputStream) -> a
-com.yazo.CMCC.biz.SimCommand -> r:
+com.yazo.CMCC.biz.SimCommand -> p:
     java.lang.String command -> a
 com.yazo.application.Browser -> com.yazo.application.e:
     com.yazo.application.ui.UiContainer container -> a
@@ -44,13 +53,14 @@ com.yazo.application.Browser -> com.yazo.application.e:
     com.yazo.application.ui.CtlExplorer ctl_explorer -> c
     com.yazo.application.ui.CtlMenu ctl_menu -> d
     com.yazo.application.ui.CtlAlert ctl_alert -> e
-    com.yazo.application.biz.ContentManager contents -> f
-    com.yazo.application.MainMIDlet midlet -> g
-    javax.microedition.lcdui.Display display -> h
-    com.yazo.application.SplashCanvas splash -> i
-    java.lang.Boolean on_net_reading -> j
-    com.yazo.application.biz.Config config -> k
-    com.yazo.application.biz.RmsManager rms -> l
+    com.yazo.application.ui.CtlNetIndicator ctl_net -> f
+    com.yazo.application.biz.ContentManager contents -> g
+    com.yazo.application.MainMIDlet midlet -> h
+    javax.microedition.lcdui.Display display -> i
+    com.yazo.application.SplashCanvas splash -> j
+    java.lang.Boolean on_net_reading -> k
+    com.yazo.application.biz.Config config -> l
+    com.yazo.application.biz.RmsManager rms -> m
     void paint(javax.microedition.lcdui.Graphics) -> paint
     void keyReleased(int) -> keyReleased
     void after_content_loaded(java.lang.Object) -> a
@@ -61,15 +71,6 @@ com.yazo.application.Browser -> com.yazo.application.e:
 com.yazo.application.Browser$1 -> com.yazo.application.d:
     com.yazo.application.Browser this$0 -> a
     void run() -> run
-com.yazo.application.CmccMIDlet -> com.yazo.application.CmccMIDlet:
-    javax.microedition.lcdui.Form frm -> a
-    javax.microedition.lcdui.Display display -> b
-    javax.microedition.lcdui.Command[] cmds -> c
-    com.yazo.CMCC.CmccSimulator sim -> d
-    void destroyApp(boolean) -> destroyApp
-    void pauseApp() -> pauseApp
-    void startApp() -> startApp
-    void commandAction(javax.microedition.lcdui.Command,javax.microedition.lcdui.Displayable) -> commandAction
 com.yazo.application.MainMIDlet -> com.yazo.application.MainMIDlet:
     void destroyApp(boolean) -> destroyApp
     void pauseApp() -> pauseApp
@@ -105,12 +106,12 @@ com.yazo.application.SplashCanvas -> com.yazo.application.a:
 com.yazo.application.SplashCanvas$SpinnerTask -> com.yazo.application.c:
     com.yazo.application.SplashCanvas this$0 -> a
     void run() -> run
-com.yazo.application.biz.BookBiz -> v:
+com.yazo.application.biz.BookBiz -> u:
     com.yazo.application.biz.Config config -> b
     int network_connect_status -> a
     com.yazo.contents.PageContent getPageContentFromUrl(java.lang.String,java.lang.String) -> a
     java.lang.String doLogin() -> a
-com.yazo.application.biz.Config -> ac:
+com.yazo.application.biz.Config -> ab:
     java.util.Hashtable configs -> a
     com.yazo.application.biz.Config instance -> b
     com.yazo.application.biz.Config getInstance() -> a
@@ -122,10 +123,10 @@ com.yazo.application.biz.Config -> ac:
     void loadString(java.lang.String) -> a
     int getInt(int) -> b
     java.lang.Object getObject(int) -> c
-com.yazo.application.biz.ContentManager -> j:
+com.yazo.application.biz.ContentManager -> h:
     com.yazo.contents.PageContent content -> a
     com.yazo.contents.PageCache content_buffer -> b
-com.yazo.application.biz.MobileInfo -> o:
+com.yazo.application.biz.MobileInfo -> m:
     java.lang.String channel -> a
     java.lang.String smsCenter -> b
     java.lang.String imsi -> c
@@ -140,28 +141,28 @@ com.yazo.application.biz.MobileInfo -> o:
     java.lang.String getIMSI() -> b
     java.lang.String getIMEI() -> c
     java.lang.String getCNETERNUMBER() -> d
-com.yazo.application.biz.PageContentParser -> u:
+com.yazo.application.biz.PageContentParser -> s:
     int width -> a
     int height -> b
     int line_height -> c
     javax.microedition.lcdui.Font font -> d
     java.lang.Object parse(java.io.InputStream) -> a
-com.yazo.application.biz.RmsManager -> f:
+com.yazo.application.biz.RmsManager -> d:
     javax.microedition.rms.RecordStore rs -> a
     com.yazo.application.biz.RmsManager instance -> b
     com.yazo.application.biz.RmsManager getInstance() -> a
     void load(com.yazo.application.biz.Config) -> a
-com.yazo.application.thread.ThreadJob -> an:
-com.yazo.application.thread.ThreadJobLogin -> z:
+com.yazo.application.thread.ThreadJob -> am:
+com.yazo.application.thread.ThreadJobLogin -> x:
     com.yazo.application.Browser manager$458c7e47 -> a
     void run() -> run
-com.yazo.application.thread.ThreadJobPageContent -> k:
+com.yazo.application.thread.ThreadJobPageContent -> i:
     java.lang.String service -> a
     java.lang.String action -> b
     com.yazo.application.Browser manager$458c7e47 -> c
     java.lang.Object lock -> d
     void run() -> run
-com.yazo.application.ui.CtlAlert -> aa:
+com.yazo.application.ui.CtlAlert -> y:
     com.yazo.application.Browser command_manager$458c7e47 -> b
     javax.microedition.lcdui.Image img -> h
     javax.microedition.lcdui.Image img_shadow -> i
@@ -181,7 +182,7 @@ com.yazo.application.ui.CtlAlert -> aa:
     void confirm(java.lang.String,java.lang.String) -> a
     void paint(javax.microedition.lcdui.Graphics) -> a
     void keyReleased(int) -> a
-com.yazo.application.ui.CtlExplorer -> l:
+com.yazo.application.ui.CtlExplorer -> j:
     com.yazo.contents.PageContent content -> h
     int current_page -> a
     int total_pages -> b
@@ -200,6 +201,7 @@ com.yazo.application.ui.CtlExplorer -> l:
     int line_bottom_padding -> u
     com.yazo.application.Browser command_manager$458c7e47 -> v
     com.yazo.application.biz.Config config -> w
+    java.lang.String[] short_key_commands -> x
     void setContent(com.yazo.contents.PageContent,int) -> a
     void setCommandManager$3e46dcac(com.yazo.application.Browser) -> a
     void paintImage() -> a
@@ -208,7 +210,7 @@ com.yazo.application.ui.CtlExplorer -> l:
     void prevPage() -> c
     void paint(javax.microedition.lcdui.Graphics) -> a
     int keyReleased(int) -> b
-com.yazo.application.ui.CtlHeader -> ae:
+com.yazo.application.ui.CtlHeader -> ad:
     javax.microedition.lcdui.Image img -> a
     javax.microedition.lcdui.Graphics g -> b
     int color -> h
@@ -218,7 +220,7 @@ com.yazo.application.ui.CtlHeader -> ae:
     void setSize(int,int) -> a
     void setTitle(java.lang.String) -> a
     void paint(javax.microedition.lcdui.Graphics) -> a
-com.yazo.application.ui.CtlMenu -> ah:
+com.yazo.application.ui.CtlMenu -> ag:
     javax.microedition.lcdui.Image img_bar -> b
     javax.microedition.lcdui.Image img_menu -> h
     javax.microedition.lcdui.Image img_shadow -> i
@@ -250,11 +252,14 @@ com.yazo.application.ui.CtlMenu -> ah:
     void paint(javax.microedition.lcdui.Graphics) -> a
     void activeMenu() -> c
     void keyReleased(int) -> a
-com.yazo.application.ui.UiContainer -> i:
+com.yazo.application.ui.CtlNetIndicator -> z:
+    boolean on_reading -> a
+    void paint(javax.microedition.lcdui.Graphics) -> a
+com.yazo.application.ui.UiContainer -> g:
     java.util.Vector controls -> a
     void addControl(com.yazo.application.ui.UiControl) -> a
     void paint(javax.microedition.lcdui.Graphics) -> a
-com.yazo.application.ui.UiControl -> s:
+com.yazo.application.ui.UiControl -> q:
     int width -> c
     int height -> d
     int posx -> e
@@ -263,17 +268,19 @@ com.yazo.application.ui.UiControl -> s:
     void setSize(int,int) -> a
     void setPos(int,int,int) -> a
     void paint(javax.microedition.lcdui.Graphics) -> a
-com.yazo.contents.BrowserContent -> af:
+com.yazo.contents.BrowserContent -> ae:
     java.lang.String content_type -> a
     java.lang.String content -> b
     int height -> c
-com.yazo.contents.LinkContent -> ag:
+com.yazo.contents.LinkContent -> af:
     java.lang.String url -> d
     java.lang.String arrow_style -> e
-com.yazo.contents.PageCache -> h:
+    int short_key -> f
+    int getShortKey() -> a
+com.yazo.contents.PageCache -> f:
     java.util.Hashtable buffer -> a
     void put(java.lang.String,java.lang.Object) -> a
-com.yazo.contents.PageContent -> x:
+com.yazo.contents.PageContent -> v:
     java.util.Vector pages -> f
     java.util.Vector contents -> g
     int height -> h
@@ -290,8 +297,8 @@ com.yazo.contents.PageContent -> x:
     int getTotalPages() -> a
     java.util.Vector getPage(int) -> a
     void addText(java.lang.String) -> a
-com.yazo.contents.TextContent -> y:
-com.yazo.network.HttpConnect -> g:
+com.yazo.contents.TextContent -> w:
+com.yazo.network.HttpConnect -> e:
     javax.microedition.io.HttpConnection connection -> c
     java.lang.String url -> d
     java.lang.String urlDomain -> e
@@ -309,7 +316,7 @@ com.yazo.network.HttpConnect -> g:
     void post(java.lang.String,java.lang.String) -> a
     byte[] getContent() -> b
     void close() -> c
-com.yazo.network.WebSite -> b:
+com.yazo.network.WebSite -> a:
     boolean use_cmcc_proxy -> a
     int http_status -> b
     int error_code -> c
@@ -322,7 +329,7 @@ com.yazo.network.WebSite -> b:
     byte[] getContent(java.io.InputStream) -> a
 com.yazo.test.MIDletTest -> com.yazo.test.MIDletTest:
     void startApp() -> startApp
-com.yazo.tools.IniParser -> t:
+com.yazo.tools.IniParser -> r:
     java.lang.String key -> a
     java.lang.String value -> b
     java.lang.String parseText -> c
@@ -330,9 +337,9 @@ com.yazo.tools.IniParser -> t:
     int length -> e
     boolean hasMoreElements() -> a
     void next() -> b
-com.yazo.tools.ResourceManager -> m:
+com.yazo.tools.ResourceManager -> k:
     java.lang.String getTextFromRes(java.lang.String,boolean) -> a
-com.yazo.util.GZIP -> al:
+com.yazo.util.GZIP -> ak:
     byte[] buffer -> a
     int buffer_index -> b
     int buffer_byte -> c
@@ -352,13 +359,13 @@ com.yazo.util.GZIP -> al:
     int readCode(int[]) -> a
     int[] createHuffmanTree(byte[],int) -> a
     byte[] decodeCodeLengths(int[],int) -> a
-com.yazo.util.HBase64 -> w:
+com.yazo.util.HBase64 -> t:
     char[] legalChars -> a
     java.lang.String encode(byte[]) -> a
-com.yazo.util.HtmlEscape -> ao:
+com.yazo.util.HtmlEscape -> an:
     java.lang.String encode$7157d249(java.lang.String) -> a
     void appendHex(int,java.lang.StringBuffer) -> a
-com.yazo.util.MD5 -> aj:
+com.yazo.util.MD5 -> ai:
     byte[] PADDING -> a
     long[] state -> b
     long[] count -> c
@@ -375,18 +382,18 @@ com.yazo.util.MD5 -> aj:
     void Encode(byte[],long[],int) -> a
     long b2iu(byte) -> a
     java.lang.String toMD5(java.lang.String) -> a
-com.yazo.util.StringUtil -> ai:
+com.yazo.util.StringUtil -> ah:
     byte[] hexStringToByte(java.lang.String) -> a
-j2meunit.framework.Test -> ad:
+j2meunit.framework.Test -> ac:
     int countTestSteps() -> a
     void run(j2meunit.framework.TestResult) -> a
-j2meunit.framework.TestFailure -> e:
+j2meunit.framework.TestFailure -> c:
     j2meunit.framework.Test fFailedTest -> a
     java.lang.Throwable fThrownException -> b
     j2meunit.framework.Test failedTest() -> a
     java.lang.Throwable thrownException() -> b
     java.lang.String toString() -> toString
-j2meunit.framework.TestResult -> p:
+j2meunit.framework.TestResult -> n:
     java.util.Vector fErrors -> a
     java.util.Vector fFailures -> b
     java.util.Vector fListeners -> c
@@ -402,7 +409,7 @@ j2meunit.framework.TestResult -> p:
     int testErrors() -> h
     int testFailures() -> i
     boolean wasSuccessful() -> g
-j2meunit.framework.TestSuite -> am:
+j2meunit.framework.TestSuite -> al:
     java.util.Vector fTests -> a
     void addTest(j2meunit.framework.Test) -> a
     int countTestSteps() -> a
@@ -436,7 +443,7 @@ j2meunit.midletui.TestRunner$1 -> j2meunit.midletui.a:
     j2meunit.framework.Test val$aTestSuite -> a
     j2meunit.midletui.TestRunner this$0 -> b
     void run() -> run
-org.kxml2.io.KXmlParser -> q:
+org.kxml2.io.KXmlParser -> o:
     java.util.Hashtable entityMap -> b
     int depth -> c
     java.lang.String[] elementStack -> d
@@ -488,8 +495,8 @@ org.kxml2.io.KXmlParser -> q:
     int nextTag() -> c
     void require(int,java.lang.String,java.lang.String) -> a
     java.lang.String nextText() -> d
-org.xmlpull.v1.XmlPullParser -> c:
+org.xmlpull.v1.XmlPullParser -> b:
     java.lang.String[] TYPES -> a
-org.xmlpull.v1.XmlPullParserException -> n:
+org.xmlpull.v1.XmlPullParserException -> l:
     java.lang.Throwable detail -> a
     void printStackTrace() -> printStackTrace
