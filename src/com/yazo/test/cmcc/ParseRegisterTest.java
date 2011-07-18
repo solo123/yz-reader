@@ -36,7 +36,7 @@ public class ParseRegisterTest extends TestCase {
 				"</RegisterRsp>" +
 			"</Response>";
 		RegisterParser rp = new RegisterParser();
-		String userid = rp.parse(response.getBytes());
+		String userid = rp.parse(response.getBytes(),null);
 		assertEquals("123abc", userid);
 	}
 	

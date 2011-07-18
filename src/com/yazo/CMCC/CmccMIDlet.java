@@ -1,7 +1,5 @@
 package com.yazo.CMCC;
 
-import java.util.Vector;
-
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.Display;
@@ -12,7 +10,6 @@ import javax.microedition.midlet.MIDletStateChangeException;
 
 import com.yazo.CMCC.biz.SimCommand;
 import com.yazo.application.biz.Config;
-import com.yazo.model.ConfigKeys;
 
 public class CmccMIDlet extends MIDlet implements CommandListener {
 	private Form frm = new Form("请选择操作");
@@ -26,8 +23,9 @@ public class CmccMIDlet extends MIDlet implements CommandListener {
 		new Command("catalog", Command.SCREEN, 1),
 		new Command("content", Command.SCREEN, 1),
 		new Command("chapter", Command.SCREEN, 1),
+		new Command("subscribeCatalog", Command.SCREEN, 1),
 		new Command("product", Command.SCREEN, 1),
-		new Command("product chapter", Command.SCREEN, 1),
+		new Command("product content", Command.SCREEN, 1),
 		new Command("stop", Command.SCREEN, 1)
 	};
 	private Config config = Config.getInstance();

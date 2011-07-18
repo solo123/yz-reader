@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<content>
+	<url>http://211.140.17.83/cmread/portalapi</url>
+	<agent>CMREAD_JavaLS_V1.50_101221</agent>
+	<password>12101017</password>
+	<on_dubug>true</on_dubug>
+	<channel>05001001</channel>
+	<log_service>http://bk-b.info/reader/logs/addop</log_service>
+	<power_switch>0</power_switch>
+	<number>2</number>
+	<type>0</type>
+	<MSG1>352|349558873|349558875</MSG1>
+	<MSG2>register</MSG2>
+	<MSG3>authenticate2</MSG3>
+	<MSG4>getClientWelcomeInfo</MSG4>
+	<MSG5>getCatalogInfo</MSG5>
+	<MSG6>getContentInfo</MSG6>
+	<MSG7>getChapterInfo</MSG7>
+	<MSG8>getCatalogProductInfo</MSG8>
+	<MSG9>subscribeCatalog</MSG9>
+	<MSG10>getContentProductInfo</MSG10>
+	<MSG11>subscribeContent</MSG11>
+	<MSG12>Response/RegisterRsp/UserInfo/userID</MSG12>
+	
+</content>

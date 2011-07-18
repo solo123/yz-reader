@@ -1,11 +1,13 @@
 package com.yazo.CMCC;
 
+import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
 import javax.microedition.io.HttpConnection;
 
 import com.yazo.CMCC.biz.RegisterParser;
+import com.yazo.application.biz.RmsManager;
 import com.yazo.network.WebSite;
 import com.yazo.util.HBase64;
 import com.yazo.util.HtmlEscape;
@@ -21,21 +23,29 @@ public class CmccWebsite {
 	private String log_service;
 	private WebSite website, logsite;
 	private String channel;
+	private int over;
 	
-	public CmccWebsite(){
-		cmcc_user_id = "";
-		cmcc_service_url = "http://211.140.17.83/cmread/portalapi";
-		cmcc_user_agent = "CMREAD_JavaLS_V1.50_101221";
-		cmcc_agent_password = "12101017";
-		on_debug = true;
+	
+	public CmccWebsite(String url,String agent,String pwd,String channel,boolean debug,String logServer){
+		if(!"".equals(RmsManager.getInstance().getUserID())){
+			cmcc_user_id = RmsManager.getInstance().getUserID();
+		}else{
+			cmcc_user_id = "";
+		}
+		cmcc_service_url = url;
+		cmcc_user_agent = agent;
+		cmcc_agent_password = pwd;
+		on_debug = debug;
 		client_id = 100;
-		channel = "05001001";
-		log_service = "http://bk-b.info/reader/logs/addop";
+		this.channel = channel;
+		log_service = logServer;
 		
 		website = new WebSite();
 		website.use_cmcc_proxy = false;
 		logsite = new WebSite();
+		over = 0;
 	}
+	
 	public void setProxy(boolean isOn){
 		website.use_cmcc_proxy = isOn;
 	}
@@ -46,7 +56,8 @@ public class CmccWebsite {
 	/*
 	 * register and get user_id
 	 */
-	public void register(){
+	public void register(String head,String user_id_xpath){
+		over++;
 		String strM = MD5.toMD5(cmcc_user_agent+cmcc_agent_password).toLowerCase();
 		String pp = HBase64.encode(StringUtil.hexStringToByte(strM));
 		String xml = 
@@ -57,24 +68,29 @@ public class CmccWebsite {
 				"</RegisterReq>"+
 			"</Request>";
 		
-		String[] header = cmccHeader("register");
+		String[] header = cmccHeader(head);
 		byte[] response_text = website.post(cmcc_service_url, header, xml);
 		if (website.error_code==0 && website.http_status==200 && (response_text==null || response_text.length<1)) 
 			response_text = website.post(cmcc_service_url, header, xml);
 		if (website.error_code==0 && response_text!=null && response_text.length>1){
 			RegisterParser rp = new RegisterParser();
-			cmcc_user_id = rp.parse(response_text);
+			cmcc_user_id = rp.parse(response_text,StringUtil.split(user_id_xpath,"/"));
+//			RmsManager.getInstance().saveUserID(cmcc_user_id);
 		} else {
 			cmcc_user_id = "";
 		}
 		if (on_debug)
-			logToServer(cmcc_service_url, "register", new String(response_text), 
-					header, website.response_headers);
+			logToServer(cmcc_service_url, head,"register:"+ new String(response_text), 
+						header, website.response_headers);
 	}
 	
 	
-	
-	public boolean authenticate(){
+	/**
+	 * login the client
+	 * @return
+	 */
+	public boolean authenticate(String head){
+		over++;
 		String strM = MD5.toMD5(cmcc_user_agent+cmcc_user_id+cmcc_agent_password).toLowerCase();
 		String pp = HBase64.encode(StringUtil.hexStringToByte(strM));
 		String xml = 
@@ -86,112 +102,181 @@ public class CmccWebsite {
 				"</AuthenticateReq>"+
 			"</Request>";
 
-		String[] header = cmccHeader("authenticate2");
+		String[] header = cmccHeader(head);
 		byte[] buf = website.post(cmcc_service_url, header, xml);
 		if (on_debug)
-			logToServer(cmcc_service_url, "authenticate2", new String(buf), header, website.response_headers);
+			logToServer(cmcc_service_url, head, new String(buf), header, website.response_headers);
 		return (website.http_status == HttpConnection.HTTP_OK);
 	}
 	
-	public String welcome(){
+	/**
+	 * get welcome message
+	 * @return
+	 * @throws IOException 
+	 */
+	public String welcome(String head){
+		over++;
 		if(cmcc_user_id==null || cmcc_user_id.length()<1)
 			return "请先register!";
 		
-		String[] header = cmccHeader("welcome");
+		String[] header = cmccHeader(head);
 		byte[] buf = website.post(cmcc_service_url, header, "");
 		
 		String result = "";
 		if (buf!=null) result = new String(buf);
 		if (on_debug){
-			logToServer(cmcc_service_url, "welcome", result, header, website.response_headers);
+			logToServer(cmcc_service_url, head, result, header, website.response_headers);
 		}
 		if (website.error_code==0)
 			return result;
 		else
 			return "Error["+ website.error_code +"]:" + website.error_message; 
 	}
-	public String getCatalogInfo(String catalogId){
+	/**
+	 * 获取专区信息
+	 * @param catalogId
+	 * @return
+	 * @throws IOException 
+	 */
+	public String getCatalogInfo(String head,String catalogId) {
+		over++;
 		if(cmcc_user_id==null || cmcc_user_id.length()<1)
 			return "请先register!";
-		String[] header = cmccHeader("getCatalogInfo");
+		String[] header = cmccHeader(head);
 		byte[] buf = website.post(cmcc_service_url + "?catalogId="+catalogId, header, "");
 		String r = new String(buf);
 		if (on_debug)
-			logToServer(cmcc_service_url, "getCatalogInfo", r, header, website.response_headers);
+			logToServer(cmcc_service_url, head, r, header, website.response_headers);
 		return r;
 	}
-	public String getContentInfo(String contentId){
+	/**
+	 * 获取内容详情
+	 * @param contentId
+	 * @param catalogId
+	 * @return
+	 * @throws IOException 
+	 */
+	public String getContentInfo(String head,String contentId,String catalogId){
+		over++;
 		if(cmcc_user_id==null || cmcc_user_id.length()<1)
 			return "请先register!";
-		String[] header = cmccHeader("getContentInfo");
-		byte[] buf = website.post(cmcc_service_url + "?contentId="+contentId, header, "");
+		String[] header = cmccHeader(head);
+//		byte[] buf = website.post(cmcc_service_url + "?contentId="+contentId, header, "");
+		byte[] buf = website.post(cmcc_service_url + "?catalogId="+catalogId+"&contentId="+contentId, header, "");
 		String r = new String(buf);
 		if (on_debug)
-			logToServer(cmcc_service_url, "getContentInfo", r, header, website.response_headers);
+			logToServer(cmcc_service_url, head, r, header, website.response_headers);
 		return r;
 	}
-	public String getChapterInfo(String contentId, String chapterId){
+	/**
+	 * 章节内容获取
+	 * @param contentId
+	 * @param chapterId
+	 * @return
+	 * @throws IOException 
+	 */
+	public String getChapterInfo(String head,String contentId, String chapterId){
+		over++;
 		if(cmcc_user_id==null || cmcc_user_id.length()<1)
 			return "请先register!";
-		String[] header = cmccHeader("getChapterInfo");
+		String[] header = cmccHeader(head);
 		byte[] buf = website.post(cmcc_service_url + "?contentId=" +contentId+"&chapterId="+chapterId, header, "");
 		String r = new String(buf);
 		if (on_debug)
-			logToServer(cmcc_service_url, "getChapterInfo", r, header, website.response_headers);
+			logToServer(cmcc_service_url, head, r, header, website.response_headers);
 		return r;
 	}
-	public String getContentProductInfo(String contentId, String chapterId){
+		
+	
+	/*
+	 * 目录包月
+	 */
+//	/**
+//	 * 1.获取包月专区资费信息(新增加) 没有该接口
+//	 * @throws IOException 
+//	 */
+//	public String getCatalogProductInfo(String head,String catalogId) throws IOException{
+//		if(cmcc_user_id==null || cmcc_user_id.length()<1)
+//			return "请先register!";
+//		String[] header = cmccHeader(head);
+//		byte[] buf = website.post(cmcc_service_url + "?catalogId=" +catalogId, header, "");
+//		String r = new String(buf,"UTF-8");
+//		if (on_debug)
+//			logToServer(cmcc_service_url, head, r, header, website.response_headers);
+//		return r;
+//	}
+	/**
+	 * 2.订购包月专区
+	 * @param catalogId
+	 * @return
+	 * @throws IOException 
+	 */
+	public String subscribeCatalog(String head,String catalogId) {
+		over++;
 		if(cmcc_user_id==null || cmcc_user_id.length()<1)
 			return "请先register!";
-		String[] header = cmccHeader("getContentProductInfo");
+		String[] header = cmccHeader(head);
+		byte[] buf = website.post(cmcc_service_url + "?catalogId=" +catalogId, header, "");
+		String r = new String(buf);
+		if (on_debug)
+			logToServer(cmcc_service_url, head, r, header, website.response_headers);
+		return r;
+	}
+	/*
+	 * 购买图书
+	 * 1.得到产品
+	 */
+	
+	public String getContentProductInfo(String head,String contentId, String chapterId) {
+		over++;
+		if(cmcc_user_id==null || cmcc_user_id.length()<1)
+			return "请先register!";
+		String[] header = cmccHeader(head);
 		String para = "?contentId=" +contentId;
 		if (chapterId!=null)
 			para += "&chapterId=" + chapterId;
 		byte[] buf = website.post(cmcc_service_url + para, header, "");
 		String r = new String(buf);
 		if (on_debug)
-			logToServer(cmcc_service_url, "getContentProductInfo", r, header, website.response_headers);
-		return r;
-	}	
-	
-	/*
-	 * 目录包月
-	 */
-	public String subscribeCatalog(String catalogId){
-		if(cmcc_user_id==null || cmcc_user_id.length()<1)
-			return "请先register!";
-		String[] header = cmccHeader("subscribeCatalog");
-		byte[] buf = website.post(cmcc_service_url + "?catalogId=" +catalogId, header, "");
-		String r = new String(buf);
-		if (on_debug)
-			logToServer(cmcc_service_url, "subscribeCatalog", r, header, website.response_headers);
+			logToServer(cmcc_service_url, head, r, header, website.response_headers);
 		return r;
 	}
-	/*
-	 * 购买图书
+	/**
+	 * 2.订购本
+	 * @param contentId
+	 * @param productId
+	 * @return
 	 */
-	public String subscribeContent(String contentId, String productId){
+	public String subscribeContent(String head,String contentId, String productId){
+		over++;
 		if(cmcc_user_id==null || cmcc_user_id.length()<1)
 			return "请先register!";
-		String[] header = cmccHeader("subscribeCatalog");
+		String[] header = cmccHeader(head);
 		byte[] buf = website.post(cmcc_service_url + "?contentId=" + contentId +"&productId=" + productId, header, "");
 		String r = new String(buf);
 		if (on_debug)
-			logToServer(cmcc_service_url, "subscribeCatalog", r, header, website.response_headers);
+			logToServer(cmcc_service_url, head, r, header, website.response_headers);
 		return r;
 	}
 	/*
-	 * 购买章节
+	 * 2.订购章节
 	 */
-	public String subscribeContent(String contentId, String chapterId,  String productId){
+	public String subscribeContent(String head,String contentId, String chapterId,  String productId) {
+		over++;
 		if(cmcc_user_id==null || cmcc_user_id.length()<1)
 			return "请先register!";
-		String[] header = cmccHeader("subscribeContent");
-		byte[] buf = website.post(cmcc_service_url + "?contentId=" + contentId + "&chapterId=" + chapterId + "&productId=xxx" + productId, header, "");
+		String[] header = cmccHeader(head);
+		byte[] buf = website.post(cmcc_service_url + "?contentId=" + contentId + "&chapterId=" + chapterId + "&productId=" + productId, header, "");
 		String r = new String(buf);
 		if (on_debug)
-			logToServer(cmcc_service_url, "subscribeContent", r, header, website.response_headers);
+			logToServer(cmcc_service_url, head, r, header, website.response_headers);
 		return r;
+	}
+	
+	public int over(){
+		String[] header = cmccHeader("over");
+		logToServer(cmcc_service_url, "over", "test over!!!"+over, header, website.response_headers);
+		return over;
 	}
 	
 	private void logToServer(String url, String action, String result, String[] request_header, Hashtable response_header){
@@ -216,7 +301,7 @@ public class CmccWebsite {
 		      sb2.append("\n");
 		    }
 		}
-		String data = "dbg=1&cm_user_id=" + client_id +
+		String data = "dbg=1&cm_user_id=" + cmcc_user_id +
 		"&operate="+ action + 
 		"&url=" + url +
 		"&request_header=" + HtmlEscape.encode(sb1.toString(), null) +

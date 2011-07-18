@@ -6,19 +6,41 @@ package com.yazo.util;
  */
 public class Progress {
 	
-	/**
-	 * 该过程用到的id数   4则包括最后一个产品ID
-	 */
-	public int sumID;
 	/** 专区ID*/
-	public String catalogId;
+	private String catalogId;
 	/**内容ID*/
-	public String contentId;
+	private String contentId;
 	/**章节ID*/
-	public String chapterId;
+	private String chapterId;
 	/**产品ID*/
-	public String productId;
-	/**类型*/
-	public String type;
+	private String productId;
+	public String getCatalogId() {
+		return catalogId;
+	}
+	public void setCatalogId(String catalogId) {
+		this.catalogId = catalogId;
+	}
+	public String getContentId() {
+		return contentId;
+	}
+	public void setContentId(String contentId) {
+		this.contentId = contentId;
+	}
+	public String getChapterId() {
+		return chapterId;
+	}
+	public void setChapterId(String chapterId) {
+		this.chapterId = chapterId;
+	}
+	public String getProductId() {
+		return productId;
+	}
+	public void setProductId(String productId) {
+		this.productId = productId;
+	}
+	public String toString() {
+		return "Progress [catalogId=" + catalogId + ", contentId=" + contentId
+				+ ", chapterId=" + chapterId + ", productId=" + productId + "]";
+	}
 
 }

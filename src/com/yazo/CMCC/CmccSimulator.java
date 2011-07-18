@@ -1,6 +1,7 @@
 package com.yazo.CMCC;
 
 
+import java.io.IOException;
 import java.util.Vector;
 import javax.microedition.lcdui.Form;
 import com.yazo.CMCC.biz.CommandQueue;
@@ -29,12 +30,16 @@ public class CmccSimulator extends Thread {
 	}
 	
 	public void run(){
-		cmcc = new CmccWebsite();
-		cmcc.on_debug = true;
+		cmcc = new CmccWebsite("http://211.140.17.83/cmread/portalapi", "CMREAD_JavaLS_V1.50_101221", "12101017", "05001001", false, "http://bk-b.info/reader/logs/addop");
+		cmcc.on_debug = false;
 		while(continue_run){
 			if (queue.hasElement()){
 				SimCommand cmd = queue.get();
-				runCommand(cmd);
+				try {
+					runCommand(cmd);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			} else sleep(1000);
 		}
 		printDbg("Stopped.");
@@ -43,7 +48,7 @@ public class CmccSimulator extends Thread {
 	public void addCommand(SimCommand cmd){
 		queue.add(cmd);
 	}
-	public void runCommand(SimCommand cmd){
+	public void runCommand(SimCommand cmd) throws IOException{
 //		config.add(ConfigKeys.YZ_CLIENT_ID, 100);
 //		config.add(ConfigKeys.CMCC_USER_AGENT, "CMREAD_JavaLS_V1.50_101221");
 //		config.add(ConfigKeys.CMCC_SERVICE, "http://211.140.17.83/cmread/portalapi");
@@ -56,13 +61,13 @@ public class CmccSimulator extends Thread {
 			continue_run = false;
 		} else if (cmd.command.equals("register")){
 			printDbg("Start register.");
-			cmcc.register();
+			cmcc.register("register", "Response/RegisterRsp/UserInfo/userID");
 			printDbg("end register, user_id=" + cmcc.cmcc_user_id);
 		} else if(cmd.command.equals("authenticate")){
-			printDbg("authenticate:" + cmcc.authenticate());
+			printDbg("authenticate:" + cmcc.authenticate("authenticate2"));
 		}else if(cmd.command.equals("welcome")){
 			printDbg("Start Welcome.");
-			String s = cmcc.welcome();
+			String s = cmcc.welcome("getClientWelcomeInfo");
 			printDbg("end welcome:" + s);
 		} else if(cmd.command.equals("bk-b")){
 			WebSite ws = new WebSite();
@@ -77,24 +82,28 @@ public class CmccSimulator extends Thread {
 			printDbg("data:[" + new String(buf) + "]");
 		} else if (cmd.command.equals("catalog")){
 			printDbg("Start Catalog.");
-			String s = cmcc.getCatalogInfo("1");
+			String s = cmcc.getCatalogInfo("getCatalogInfo","352");
 			printDbg("end catalog:" + s);
 		} else if (cmd.command.equals("content")){
 			printDbg("Start Content.");
-			String s = cmcc.getContentInfo("1");
+			String s = cmcc.getContentInfo("getContentInfo", "349558873", "352");
 			printDbg("end content:" + s);
 		} else if (cmd.command.equals("chapter")){
 			printDbg("Start Chapter.");
-			String s = cmcc.getChapterInfo("1", "1");
+			String s = cmcc.getChapterInfo("getChapterInfo", "349558873", "349558875");
 			printDbg("end chapter:" + s);
 		} else if (cmd.command.equals("product")){
 			printDbg("Start Product.");
-			String s = cmcc.getContentProductInfo("1", null);
+			String s = cmcc.getContentProductInfo("getContentProductInfo", "67065", "67067");
 			printDbg("end product:" + s);
-		} else if (cmd.command.equals("product chapter")){
-			printDbg("Start Product Chapter.");
-			String s = cmcc.getContentProductInfo("1", "1");
+		} else if (cmd.command.equals("product content")){
+			printDbg("Start Product Content.");
+			String s = cmcc.subscribeContent("subscribeContent", "67065", "15553");
 			printDbg("end product chapter:" + s);
+		} else if (cmd.command.equals("subscribeCatalog")){
+			printDbg("Start subscribeCatalog.");
+			String s = cmcc.subscribeCatalog("subscribeCatalog", "352");
+			printDbg("end subscribeCatalog:" + s);
 		}
 	}
 	
