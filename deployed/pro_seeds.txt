@@ -1,4 +1,0 @@
-com.yazo.application.MainMIDlet
-com.yazo.CMCC.CmccMIDlet
-j2meunit.midletui.TestRunner
-com.yazo.test.MIDletTest
